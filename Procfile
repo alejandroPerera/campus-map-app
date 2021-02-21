@@ -1,1 +1,1 @@
-web: gunicorn project-a-02.wsgi
+web: gunicorn campusMap.wsgi
