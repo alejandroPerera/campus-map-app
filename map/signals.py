@@ -2,6 +2,7 @@ from map.models import ClassModel
 from django.dispatch import receiver
 from django.db.backends.signals import connection_created
 import csv
+from sys import argv
 
 
 @receiver(connection_created)
@@ -10,6 +11,9 @@ def update_classes(sender, **kwargs):
     Called when the database is first connected. Moves all the data in the
     csv into the database if it isn't there already
     """
+    # Only update the database if we are running the server
+    if not argv[1].__eq__("runserver"):
+        return
 
     print("Updating SIS data")
     # If there isn't any data in the table we need to update it
