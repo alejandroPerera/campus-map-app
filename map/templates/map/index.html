@@ -8,12 +8,11 @@
   <body>
   <h1>My Google Login Project</h1>
   {% if user.is_authenticated %}
-  <p>Welcome, {{ user.username }} !</p>
-
+    <p>Welcome, {{ user.username }} !</p>
+    <a href = "https://campusmapa-02.herokuapp.com/accounts/logout"> Click here to logout</a>
   {% else %}
-  <a href="{% provider_login_url 'google' %}">Login with Google</a>
+    <a href="{% provider_login_url 'google' %}">Login with Google</a>
   {% endif %}
 
-  <a href = "https://campusmapa-02.herokuapp.com/accounts/logout"> Click here to logout</a>
   </body>
 </html>
