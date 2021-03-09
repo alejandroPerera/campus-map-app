@@ -25,5 +25,5 @@ class ClassModel(models.Model):
     class_description = models.CharField(max_length=2000)
 
     def __str__(self):
-        return str(self.class_number)
+        return str(self.class_mnemonic) + " " + str(self.course_number) + "-" + str(self.class_section)
 
