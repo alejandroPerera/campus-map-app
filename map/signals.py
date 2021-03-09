@@ -1,12 +1,13 @@
 from map.models import ClassModel
 from django.dispatch import receiver
 from django.db.backends.signals import connection_created
+from django.db import models
 import csv
 from sys import argv
 
 
 @receiver(connection_created)
-def update_classes(sender, **kwargs):
+def add_classes(sender, **kwargs):
     """
     Called when the database is first connected. Moves all the data in the
     csv into the database if it isn't there already
@@ -26,7 +27,10 @@ def update_classes(sender, **kwargs):
         with open(file='map/static/map/searchData.csv', newline='') as sis_data:
             reader = csv.reader(sis_data, delimiter=',')
             reader.__next__()  # Move past the header line
-            for row in reader:
+            rows = list(reader)
+
+            # First pass adds all the classes
+            for row in rows:
                 # TODO: Change these if it means something important
                 # For some reason graduate studies seem to have dates coded instead of units
                 # So just make them 0 units?
@@ -59,12 +63,35 @@ def update_classes(sender, **kwargs):
                     class_enrollment=row[12],
                     class_enrollment_limit=row[13],
                     class_waitlist=row[14],
-                    # class_combined_with=row[15],
+                    class_combined_with=ClassModel(None),
                     class_description=row[16],
                 )
                 # Add the row to the database
                 entry.save()
                 num_updated += 1
+
+            # Second pass updates the combined with field
+            for row in rows:
+                combined_with = row[15]
+                current_class = ClassModel.objects.get(class_number=row[0])
+
+                if len(combined_with) > 0:
+                    for thing in combined_with.split(','):
+                        components = thing.split("^ [a-zA-Z]+ [0-9]+-[0-9]+$")  # split on space and dash
+                        dept = components[0]
+                        course = components[1]
+                        section = components[2]
+                        # Makes this consistent with what would be in the table
+                        try:
+                            section = int(section)
+                        except ValueError:
+                            section = -1
+
+                        model = ClassModel.objects.get(class_mnemonic=dept, course_number=course, class_section=section)
+                        # add that model to the row
+                        current_class.class_combined_with.add(model)
+                        current_class.save()
+
             print("Updated %i entries" % num_updated)
     # The data is already in the database
     else:

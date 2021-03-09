@@ -12,7 +12,7 @@ class ClassModel(models.Model):
     class_type = models.CharField(max_length=200)
     class_units = models.FloatField()
     class_instructor = models.CharField(max_length=200)
-    class_days = models.CharField(max_length=100)  # TODO: This will need to be more complicated to store up to 3 durations
+    class_days = models.CharField(max_length=100)  # This just stores this as a string
     class_room = models.CharField(max_length=200)
     class_title = models.CharField(max_length=200)
     class_topic = models.CharField(max_length=200)
@@ -21,7 +21,7 @@ class ClassModel(models.Model):
     class_enrollment_limit = models.IntegerField()
     class_waitlist = models.IntegerField()
     # TODO: Make this refer to an instance of ClassModel
-    # class_combined_with = models.ForeignKey(object.__class__)
+    class_combined_with = models.ForeignKey("ClassModel", on_delete=models.PROTECT, blank=True, null=True)
     class_description = models.CharField(max_length=2000)
 
     def __str__(self):
