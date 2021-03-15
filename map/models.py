@@ -21,7 +21,7 @@ class ClassModel(models.Model):
     class_enrollment_limit = models.IntegerField()
     class_waitlist = models.IntegerField()
     # TODO: Make this refer to an instance of ClassModel
-    class_combined_with = models.ForeignKey("ClassModel", on_delete=models.PROTECT, blank=True, null=True)
+    # class_combined_with = models.ForeignKey("ClassModel", on_delete=models.PROTECT, blank=True, null=True)
     class_description = models.CharField(max_length=2000)
 
     def __str__(self):

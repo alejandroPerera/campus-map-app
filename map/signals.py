@@ -55,7 +55,7 @@ def add_classes(sender, **kwargs):
                     class_type=row[4],
                     class_units=units,
                     class_instructor=row[6],
-                    class_days=row[7],  # TODO: Fix this thing's formatting
+                    class_days=row[7],
                     class_room=row[8],
                     class_title=row[9],
                     class_topic=row[10],
@@ -63,13 +63,14 @@ def add_classes(sender, **kwargs):
                     class_enrollment=row[12],
                     class_enrollment_limit=row[13],
                     class_waitlist=row[14],
-                    class_combined_with=ClassModel(None),
+                    # class_combined_with=ClassModel(None),
                     class_description=row[16],
                 )
                 # Add the row to the database
                 entry.save()
                 num_updated += 1
 
+            '''
             # Second pass updates the combined with field
             for row in rows:
                 combined_with = row[15]
@@ -91,7 +92,7 @@ def add_classes(sender, **kwargs):
                         # add that model to the row
                         current_class.class_combined_with.add(model)
                         current_class.save()
-
+            '''
             print("Updated %i entries" % num_updated)
     # The data is already in the database
     else:
