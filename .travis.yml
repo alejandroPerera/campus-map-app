@@ -13,3 +13,4 @@ deploy:
   app: campusmapa-02
   on:
     repo: uva-cs3240-s21/project-a-02
+    branch: main
