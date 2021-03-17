@@ -61,7 +61,7 @@ ROOT_URLCONF = 'campusMap.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates', BASE_DIR / 'map/templates/map'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
