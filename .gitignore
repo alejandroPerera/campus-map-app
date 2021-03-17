@@ -1,0 +1,4 @@
+# Common files that we don't need on git
+
+# PyCharm stuff
+.idea/
