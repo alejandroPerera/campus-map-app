@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    {% block head %}
+        <!-- Not you Charlie Brown -->
+    {% endblock %}
+    <!-- Required meta tags for Bootstrap -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <title>{% block title %}Campus Map{% endblock %}</title>
+</head>
+<body>
+    {% block content%}
+        <!-- Pages go here-->
+    {% endblock %}
+</body>

@@ -1,4 +1,5 @@
 import django_heroku
+import os
 """
 Django settings for campusMap project.
 
@@ -61,7 +62,7 @@ ROOT_URLCONF = 'campusMap.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates', BASE_DIR / 'map/templates/map'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,10 +84,10 @@ WSGI_APPLICATION = 'campusMap.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'campusmap',
-        'USER': 'name',
-        'PASSWORD': 'qwe123Jl',
-        'HOST': 'localhost',
+        'NAME': os.getenv("POSTGRES_NAME"),
+        'USER': os.getenv("POSTGRES_USER"),
+        'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
+        'HOST': os.getenv("POSTGRES_HOST"),
         'PORT': '5432',
     }
 }
