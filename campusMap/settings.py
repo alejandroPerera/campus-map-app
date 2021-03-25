@@ -83,10 +83,10 @@ WSGI_APPLICATION = 'campusMap.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("POSTGRES_NAME"),
-        'USER': os.getenv("POSTGRES_USER"),
-        'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
-        'HOST': os.getenv("POSTGRES_HOST"),
+        'NAME': os.getenv("justin"),
+        'USER': os.getenv("name"),
+        'PASSWORD': os.getenv("qwe123Jl"),
+        'HOST': os.getenv("campusmap"),
         'PORT': '5432',
     }
 }
