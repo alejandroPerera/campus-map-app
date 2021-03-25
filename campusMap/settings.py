@@ -1,4 +1,5 @@
 import django_heroku
+import os
 """
 Django settings for campusMap project.
 
@@ -83,10 +84,10 @@ WSGI_APPLICATION = 'campusMap.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'campusmap',
-        'USER': 'name',
-        'PASSWORD': 'qwe123Jl',
-        'HOST': 'localhost',
+        'NAME': os.getgid("POSTGRES_NAME"),
+        'USER': os.getgid("POSTGRES_USER"),
+        'PASSWORD': os.getgid("POSTGRES_PASSWORD"),
+        'HOST': os.getgid("POSTGRES_HOST"),
         'PORT': '5432',
     }
 }
