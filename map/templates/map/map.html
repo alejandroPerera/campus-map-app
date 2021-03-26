@@ -20,7 +20,7 @@
     <!-- From:https://docs.mapbox.com/mapbox-gl-js/api/ -->
     <div id='map' style='width: 1200px; height: 500px;'></div>
     <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg';
+        mapboxgl.accessToken = {{ }};
 
         var map = new mapboxgl.Map({
             container: 'map', // container ID
@@ -42,3 +42,4 @@
 {% if user.is_authenticated %}
     <p>Welcome, {{ user.username }} !</p>
     <a href = "https://campusmapa-02.herokuapp.com/accounts/logout"> Click here to logout</a>
+{% endif %}
