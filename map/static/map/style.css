@@ -1,0 +1,24 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+height: 100%;
+}
+
+.row {
+height: 100%;
+}
+
+#map {
+position: absolute;
+top: 0;
+bottom: 0;
+width: 100%;
+height: 100%;
+}
+
+#schedule-col {
+background: rgb(150,150,150);
+}
