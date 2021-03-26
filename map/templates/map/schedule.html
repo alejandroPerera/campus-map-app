@@ -10,6 +10,8 @@
                   // make a marker for each feature and add to the map
                   var marker = new mapboxgl.Marker()
                     .setLngLat({{ r.coordinates }})
+                    .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+                        .setHTML('<p>{{ r.name }}</p>'))
                     .addTo(map);
 
                   allMarkers.push(marker);
