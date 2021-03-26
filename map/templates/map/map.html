@@ -24,6 +24,7 @@
     <!-- From:https://docs.mapbox.com/mapbox-gl-js/api/ -->
     <div id='map'></div>
     <script>
+        // Used to keep track of the markers
         var allMarkers = [];
 
         mapboxgl.accessToken = '{{ access_token }}';
@@ -37,20 +38,12 @@
             trackResize: true // Resize if the browser window size changes
         });
 
-
         // Fired after first load
         map.on('load', function() {
             map.resize();
             console.log('Map resized');
         });
 
-        // Adds the search bar on the map
-        map.addControl(
-            new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl
-            })
-        );
     </script>
 {% endblock %}
 
@@ -67,8 +60,8 @@
         <button type="submit" class="btn btn-success">Search</button>
 
         <!-- From: https://stackoverflow.com/questions/17599035/django-how-can-i-call-a-view-function-from-template-->
+        <!-- Using AJAX to load the data without refreshing the page -->
         <script>
-
             // This will pass the form action and hopefully reload the results div with the results
             $(function(){
                  $('form').on('submit', function(e){

@@ -2,6 +2,7 @@
 <ul class="list-group">
     {% for r in results %}
         <a id="search-result" href="#" class="list-group-item list-group-item-action">{{ r.name }}</a>
+        <!-- Listener for when the button is clicked. Will add that marker to the map -->
         <script>
             $('#search-result').on('click', function(e){
                 console.log("Pin button clicked");
@@ -23,6 +24,7 @@
 <div id="remove-markers" >
     <button id="remove-button" class="btn btn-primary">Remove All Markers</button>
 
+    <!-- Listener for when the button is clicked. Will remove all the markers-->
     <script>
         $('#remove-button').on('click', function(e){
             console.log("Pin button clicked");

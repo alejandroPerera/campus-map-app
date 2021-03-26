@@ -32,4 +32,3 @@ class GeoCodeTests(TestCase):
         print(response)
 
         self.assertEqual(response.status_code, 200, "Response code is not 200")
-        self.assertEqual(response.url)
