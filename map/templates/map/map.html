@@ -24,6 +24,8 @@
     <!-- From:https://docs.mapbox.com/mapbox-gl-js/api/ -->
     <div id='map'></div>
     <script>
+        var allMarkers = [];
+
         mapboxgl.accessToken = '{{ access_token }}';
         var resized = false;
 
@@ -83,7 +85,9 @@
         </script>
 
     </form>
+    <!-- To be overwritten by the search function-->
     <div id="results"></div>
+
 
 {% endblock %}
 

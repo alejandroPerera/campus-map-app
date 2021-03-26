@@ -25,7 +25,7 @@ class GeoCode:
     def __init__(self, response):
         data = json.load(response)
         self.query = data.get('query')
-        self.coordinates = (data.get('features')[0].get('center')[0], data.get('features')[0].get('center')[1])
+        self.coordinates = [data.get('features')[0].get('center')[0], data.get('features')[0].get('center')[1]]
         self.name = data.get('features')[0].get('text')
 
     def __init__(self, query, coordinates, name):
@@ -40,7 +40,7 @@ class GeoCode:
         results = data.get('features')
         output = []
         for result in results:
-            coordinates = (result.get('center')[0], result.get('center')[1])
+            coordinates = [result.get('center')[0], result.get('center')[1]]
             name = result.get('text')
             output.append(GeoCode(query, coordinates, name))
 
