@@ -66,35 +66,16 @@
 
         <!-- From: https://stackoverflow.com/questions/17599035/django-how-can-i-call-a-view-function-from-template-->
         <script>
-            // Provided by https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
 
             // This will pass the form action and hopefully reload the results div with the results
             $(function(){
                  $('form').on('submit', function(e){
                      e.preventDefault();
-                     const csrftoken = getCookie('csrftoken');
-                     console.log("csrf: " + csrftoken);
-                     console.log($(this).attr('action'));
 
                      $.ajax({
                          url: $(this).attr('action'),
                          method: $(this).attr('method'),
-                         headers: {'X-CSRFToken': csrftoken},
+                         data: $('form').serialize(), // serialize converts the form inputs into the url
                          success: function(data){ $('#results').html(data) }
                      });
                  });
