@@ -10,6 +10,9 @@
 {% endblock %}
 
 {% block content%}
+{% if user.is_authenticated %}
+    <p>Welcome, {{ user.username }} !</p>
+    <a href = "http://localhost:8000/accounts/logout/"> Click here to logout</a>
     <!-- Mapbox Geocoder API loads-->
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
@@ -37,8 +40,14 @@
             })
         );
     </script>
-{% endblock %}
+    <form method="post">
 
-{% if user.is_authenticated %}
-    <p>Welcome, {{ user.username }} !</p>
-    <a href = "https://campusmapa-02.herokuapp.com/accounts/logout"> Click here to logout</a>
+    </form>
+  {% else %}
+    <a href="{% provider_login_url 'google' %}">Login with Google</a>
+  {% endif %}
+
+
+
+
+{% endblock %}
