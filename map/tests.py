@@ -20,10 +20,10 @@ class GeoCodeTests(TestCase):
             self.assertEqual(results[0].query, 'rice', 'Incorrect query stored')
             self.assertEqual(results[4].query, 'rice', 'Incorrect query stored')
 
-            self.assertEqual(results[0].coordinates, (-78.510896, 38.031655), 'Incorrect coordinates stored')
+            self.assertEqual(results[0].coordinates, [-78.510896, 38.031655], 'Incorrect coordinates stored')
             self.assertEqual(results[0].name, 'Rice Hall', 'Incorrect name stored')
 
-            self.assertEqual(results[4].coordinates, (-79.8028, 41.7776), 'Incorrect coordinates stored')
+            self.assertEqual(results[4].coordinates, [-79.8028, 41.7776], 'Incorrect coordinates stored')
             self.assertEqual(results[4].name, 'Riceville', 'Incorrect name stored')
 
     def test_get_search_results(self):
