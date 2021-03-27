@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load socialaccount %}
+{% load crispy_forms_tags %}
+
 <!-- Redefine the title-->
 {% block title %}Map{% endblock %}
 
@@ -9,45 +11,76 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
 {% endblock %}
 
-{% block content%}
-{% if user.is_authenticated %}
-    <p>Welcome, {{ user.username }} !</p>
-    <a href = "http://localhost:8000/accounts/logout/"> Click here to logout</a>
+{% block loads %}
     <!-- Mapbox Geocoder API loads-->
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
     <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
     <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+{% endblock %}
 
+{% block map %}
     <!-- From:https://docs.mapbox.com/mapbox-gl-js/api/ -->
-    <div id='map' style='width: 1200px; height: 500px;'></div>
+    <div id='map'></div>
     <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg';
+        // Used to keep track of the markers
+        var allMarkers = [];
+
+        mapboxgl.accessToken = '{{ access_token }}';
+        var resized = false;
 
         var map = new mapboxgl.Map({
             container: 'map', // container ID
             style: 'mapbox://styles/a-02/ckmb3agnj7w8i17qq9eqflzwj', // style URL
             center: {{ starting_coords }}, // starting position [lng, lat]
-            zoom: 14 // starting zoom
+            zoom: 14, // starting zoom
+            trackResize: true // Resize if the browser window size changes
         });
 
-        // Adds the search bar on the map
-        map.addControl(
-            new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl
-            })
-        );
+        // Fired after first load
+        map.on('load', function() {
+            map.resize();
+            console.log('Map resized');
+        });
+
     </script>
-    <form method="post">
+{% endblock %}
+
+{% block schedule %}
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }} !</p>
+        <a href = "https://campusmapa-02.herokuapp.com/accounts/logout"> Click here to logout</a>
+    {% endif %}
+
+    <!-- Builds from the ScheduleForm class -->
+    <form action="{% url 'map:search' %}" method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Search</button>
+
+        <!-- From: https://stackoverflow.com/questions/17599035/django-how-can-i-call-a-view-function-from-template-->
+        <!-- Using AJAX to load the data without refreshing the page -->
+        <script>
+            // This will pass the form action and hopefully reload the results div with the results
+            $(function(){
+                 $('form').on('submit', function(e){
+                     e.preventDefault();
+
+                     $.ajax({
+                         url: $(this).attr('action'),
+                         method: $(this).attr('method'),
+                         data: $('form').serialize(), // serialize converts the form inputs into the url
+                         success: function(data){ $('#results').html(data) }
+                     });
+                 });
+            });
+        </script>
 
     </form>
-  {% else %}
-    <a href="{% provider_login_url 'google' %}">Login with Google</a>
-  {% endif %}
-
-
+    <!-- To be overwritten by the search function-->
+    <div id="results"></div>
 
 
 {% endblock %}
+
