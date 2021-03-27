@@ -11,6 +11,7 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
 {% endblock %}
 
+
 {% block loads %}
     <!-- Mapbox Geocoder API loads-->
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
@@ -46,7 +47,6 @@
 
     </script>
 {% endblock %}
-
 {% block schedule %}
     {% if user.is_authenticated %}
         <p>Welcome, {{ user.username }} !</p>
@@ -80,7 +80,6 @@
     </form>
     <!-- To be overwritten by the search function-->
     <div id="results"></div>
-
 
 {% endblock %}
 

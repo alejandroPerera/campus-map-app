@@ -1,8 +1,12 @@
+from allauth.account.forms import UserForm
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.urls import reverse
 from django.views import generic
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .models import schedule
 
 from .forms import ScheduleForm
 import requests
@@ -95,3 +99,21 @@ def get_search_results(request):
     else:
         # Return nothing? No
         return render('map/schedule.html', {'results': ['Invalid Search']})
+
+# def create(response):
+#     if response.method == "POST":
+#         form = CreateNewList(response.POST)
+#
+#         if form.is_valid():
+#             n = form.cleaned_data["name"]
+#             t = schedule(name=n)
+#             t.save()
+#             response.user.schedule.add(t)  # adds the to do list to the current logged in user
+#
+#             return HttpResponseRedirect("/%i" %t.id)
+#
+#     else:
+#         form = CreateNewList()
+#
+#     return render(response, "main/create.html", {"form":form})
+
