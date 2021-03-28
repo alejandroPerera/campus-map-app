@@ -59,16 +59,6 @@ class MapView(generic.FormView):
     # TODO: Make this an env variable
     access_token = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg'
 
-    def search_for_location(self, query) -> [GeoCode]:
-        base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
-        params = {'limit': 5,
-                  'proximity': str(self.starting_coords[0]) + ',' + str(self.starting_coords[1]),
-                  'access_token': self.access_token}
-        # Get the data from MapBox's API
-        r = requests.get(base_url + query + '.json', params=params)
-        # Parse that data into a more useful form
-        return GeoCode.get_geo_codes(r.json())
-
     # From : https://stackoverflow.com/questions/18232851/django-passing-variables-to-templates-from-class-based-views
     # Makes this classes global variables accessible from the templates
     def get_context_data(self, **kwargs):
