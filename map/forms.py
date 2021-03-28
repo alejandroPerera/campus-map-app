@@ -1,5 +1,3 @@
-from profile import Profile
-
 from django import forms
 
 

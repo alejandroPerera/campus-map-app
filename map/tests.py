@@ -29,6 +29,5 @@ class GeoCodeTests(TestCase):
     def test_get_search_results(self):
         query = 'rice'
         response = self.client.post(reverse('map:search'), data={'search': query})
-        print(response)
 
         self.assertEqual(response.status_code, 200, "Response code is not 200")

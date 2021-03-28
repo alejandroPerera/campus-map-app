@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from .models import schedule
+from .models import ScheduleModel
 
 from .forms import ScheduleForm
 import requests
