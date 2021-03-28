@@ -100,12 +100,14 @@ def get_search_results(request):
 
 def get_classModel_results(response):
     classR = None
-    if True: # response.POST.get("s"):
+    print(response.POST)
+    if response.POST.get('class_mnemonic'):
+        print("tomato")
         query = response.POST.get('class_mnemonic')
         classR = ClassModel.objects.filter(class_mnemonic=query)
-    elif response.POST.get("add"):
+    else: #response.POST.get("add"):
         #get classes that are clicked on
         #associate to user
-        print("add")
-        #response.user.schedule.add(classModel)
+        print(response.user.schedule)
+        response.user.schedule.add(classModel)
     return render(response, 'map/map.html', {'classR': classR})

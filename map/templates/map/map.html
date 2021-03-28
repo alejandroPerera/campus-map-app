@@ -50,7 +50,7 @@
 {% block schedule %}
     {% if user.is_authenticated %}
         <p>Welcome, {{ user.username }} !</p>
-        <a href = "https://campusmapa-02.herokuapp.com/accounts/logout"> Click here to logout</a>
+        <a href = "{% url 'account_logout'%}"> Click here to logout</a>
     {% endif %}
 
     <!-- Builds from the ScheduleForm class -->
@@ -90,7 +90,7 @@
         {%for class in classR%}
            <li><input type='checkbox', value='clicked', name='c{{class.id}}'>{{class}}<li>
         {% endfor %}
-        <ul>
+        </ul>
     </form>
 
 {% endblock %}
