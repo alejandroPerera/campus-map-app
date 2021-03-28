@@ -3,10 +3,11 @@ from django.urls import reverse
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-
+from django.contrib.auth.models import User
 from .forms import ScheduleForm
 import requests
 import json
+from .models import ClassModel
 
 
 # Create your views here.
@@ -80,18 +81,31 @@ def get_search_results(request):
     starting_coords = [-78.510067, 38.038124]
 
     if request.method == 'POST':
-        form = ScheduleForm(request.POST)  # generate the form from the data supplied
-        if form.is_valid():
-            base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
-            params = {'limit': 5,
-                      'proximity': str(starting_coords[0]) + ',' + str(starting_coords[1]),
-                      'access_token': access_token}
-            # Get the data from MapBox's API
-            r = requests.get(base_url + form.cleaned_data['search'] + '.json', params=params)
-            # Parse that data into a more useful form
-            results = GeoCode.get_geo_codes(r.json())
+        if request.POST.get('searchBuilding'):
+            form = ScheduleForm(request.POST)  # generate the form from the data supplied
+            if form.is_valid():
+                base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
+                params = {'limit': 5,
+                        'proximity': str(starting_coords[0]) + ',' + str(starting_coords[1]),
+                        'access_token': access_token}
+                # Get the data from MapBox's API
+                r = requests.get(base_url + form.cleaned_data['search'] + '.json', params=params)
+                # Parse that data into a more useful form
+                results = GeoCode.get_geo_codes(r.json())
 
-            return render(request, 'map/schedule.html', {'results': results})
+                return render(request, 'map/schedule.html', {'results': results})
     else:
         # Return nothing? No
         return render('map/schedule.html', {'results': ['Invalid Search']})
+
+def get_classModel_results(response):
+    classR = None
+    if True: # response.POST.get("s"):
+        query = response.POST.get('class_mnemonic')
+        classR = ClassModel.objects.filter(class_mnemonic=query)
+    elif response.POST.get("add"):
+        #get classes that are clicked on
+        #associate to user
+        print("add")
+        #response.user.schedule.add(classModel)
+    return render(response, 'map/map.html', {'classR': classR})
