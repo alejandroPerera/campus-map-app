@@ -1,7 +1,7 @@
 <!-- Display a list of the results -->
 <ul class="list-group">
     {% for r in results %}
-        <a id="search-result" href="#" class="list-group-item list-group-item-action">{{ r.name }}</a>
+        <a id="search-result" href="#" class="list-group-item list-group-item-action">{{ r.location_name }}</a>
         <!-- Listener for when the button is clicked. Will add that marker to the map -->
         <script>
             $('#search-result').on('click', function(e){
