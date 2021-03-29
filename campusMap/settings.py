@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'allauth.account',  # <--
     'allauth.socialaccount',  # <--
     'allauth.socialaccount.providers.google',  # <--
+    'crispy_forms', # <-- Makes the forms look nice
 ]
 
 MIDDLEWARE = [
@@ -147,3 +148,4 @@ SOCIALACCOUNT_PROVIDERS = {
 STATIC_URL = '/static/'
 
 django_heroku.settings(locals())
+

@@ -1,7 +1,6 @@
 from map.models import ClassModel
 from django.dispatch import receiver
 from django.db.backends.signals import connection_created
-from django.db import models
 import csv
 from sys import argv
 

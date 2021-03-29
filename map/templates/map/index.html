@@ -6,10 +6,10 @@
     <title>Google Registration</title>
   </head>
   <body>
-  <h1>My Google Login Project</h1>
+  <h1>Campus Map Project</h1>
   {% if user.is_authenticated %}
     <p>Welcome, {{ user.username }} !</p>
-    <a href = "https://campusmapa-02.herokuapp.com/accounts/logout"> Click here to logout</a>
+    <a href = "{% url ':logout' %}"> Click here to logout</a>
   {% else %}
     <a href="{% provider_login_url 'google' %}">Login with Google</a>
   {% endif %}

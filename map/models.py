@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -27,3 +28,23 @@ class ClassModel(models.Model):
     def __str__(self):
         return str(self.class_mnemonic) + " " + str(self.course_number) + "-" + str(self.class_section)
 
+
+# model that links to the user, foreign key
+class ScheduleModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="schedule", null=True)
+
+    something = None
+
+    def __str__(self):
+        return self.user.name
+
+    def __init__(self, test):
+        self.something = test
+
+
+class CourseModel(models.Model):
+    schedule = models.ForeignKey(ScheduleModel, on_delete=models.CASCADE)
+    courseName = models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.courseName
