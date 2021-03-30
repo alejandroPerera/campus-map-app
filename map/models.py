@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractUser
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 # Create your models here.
 
 
@@ -35,3 +36,12 @@ class CourseModel(models.Model):
 class ScheduleModel(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     courses = models.ManyToManyField(CourseModel,blank=True,related_name="schedule")
+
+# @receiver(post_save, sender=User)
+# def create_user_schedule(sender, instance, created, **kwargs):
+#     if created:
+#         CourseModel.objects.create(user=instance)
+#
+# @receiver(post_save, sender=User)
+# def save_user_schedule(sender, instance, **kwargs):
+#     instance.save()

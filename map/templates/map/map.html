@@ -48,11 +48,10 @@
 {% endblock %}
 
 {% block schedule %}
-    {% if user.is_authenticated %}
+{% if user.is_authenticated %}
         <p>Welcome, {{ user.username }} !</p>
         <a href = "{% url 'account_logout'%}"> Click here to logout</a>
-    {% endif %}
-
+{% endif %}
     <!-- Builds from the ScheduleForm class -->
     <form action="{% url 'map:search' %}" method="post">
         {% csrf_token %}
@@ -81,6 +80,7 @@
     <!-- To be overwritten by the search function-->
     <div id="results"></div>
 
+
     <form action="{% url 'map:searchForClassModel' %}" method="post">
         {% csrf_token %}
         <input type='text' name='class_mnemonic' value='{{ query }}'>
@@ -88,10 +88,8 @@
         <button type="submit" name='add' value='add' class="btn btn-primary">Add Class</button>
         <ul>
         {%for class in classR%}
-           <li><input type='checkbox', value='clicked', name='c{{class.id}}'>{{class}}<li>
+           <li><input type='checkbox', value='c{{class.id}}', name='class'>{{class}}<li>
         {% endfor %}
         </ul>
     </form>
-
 {% endblock %}
-

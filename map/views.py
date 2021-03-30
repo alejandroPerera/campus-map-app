@@ -109,5 +109,10 @@ def get_classModel_results(response):
         #get classes that are clicked on
         #associate to user
         print(response.user.schedule)
-        response.user.schedule.add(classModel)
-    return render(response, 'map/map.html', {'classR': classR})
+        response.user.schedule.add(ClassModel)
+    return render(response, 'map/classes.html', {'classR': classR})
+# def update_schedule(request, user_id):
+#     user = User.objects.get(pk=user_id)
+#     courses = get_classModel_results(request)
+#
+#     user.save()

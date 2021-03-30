@@ -1,0 +1,11 @@
+<form action="{% url 'map:searchForClassModel' %}" method="post">
+        {% csrf_token %}
+        <input type='text' name='class_mnemonic' value='{{ query }}'>
+        <button type="submit" name='s' value ='s' class="btn btn-dark">Search Class</button>
+        <button type="submit" name='add' value='add' class="btn btn-primary">Add Class</button>
+        <ul>
+        {%for class in classR%}
+           <li><input type='checkbox', value='c{{class.id}}', name='class'>{{class}}<li>
+        {% endfor %}
+        </ul>
+    </form>
