@@ -29,10 +29,6 @@ class ClassModel(models.Model):
     def __str__(self):
         return str(self.class_mnemonic) + " " + str(self.course_number) + "-" + str(self.class_section)
 
-class CourseModel(models.Model):
-    department = models.CharField(max_length=200)
-    professor = models.CharField(max_length=200)
-    classCode = models.IntegerField()#seperated to be able to search by department
 class ScheduleModel(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     courses = models.ManyToManyField(ClassModel,blank=True,related_name="schedule", null=True)

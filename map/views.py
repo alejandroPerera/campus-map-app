@@ -112,6 +112,7 @@ def add_class(request):
         print(classList)
         user = request.user
         if(user.is_authenticated):
+            #if a schedule already exists
             schedule = ScheduleModel(user = user)
             schedule.save()
             for class_id in classList:
@@ -119,7 +120,7 @@ def add_class(request):
                     schedule.courses.add(class_to_add)
                     print(class_to_add)
                 #response.user.schedule.add(class_to_add)
-    return render(request, 'map/classes.html', {})
+    return render(request, 'map/map.html', {})
 
 
 
