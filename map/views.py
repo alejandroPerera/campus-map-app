@@ -81,36 +81,43 @@ def get_search_results(request):
     starting_coords = [-78.510067, 38.038124]
 
     if request.method == 'POST':
-        if request.POST.get('searchBuilding'):
-            form = ScheduleForm(request.POST)  # generate the form from the data supplied
-            if form.is_valid():
-                base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
-                params = {'limit': 5,
-                        'proximity': str(starting_coords[0]) + ',' + str(starting_coords[1]),
-                        'access_token': access_token}
-                # Get the data from MapBox's API
-                r = requests.get(base_url + form.cleaned_data['search'] + '.json', params=params)
-                # Parse that data into a more useful form
-                results = GeoCode.get_geo_codes(r.json())
+        form = ScheduleForm(request.POST)  # generate the form from the data supplied
+        if form.is_valid():
+            base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
+            params = {'limit': 5,
+                    'proximity': str(starting_coords[0]) + ',' + str(starting_coords[1]),
+                    'access_token': access_token}
+            # Get the data from MapBox's API
+            r = requests.get(base_url + form.cleaned_data['search'] + '.json', params=params)
+            # Parse that data into a more useful form
+            results = GeoCode.get_geo_codes(r.json())
 
-                return render(request, 'map/schedule.html', {'results': results})
+            return render(request, 'map/schedule.html', {'results': results})
     else:
         # Return nothing? No
         return render('map/schedule.html', {'results': ['Invalid Search']})
 
 def get_classModel_results(response):
-    classR = None
-    print(response.POST)
     if response.POST.get('class_mnemonic'):
-        print("tomato")
         query = response.POST.get('class_mnemonic')
         classR = ClassModel.objects.filter(class_mnemonic=query)
-    else: #response.POST.get("add"):
-        #get classes that are clicked on
-        #associate to user
-        print(response.user.schedule)
-        response.user.schedule.add(ClassModel)
-    return render(response, 'map/classes.html', {'classR': classR})
+        return render(response, 'map/classes.html', {'classR': classR})
+    else:
+        return render(response, 'map/classes.html', {})
+
+def add_class(response):
+    if response.method == 'POST':
+        classList = response.POST.getlist('clicked')
+        print('result:')
+        print(classList)
+        for class_id in classList:
+                class_to_add = ClassModel.objects.get(pk=class_id)
+                print(class_to_add)
+                response.user.schedule.add(class_to_add)
+    return render(response, 'map/classes.html', {})
+
+
+
 # def update_schedule(request, user_id):
 #     user = User.objects.get(pk=user_id)
 #     courses = get_classModel_results(request)
