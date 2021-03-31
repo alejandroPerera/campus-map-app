@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from .forms import ScheduleForm
 import requests
 import json
-from .models import ClassModel
+from .models import ClassModel, ScheduleModel
 
 
 # Create your views here.
@@ -105,16 +105,21 @@ def get_classModel_results(response):
     else:
         return render(response, 'map/classes.html', {})
 
-def add_class(response):
-    if response.method == 'POST':
-        classList = response.POST.getlist('clicked')
+def add_class(request):
+    if request.method == 'POST':
+        classList = request.POST.getlist('clicked')
         print('result:')
         print(classList)
-        for class_id in classList:
-                class_to_add = ClassModel.objects.get(pk=class_id)
-                print(class_to_add)
-                response.user.schedule.add(class_to_add)
-    return render(response, 'map/classes.html', {})
+        user = request.user
+        if(user.is_authenticated):
+            schedule = ScheduleModel(user = user)
+            schedule.save()
+            for class_id in classList:
+                    class_to_add = ClassModel.objects.get(pk=class_id)
+                    schedule.courses.add(class_to_add)
+                    print(class_to_add)
+                #response.user.schedule.add(class_to_add)
+    return render(request, 'map/classes.html', {})
 
 
 

@@ -35,7 +35,7 @@ class CourseModel(models.Model):
     classCode = models.IntegerField()#seperated to be able to search by department
 class ScheduleModel(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    courses = models.ManyToManyField(CourseModel,blank=True,related_name="schedule")
+    courses = models.ManyToManyField(ClassModel,blank=True,related_name="schedule", null=True)
 
 # @receiver(post_save, sender=User)
 # def create_user_schedule(sender, instance, created, **kwargs):
