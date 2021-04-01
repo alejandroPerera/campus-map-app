@@ -2,3 +2,7 @@
 
 # PyCharm stuff
 .idea/
+
+# Pychache
+__pychache__/
+/__pychache__/
