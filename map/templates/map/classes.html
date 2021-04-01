@@ -1,13 +1,15 @@
 {% if classR|length > 0 %}
         <form action="{% url 'map:addClass' %}" method="post">
                 {% csrf_token %}
-                <ul>
+                <ul class="list-group">
                 {%for class in classR%}
                    <li class="list-group-item d-flex bd-highlight">
-                           <div class="p-2 flex-grow-1 bd-highlight">{{class}}</div>
+                           <div class="p-2 flex-grow-1 bd-highlight">
+                                   <p>{{class}}</p>
+                                   {{class.class_room }}
+                           </div>
                            <div class="p-2 bd-highlight"><button type="submit" name='add' value='add' class="btn btn-primary">Add Class</button></div>
                    </li>
-
                 {% endfor %}
                 </ul>
         </form>
