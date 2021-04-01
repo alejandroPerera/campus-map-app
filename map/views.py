@@ -1,3 +1,4 @@
+from django.db.models import Q, QuerySet
 from django.views import generic
 from django.shortcuts import render
 from django.contrib.auth.models import User
@@ -112,19 +113,24 @@ def parse_classes(search_input):
 
 def get_class_model_results(request):
     if request.method == 'POST':
-        pass
         # Looks for a series of letters, followed by a series of numbers followed by another series of numbers
         query = parse_classes(request.POST.get('search-terms'))
         class_number = query[0]
         class_mnemonic = query[1]
         course_number = query[2]
         class_section = query[3]
-        results = ClassModel.objects.filter(
-            class_number=class_number,
-            class_mnemonic=class_mnemonic,
-            course_number=course_number,
-            class_section=class_section
-        )
+
+        # Creates a filter chain from the results of the parsing. Should strip out
+        # anything not relevant
+        results = ClassModel.objects
+        if class_number is not None:
+            results = results.filter(class_number=class_number)
+        if class_mnemonic is not None:
+            results = results.filter(class_mnemonic=class_mnemonic)
+        if course_number is not None:
+            results = results.filter(course_number=course_number)
+        if class_section is not None:
+            results = results.filter(class_section=class_section)
 
         return render(request, 'map/classes.html', {'classR': results})
 
