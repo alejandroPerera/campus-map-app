@@ -51,20 +51,10 @@ class GeoCode:
 class MapView(generic.FormView):
     template_name = "map/map.html"
     form_class = ScheduleForm
+    success_url = 'search'
 
-    starting_coords = [-78.510067, 38.038124]
-    # TODO: Make this an env variable
     access_token = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg'
-
-    def search_for_location(self, query) -> [GeoCode]:
-        base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
-        params = {'limit': 5,
-                  'proximity': str(self.starting_coords[0]) + ',' + str(self.starting_coords[1]),
-                  'access_token': self.access_token}
-        # Get the data from MapBox's API
-        r = requests.get(base_url + query + '.json', params=params)
-        # Parse that data into a more useful form
-        return GeoCode.get_geo_codes(r.json())
+    starting_coords = [-78.510067, 38.038124]
 
     # From : https://stackoverflow.com/questions/18232851/django-passing-variables-to-templates-from-class-based-views
     # Makes this classes global variables accessible from the templates
@@ -85,8 +75,8 @@ def get_search_results(request):
         if form.is_valid():
             base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
             params = {'limit': 5,
-                    'proximity': str(starting_coords[0]) + ',' + str(starting_coords[1]),
-                    'access_token': access_token}
+                      'proximity': str(starting_coords[0]) + ',' + str(starting_coords[1]),
+                      'access_token': access_token}
             # Get the data from MapBox's API
             r = requests.get(base_url + form.cleaned_data['search'] + '.json', params=params)
             # Parse that data into a more useful form
@@ -95,15 +85,19 @@ def get_search_results(request):
             return render(request, 'map/schedule.html', {'results': results})
     else:
         # Return nothing? No
-        return render('map/schedule.html', {'results': ['Invalid Search']})
+        return render(request, 'map/schedule.html', {'results': []})
 
-def get_classModel_results(response):
-    if response.POST.get('class_mnemonic'):
-        query = response.POST.get('class_mnemonic')
+
+def get_class_model_results(request):
+    if request.method == 'POST':
+        pass
+    if request.POST.get('class_mnemonic'):
+        query = request.POST.get('class_mnemonic')
         classR = ClassModel.objects.filter(class_mnemonic=query)
-        return render(response, 'map/classes.html', {'classR': classR})
+        return render(request, 'map/classes.html', {'classR': classR})
     else:
-        return render(response, 'map/classes.html', {})
+        return render(request, 'map/classes.html', {})
+
 
 def add_class(request):
     if request.method == 'POST':
@@ -111,18 +105,16 @@ def add_class(request):
         print('result:')
         print(classList)
         user = request.user
-        if(user.is_authenticated):
-            #if a schedule already exists
-            schedule = ScheduleModel(user = user)
+        if (user.is_authenticated):
+            # if a schedule already exists
+            schedule = ScheduleModel(user=user)
             schedule.save()
             for class_id in classList:
-                    class_to_add = ClassModel.objects.get(pk=class_id)
-                    schedule.courses.add(class_to_add)
-                    print(class_to_add)
-                #response.user.schedule.add(class_to_add)
+                class_to_add = ClassModel.objects.get(pk=class_id)
+                schedule.courses.add(class_to_add)
+                print(class_to_add)
+            # response.user.schedule.add(class_to_add)
     return render(request, 'map/map.html', {})
-
-
 
 # def update_schedule(request, user_id):
 #     user = User.objects.get(pk=user_id)

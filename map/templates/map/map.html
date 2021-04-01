@@ -53,7 +53,7 @@
         <a href = "{% url 'account_logout'%}"> Click here to logout</a>
 {% endif %}
     <!-- Builds from the ScheduleForm class -->
-    <form action="{% url 'map:search' %}" method="post">
+    <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
         <button type="submit", name='searchBuilding', value='searchBuilding', class="btn btn-success">Search</button>
