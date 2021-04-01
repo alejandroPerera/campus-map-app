@@ -114,6 +114,8 @@ def add_class(response):
                 class_to_add = ClassModel.objects.get(pk=class_id)
                 print(class_to_add)
                 response.user.schedule.add(class_to_add)
+    for c in response.user.schedule.all():
+        print(c)
     return render(response, 'map/classes.html', {})
 
 

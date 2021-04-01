@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ClassModel, CourseModel, ScheduleModel
+from .models import ClassModel
 
 
 class ClassAdmin(admin.ModelAdmin):
@@ -8,5 +8,3 @@ class ClassAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(ClassModel, ClassAdmin)
-admin.site.register(CourseModel)
-admin.site.register(ScheduleModel)
