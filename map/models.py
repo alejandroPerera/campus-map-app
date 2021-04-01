@@ -23,10 +23,13 @@ class ClassModel(models.Model):
     # TODO: Make this refer to an instance of ClassModel
     # class_combined_with = models.ForeignKey("ClassModel", on_delete=models.PROTECT, blank=True, null=True)
     class_description = models.CharField(max_length=2000)
-    #Has-many relationship 
+    #Has-many relationship
     user = models.ManyToManyField(User, related_name='schedule')
 
     def __str__(self):
         return str(self.class_mnemonic) + " " + str(self.course_number) + "-" + str(self.class_section)
 
 
+class ScheduleModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    courses = models.ManyToManyField(ClassModel, blank=True, related_name="schedule", null=True)
