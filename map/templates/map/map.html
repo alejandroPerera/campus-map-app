@@ -83,7 +83,7 @@
 
     <form action="{% url 'map:searchForClassModel' %}" method="post">
         {% csrf_token %}
-        <input type='text' name='class_mnemonic' value='{{ query }}'>
+        <input type='text' name='search-terms' value='{{ query }}'>
         <button type="submit" name='searchClass' value ='searchClass' class="btn btn-dark">Search Class</button>
     </form>
 {% endblock %}

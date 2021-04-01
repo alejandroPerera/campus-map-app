@@ -1,4 +1,6 @@
 from django.test import TestCase
+from django.urls import reverse
+
 from .views import *
 import json
 
@@ -29,6 +31,62 @@ class GeoCodeTests(TestCase):
     def test_get_search_results(self):
         query = 'rice'
         response = self.client.post(reverse('map:search'), data={'search': query})
-        print(response)
 
         self.assertEqual(response.status_code, 200, "Response code is not 200")
+
+
+class SearchTests(TestCase):
+
+    def test_parse_classes(self):
+        search_term = '15927 CS 3240 001'
+        query = parse_classes(search_term)
+
+        self.assertEqual(query[0], '15927')
+        self.assertEqual(query[1], 'CS')
+        self.assertEqual(query[2], '3240')
+        self.assertEqual(query[3], '001')
+
+    def test_parse_classes_only_class_number(self):
+        search_term = '15927'
+        query = parse_classes(search_term)
+
+        self.assertEqual(query[0], '15927')
+        self.assertEqual(query[1], None)
+        self.assertEqual(query[2], None)
+        self.assertEqual(query[3], None)
+
+    def test_parse_classes_only_mnemonic(self):
+        search_term = 'CS'
+        query = parse_classes(search_term)
+
+        self.assertEqual(query[0], None)
+        self.assertEqual(query[1], 'CS')
+        self.assertEqual(query[2], None)
+        self.assertEqual(query[3], None)
+
+    def test_parse_classes_only_course_number(self):
+        search_term = '3240'
+        query = parse_classes(search_term)
+
+        self.assertEqual(query[0], None)
+        self.assertEqual(query[1], None)
+        self.assertEqual(query[2], '3240')
+        self.assertEqual(query[3], None)
+
+    def test_parse_classes_only_section_number(self):
+        search_term = '001'
+        query = parse_classes(search_term)
+
+        self.assertEqual(query[0], None)
+        self.assertEqual(query[1], None)
+        self.assertEqual(query[2], None)
+        self.assertEqual(query[3], '001')
+
+    def test_parse_classes_garbage_in(self):
+        search_term = 'ytredghfrdghjuytresxbju'
+        query = parse_classes(search_term)
+
+        self.assertEqual(query[0], None)
+        self.assertEqual(query[1], None)
+        self.assertEqual(query[2], None)
+        self.assertEqual(query[3], None)

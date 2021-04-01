@@ -1,13 +1,11 @@
-from django.http import HttpResponse
-from django.urls import reverse
 from django.views import generic
-from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from .forms import ScheduleForm
 import requests
 import json
 from .models import ClassModel, ScheduleModel
+import re
 
 
 # Create your views here.
@@ -88,13 +86,48 @@ def get_search_results(request):
         return render(request, 'map/schedule.html', {'results': []})
 
 
+def parse_classes(search_input):
+    """ Returns an array of the [Class number, class mnemonic, course number, class section] with None
+    if that part could not be found """
+    # Looks for a series of letters, followed by a series of numbers followed by another series of numbers
+    result = re.search('[0-9]*\s*[a-zA-Z]*\s*[0-9]*\s*[0-9]*', search_input)
+    if result:
+        output = [None, None, None, None]
+        array = result.group().split()
+        for element in array:
+            if element.isalpha() and 2 <= len(element) <= 4:  # This must be the mnemonic
+                output[1] = element
+            else:  # Must be a number
+                if len(element) == 5:  # Must be the class number
+                    output[0] = element
+                if len(element) == 4:  # Must be the course number
+                    output[2] = element
+                if len(element) <= 3:  # Must be the section number
+                    output[3] = element
+
+        return output
+    else:
+        return [None, None, None, None]
+
+
 def get_class_model_results(request):
     if request.method == 'POST':
         pass
-    if request.POST.get('class_mnemonic'):
-        query = request.POST.get('class_mnemonic')
-        classR = ClassModel.objects.filter(class_mnemonic=query)
-        return render(request, 'map/classes.html', {'classR': classR})
+        # Looks for a series of letters, followed by a series of numbers followed by another series of numbers
+        query = parse_classes(request.POST.get('search-terms'))
+        class_number = query[0]
+        class_mnemonic = query[1]
+        course_number = query[2]
+        class_section = query[3]
+        results = ClassModel.objects.filter(
+            class_number=class_number,
+            class_mnemonic=class_mnemonic,
+            course_number=course_number,
+            class_section=class_section
+        )
+
+        return render(request, 'map/classes.html', {'classR': results})
+
     else:
         return render(request, 'map/classes.html', {})
 

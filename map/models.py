@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User, AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+
 # Create your models here.
 
 
@@ -29,9 +31,10 @@ class ClassModel(models.Model):
     def __str__(self):
         return str(self.class_mnemonic) + " " + str(self.course_number) + "-" + str(self.class_section)
 
+
 class ScheduleModel(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
-    courses = models.ManyToManyField(ClassModel,blank=True,related_name="schedule", null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    courses = models.ManyToManyField(ClassModel, blank=True, related_name="schedule", null=True)
 
 # @receiver(post_save, sender=User)
 # def create_user_schedule(sender, instance, created, **kwargs):
