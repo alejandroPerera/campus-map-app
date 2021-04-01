@@ -53,7 +53,7 @@
         <a href = "{% url 'account_logout'%}"> Click here to logout</a>
 {% endif %}
     <!-- Builds from the ScheduleForm class -->
-    <form method="post">
+    <form id="location-search" method="post">
         {% csrf_token %}
         {{ form|crispy }}
         <button type="submit", name='searchBuilding', value='searchBuilding', class="btn btn-success">Search</button>
@@ -77,13 +77,13 @@
         </script>
 
     </form>
-    <!-- To be overwritten by the search function-->
-    <div id="results"></div>
-
 
     <form action="{% url 'map:searchForClassModel' %}" method="post">
         {% csrf_token %}
         <input type='text' name='search-terms' value='{{ query }}'>
         <button type="submit" name='searchClass' value ='searchClass' class="btn btn-dark">Search Class</button>
     </form>
+
+    <!-- To be overwritten by the search function-->
+    <div id="results"></div>
 {% endblock %}

@@ -1,7 +1,5 @@
-from django.db.models import Q, QuerySet
 from django.views import generic
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from .forms import ScheduleForm
 import requests
 import json
@@ -113,7 +111,6 @@ def parse_classes(search_input):
 
 def get_class_model_results(request):
     if request.method == 'POST':
-        # Looks for a series of letters, followed by a series of numbers followed by another series of numbers
         query = parse_classes(request.POST.get('search-terms'))
         class_number = query[0]
         class_mnemonic = query[1]
@@ -140,15 +137,15 @@ def get_class_model_results(request):
 
 def add_class(request):
     if request.method == 'POST':
-        classList = request.POST.getlist('clicked')
+        class_list = request.POST.getlist('clicked')
         print('result:')
-        print(classList)
+        print(class_list)
         user = request.user
-        if (user.is_authenticated):
+        if user.is_authenticated:
             # if a schedule already exists
             schedule = ScheduleModel(user=user)
             schedule.save()
-            for class_id in classList:
+            for class_id in class_list:
                 class_to_add = ClassModel.objects.get(pk=class_id)
                 schedule.courses.add(class_to_add)
                 print(class_to_add)
