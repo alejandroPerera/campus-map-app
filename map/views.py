@@ -25,11 +25,13 @@ class GeoCode:
         self.query = data.get('query')
         self.coordinates = [data.get('features')[0].get('center')[0], data.get('features')[0].get('center')[1]]
         self.name = data.get('features')[0].get('text')
+        self.location = data.get('features')[0].get('place_name')
 
-    def __init__(self, query, coordinates, name):
+    def __init__(self, query, coordinates, name, location_name):
         self.query = query
         self.coordinates = coordinates
         self.name = name
+        self.location_name = location_name
 
     @staticmethod
     def get_geo_codes(data):
@@ -40,7 +42,8 @@ class GeoCode:
         for result in results:
             coordinates = [result.get('center')[0], result.get('center')[1]]
             name = result.get('text')
-            output.append(GeoCode(query, coordinates, name))
+            location_name = result.get('place_name')
+            output.append(GeoCode(query, coordinates, name, location_name))
 
         return output
 
