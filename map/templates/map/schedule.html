@@ -1,6 +1,6 @@
 <!-- Display a list of the results -->
 {% if results|length > 0 %}
-    <ul class="list-group overflow-auto" style="height: 400px">
+    <ul class="list-group overflow-auto">
         {% for r in results %}
             <a id="search-result" href="#" class="list-group-item list-group-item-action">{{ r.name }}</a>
             <!-- Listener for when the button is clicked. Will add that marker to the map -->

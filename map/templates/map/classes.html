@@ -1,14 +1,16 @@
 {% if classR|length > 0 %}
         <form action="{% url 'map:addClass' %}" method="post">
                 {% csrf_token %}
-                <ul class="list-group">
-                {%for class in classR%}
-                   <li class="list-group-item d-flex bd-highlight">
-                           <div class="p-2 flex-grow-1 bd-highlight">
+                <ul class="list-group overflow-auto">
+                {% for class in classR %}
+                   <li class="list-group-item d-flex">
+                           <div class="p-2 flex-grow-1">
                                    <p>{{class}}</p>
                                    {{class.class_room }}
                            </div>
-                           <div class="p-2 bd-highlight"><button type="submit" name='add' value='add' class="btn btn-primary">Add Class</button></div>
+                           <div class="p-2 bd-highlight">
+                                   <button type="submit" name='add' value='add' class="btn btn-primary">Add Class</button>
+                           </div>
                    </li>
                 {% endfor %}
                 </ul>

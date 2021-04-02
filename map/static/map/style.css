@@ -23,7 +23,7 @@ height: 100%;
 background: rgb(225,225,225);
 }
 
-#results .list-group{
-height: 200px;
-overflow-y: hidden;
+#results .list-group {
+height: 530px;
+overflow-y: scroll;
 }

@@ -32,4 +32,4 @@ class ClassModel(models.Model):
 
 class ScheduleModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    courses = models.ManyToManyField(ClassModel, blank=True, related_name="schedule", null=True)
+    courses = models.ManyToManyField(ClassModel, blank=True, related_name="schedule")

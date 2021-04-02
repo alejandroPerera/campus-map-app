@@ -48,7 +48,6 @@ class GeoCode:
 class MapView(generic.FormView):
     template_name = "map/map.html"
     form_class = ScheduleForm
-    success_url = 'search'
 
     access_token = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg'
     starting_coords = [-78.510067, 38.038124]
@@ -95,7 +94,9 @@ def parse_classes(search_input):
         array = result.group().split()
         for element in array:
             if element.isalpha() and 2 <= len(element) <= 4:  # This must be the mnemonic
-                output[1] = element
+                mnemonic = ClassModel.objects.filter(class_mnemonic=element)
+                if mnemonic.exists():
+                    output[1] = element
             else:  # Must be a number
                 if len(element) == 5:  # Must be the class number
                     output[0] = element
@@ -109,30 +110,48 @@ def parse_classes(search_input):
         return [None, None, None, None]
 
 
-def get_class_model_results(request):
+def get_class_search_results(request):
+    access_token = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg'
+    starting_coords = [-78.510067, 38.038124]
+
     if request.method == 'POST':
-        query = parse_classes(request.POST.get('search-terms'))
-        class_number = query[0]
-        class_mnemonic = query[1]
-        course_number = query[2]
-        class_section = query[3]
+        form = ScheduleForm(request.POST)  # generate the form from the data supplied
 
-        # Creates a filter chain from the results of the parsing. Should strip out
-        # anything not relevant
-        results = ClassModel.objects
-        if class_number is not None:
-            results = results.filter(class_number=class_number)
-        if class_mnemonic is not None:
-            results = results.filter(class_mnemonic=class_mnemonic)
-        if course_number is not None:
-            results = results.filter(course_number=course_number)
-        if class_section is not None:
-            results = results.filter(class_section=class_section)
+        if form.is_valid():
+            query = parse_classes(form.cleaned_data['search'])
+            class_number = query[0]
+            class_mnemonic = query[1]
+            course_number = query[2]
+            class_section = query[3]
 
-        return render(request, 'map/classes.html', {'classR': results})
+            if query == [None, None, None, None]:
+                base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
+                params = {'limit': 5,
+                          'proximity': str(starting_coords[0]) + ',' + str(starting_coords[1]),
+                          'access_token': access_token}
+                # Get the data from MapBox's API
+                r = requests.get(base_url + form.cleaned_data['search'] + '.json', params=params)
+                # Parse that data into a more useful form
+                results = GeoCode.get_geo_codes(r.json())
+
+                return render(request, 'map/schedule.html', {'results': results})
+
+            # Creates a filter chain from the results of the parsing. Should strip out
+            # anything not relevant
+            results = ClassModel.objects
+            if class_number is not None:
+                results = results.filter(class_number=class_number)
+            if class_mnemonic is not None:
+                results = results.filter(class_mnemonic=class_mnemonic)
+            if course_number is not None:
+                results = results.filter(course_number=course_number)
+            if class_section is not None:
+                results = results.filter(class_section=class_section)
+
+            return render(request, 'map/classes.html', {'classR': results})
 
     else:
-        return render(request, 'map/classes.html', {})
+        return render(request, 'map/classes.html', {'classR': []})
 
 
 def add_class(request):

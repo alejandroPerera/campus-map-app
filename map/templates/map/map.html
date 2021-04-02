@@ -53,10 +53,10 @@
         <a href = "{% url 'account_logout'%}"> Click here to logout</a>
 {% endif %}
     <!-- Builds from the ScheduleForm class -->
-    <form id="location-search" method="post">
+    <form action="{% url 'map:search' %}" id="location-search" method="post">
         {% csrf_token %}
         {{ form|crispy }}
-        <button type="submit", name='searchBuilding', value='searchBuilding', class="btn btn-success">Search</button>
+        <button type="submit" class="btn btn-success">Search</button>
 
         <!-- From: https://stackoverflow.com/questions/17599035/django-how-can-i-call-a-view-function-from-template-->
         <!-- Using AJAX to load the data without refreshing the page -->
@@ -72,16 +72,15 @@
                          data: $('form').serialize(), // serialize converts the form inputs into the url
                          success: function(data){ $('#results').html(data) }
                      });
+
+                     // Resize the results page?
+                     //$('#results .list-group').css({
+                     //   'height: ' $('#schedule-col').height() - $('#location-search').height() + 'px;'
+                     //});
                  });
             });
         </script>
 
-    </form>
-
-    <form action="{% url 'map:searchForClassModel' %}" method="post">
-        {% csrf_token %}
-        <input type='text' name='search-terms' value='{{ query }}'>
-        <button type="submit" name='searchClass' value ='searchClass' class="btn btn-dark">Search Class</button>
     </form>
 
     <!-- To be overwritten by the search function-->
