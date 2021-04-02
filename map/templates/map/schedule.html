@@ -2,7 +2,15 @@
 {% if results|length > 0 %}
     <ul class="list-group overflow-auto">
         {% for r in results %}
-            <a id="search-result" href="#" class="list-group-item list-group-item-action">{{ r.location_name }}</a>
+            <li class="list-group-item d-flex">
+                <div class="p-2 flex-grow-1 overflow-hidden">
+                       {{ r.location_name }}
+               </div>
+               <div class="p-2 bd-highlight">
+                       <button type="submit" id="search-result" class="btn btn-primary">Show Marker</button>
+               </div>
+
+            </li>
             <!-- Listener for when the button is clicked. Will add that marker to the map -->
             <script>
                 $('#search-result').on('click', function(e){
