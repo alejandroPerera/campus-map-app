@@ -131,6 +131,7 @@ def get_class_search_results(request):
                 base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
                 params = {'limit': 5,
                           'proximity': str(starting_coords[0]) + ',' + str(starting_coords[1]),
+                          'bbox': '-78.526434,38.028392,-78.475622,38.055975',
                           'access_token': access_token}
                 # Get the data from MapBox's API
                 r = requests.get(base_url + form.cleaned_data['search'] + '.json', params=params)
