@@ -9,14 +9,16 @@
                     var name = $(this).attr("name");
                     //console.log(coords);
 
-                      // make a marker for each feature and add to the map
-                      var marker = new mapboxgl.Marker()
-                        .setLngLat(coords)
-                        .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                            .setHTML('<p>' + name + '</p>'))
-                        .addTo(map);
+                    if (!isNaN(coords[0]) && !isNaN(coords[1])) {
+                        // make a marker for each feature and add to the map
+                        var marker = new mapboxgl.Marker()
+                          .setLngLat(coords)
+                          .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+                              .setHTML('<p>' + name + '</p>'))
+                          .addTo(map);
 
-                      allMarkers.push(marker);
+                        allMarkers.push(marker);
+                    }
                 }
 
                 function testClick(e) {

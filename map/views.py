@@ -150,12 +150,19 @@ def get_class_search_results(request):
 
             output = []
             for r in results:
-                # Searches for the building after removing any room numbers
-                search_results = get_search_results(re.sub('\d', '', r.class_room))
-                if len(search_results) != 0:
-                    coords = search_results[0].coordinates
+                # Don't use the search API if we know it won't return anything
+                if r.class_room != 'Web-Based Course-No class mtgs' \
+                        and r.class_room != 'Web-Based Course' \
+                        and r.class_room != 'TBA':
+                    # Searches for the building after removing any room numbers
+                    search_results = get_search_results(re.sub('\d', '', r.class_room))
+                    if len(search_results) != 0:
+                        coords = search_results[0].coordinates
+                    else:
+                        coords = None
                 else:
                     coords = None
+
                 output.append(SearchResult(r.__str__(), r.class_room, coords))
 
             return render(request, 'map/classes.html', {'classR': output})
