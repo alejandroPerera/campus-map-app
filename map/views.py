@@ -101,6 +101,7 @@ def parse_classes(search_input):
         array = result.group().split()
         for element in array:
             if element.isalpha() and 2 <= len(element) <= 4:  # This must be the mnemonic
+                element = element.upper()
                 mnemonic = ClassModel.objects.filter(class_mnemonic=element)
                 if mnemonic.exists():
                     output[1] = element

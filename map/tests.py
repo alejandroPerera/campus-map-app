@@ -130,3 +130,12 @@ class SearchTests(TestCase):
         self.assertEqual(query[1], None)
         self.assertEqual(query[2], None)
         self.assertEqual(query[3], None)
+
+    def test_parse_classes_mnemonic_lowercase(self):
+        search_term = 'cs'
+        query = parse_classes(search_term)
+
+        self.assertEqual(query[0], None)
+        self.assertEqual(query[1], 'CS')
+        self.assertEqual(query[2], None)
+        self.assertEqual(query[3], None)
