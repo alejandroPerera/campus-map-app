@@ -10,14 +10,33 @@
             var name = $(this).attr("name");
             //console.log(coords);
 
-              // make a marker for each feature and add to the map
-              var marker = new mapboxgl.Marker()
-                .setLngLat(coords)
-                .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                    .setHTML('<p>' + name + '</p>'))
-                .addTo(map);
+            if (!isNaN(coords[0]) && !isNaN(coords[1])) {
+                // make a marker for each feature and add to the map
+                var marker = new mapboxgl.Marker()
+                  .setLngLat(coords)
+                  .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+                      .setHTML('<p>' + name + '</p>'))
 
-              allMarkers.push(marker);
+                var i;
+                for (i = 0; i < allMarkers.length; i++) {
+                    if (allMarkers[i].getLngLat().toString() === marker.getLngLat().toString()) {
+                        // The marker is in the array
+                        console.log("Marker is already in the map");
+                        return; // exit the function
+                    }
+                }
+
+                marker.addTo(map);
+
+                marker.getElement().addEventListener('contextmenu', function(e) {
+                    marker.remove();
+                    allMarkers.splice(allMarkers.indexOf(marker), 1);
+                    console.log("Removed marker");
+                });
+
+                allMarkers.push(marker);
+                console.log("Marker added");
+            }
         }
 
         function testClick(e) {
