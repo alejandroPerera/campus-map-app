@@ -24,6 +24,6 @@ background: rgb(225,225,225);
 }
 
 #results .list-group {
-height: 530px;
+height: 400px;
 overflow-y: scroll;
 }

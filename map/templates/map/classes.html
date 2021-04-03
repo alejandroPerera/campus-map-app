@@ -1,16 +1,43 @@
 {% if classR|length > 0 %}
+        <script>
+                searchClick = function(e) {
+                    console.log("Pin button clicked");
+                    var value = $(this).attr("value");
+                    // Convert from string to int array
+                    let split = value.split(/[\[\], ]/);
+                    let coords = [parseFloat(split[1]), parseFloat(split[3])];
+                    var name = $(this).attr("name");
+                    //console.log(coords);
+
+                      // make a marker for each feature and add to the map
+                      var marker = new mapboxgl.Marker()
+                        .setLngLat(coords)
+                        .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+                            .setHTML('<p>' + name + '</p>'))
+                        .addTo(map);
+
+                      allMarkers.push(marker);
+                }
+
+                function testClick(e) {
+                    console.log("Button clicked");
+                }
+        </script>
         <form action="{% url 'map:addClass' %}" method="post">
                 {% csrf_token %}
                 <ul class="list-group overflow-auto">
                 {% for class in classR %}
                    <li class="list-group-item d-flex">
                            <div class="p-2 flex-grow-1">
-                                   <p>{{class}}</p>
+                                   <p>{{class.class_name }}</p>
                                    {{class.class_room }}
                            </div>
                            <div class="p-2 bd-highlight">
-                                   <button type="submit" name='add-class' class="btn btn-primary">Add Class</button>
-                                   <button id="add-marker" name='add-marker' class="btn btn-success">Show On Map</button>
+                                   <button type="submit" name='add-class' class="btn btn-success">Add Class</button>
+                                   <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-primary">Show On Map</button>
+                                   <script>
+                                        $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
+                                    </script>
                            </div>
                    </li>
                 {% endfor %}

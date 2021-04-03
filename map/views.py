@@ -48,6 +48,17 @@ class GeoCode:
         return output
 
 
+class SearchResult:
+
+    def __init__(self, class_name, class_room, class_loc_coords):
+        self.class_name = class_name
+        self.class_room = class_room
+        self.class_loc_coords = class_loc_coords
+
+    def __str__(self):
+        return self.class_name
+
+
 class MapView(generic.FormView):
     template_name = "map/map.html"
     form_class = ScheduleForm
@@ -64,27 +75,20 @@ class MapView(generic.FormView):
 
 
 # Returns search results
-def get_search_results(request):
+def get_search_results(query):
     # Make this not stored here...
     access_token = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg'
     starting_coords = [-78.510067, 38.038124]
 
-    if request.method == 'POST':
-        form = ScheduleForm(request.POST)  # generate the form from the data supplied
-        if form.is_valid():
-            base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
-            params = {'limit': 5,
-                      'proximity': str(starting_coords[0]) + ',' + str(starting_coords[1]),
-                      'access_token': access_token}
-            # Get the data from MapBox's API
-            r = requests.get(base_url + form.cleaned_data['search'] + '.json', params=params)
-            # Parse that data into a more useful form
-            results = GeoCode.get_geo_codes(r.json())
-
-            return render(request, 'map/schedule.html', {'results': results})
-    else:
-        # Return nothing? No
-        return render(request, 'map/schedule.html', {'results': []})
+    base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
+    params = {'limit': 5,
+              'proximity': str(starting_coords[0]) + ',' + str(starting_coords[1]),
+              'bbox': '-78.526434,38.028392,-78.475622,38.055975',
+              'access_token': access_token}
+    # Get the data from MapBox's API
+    r = requests.get(base_url + query + '.json', params=params)
+    # Parse that data into a more useful form
+    return GeoCode.get_geo_codes(r.json())
 
 
 def parse_classes(search_input):
@@ -128,15 +132,7 @@ def get_class_search_results(request):
             class_section = query[3]
 
             if query == [None, None, None, None]:
-                base_url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
-                params = {'limit': 5,
-                          'proximity': str(starting_coords[0]) + ',' + str(starting_coords[1]),
-                          'bbox': '-78.526434,38.028392,-78.475622,38.055975',
-                          'access_token': access_token}
-                # Get the data from MapBox's API
-                r = requests.get(base_url + form.cleaned_data['search'] + '.json', params=params)
-                # Parse that data into a more useful form
-                results = GeoCode.get_geo_codes(r.json())
+                results = get_search_results(form.cleaned_data['search'])
 
                 return render(request, 'map/schedule.html', {'results': results})
 
@@ -152,7 +148,17 @@ def get_class_search_results(request):
             if class_section is not None:
                 results = results.filter(class_section=class_section)
 
-            return render(request, 'map/classes.html', {'classR': results})
+            output = []
+            for r in results:
+                # Searches for the building after removing any room numbers
+                search_results = get_search_results(re.sub('\d', '', r.class_room))
+                if len(search_results) != 0:
+                    coords = search_results[0].coordinates
+                else:
+                    coords = None
+                output.append(SearchResult(r.__str__(), r.class_room, coords))
+
+            return render(request, 'map/classes.html', {'classR': output})
 
     else:
         return render(request, 'map/classes.html', {'classR': []})
