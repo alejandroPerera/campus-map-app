@@ -37,7 +37,8 @@ class GeoCodeTests(TestCase):
 
 class SearchTests(TestCase):
 
-    def setUp(self) -> None:
+    @classmethod
+    def setUpTestData(cls):
         print('Creating test database objects')
         ClassModel.objects.create(
             class_number=15927,  # This is the 5 digit unique class ID. Ex: 15927
