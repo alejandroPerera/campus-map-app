@@ -30,6 +30,3 @@ class ClassModel(models.Model):
         return str(self.class_mnemonic) + " " + str(self.course_number) + "-" + str(self.class_section)
 
 
-class ScheduleModel(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    courses = models.ManyToManyField(ClassModel, blank=True, related_name="schedule")

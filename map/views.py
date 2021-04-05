@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .forms import ScheduleForm
 import requests
 import json
-from .models import ClassModel, ScheduleModel
+from .models import ClassModel
 import re
 
 
@@ -50,10 +50,11 @@ class GeoCode:
 
 class SearchResult:
 
-    def __init__(self, class_name, class_room, class_loc_coords):
+    def __init__(self, class_name, class_room, class_loc_coords, class_id):
         self.class_name = class_name
         self.class_room = class_room
         self.class_loc_coords = class_loc_coords
+        self.class_id = class_id
 
     def __str__(self):
         return self.class_name
@@ -164,7 +165,7 @@ def get_class_search_results(request):
                 else:
                     coords = None
 
-                output.append(SearchResult(r.__str__(), r.class_room, coords))
+                output.append(SearchResult(r.__str__(), r.class_room, coords, r.id))
 
             return render(request, 'map/classes.html', {'classR': output})
 
@@ -174,23 +175,16 @@ def get_class_search_results(request):
 
 def add_class(request):
     if request.method == 'POST':
-        class_list = request.POST.getlist('clicked')
-        print('result:')
-        print(class_list)
+        class_id= request.POST.get('add-class')
         user = request.user
         if user.is_authenticated:
             # if a schedule already exists
-            schedule = ScheduleModel(user=user)
-            schedule.save()
-            for class_id in class_list:
-                class_to_add = ClassModel.objects.get(pk=class_id)
-                schedule.courses.add(class_to_add)
-                print(class_to_add)
-            # response.user.schedule.add(class_to_add)
+            class_to_add = ClassModel.objects.get(pk=class_id)
+            user.schedule.add(class_to_add)
+        print("Actual Schedule: \n")
+        #For testing, prints user associated classes in terminal
+        for c in user.schedule.all():
+            print(c)
     return render(request, 'map/map.html', {})
 
-# def update_schedule(request, user_id):
-#     user = User.objects.get(pk=user_id)
-#     courses = get_classModel_results(request)
-#
-#     user.save()
+
