@@ -51,6 +51,11 @@
 {% if user.is_authenticated %}
         <p>Welcome, {{ user.username }} !</p>
         <a href = "{% url 'account_logout'%}"> Click here to logout</a>
+        <ul>
+            {% for class in user.schedule.all %}
+                <li>{{class}}</li>
+            {% endfor %}
+        </ul>
 {% endif %}
     <div id="schedule-instructions">
         To display information about each location on the map, left click its marker.

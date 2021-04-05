@@ -185,6 +185,7 @@ def add_class(request):
         #For testing, prints user associated classes in terminal
         for c in user.schedule.all():
             print(c)
+        schedule = user.schedule.all()
     return render(request, 'map/map.html', {})
 
 
