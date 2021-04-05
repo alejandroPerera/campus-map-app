@@ -1,0 +1,67 @@
+{% if classR|length > 0 %}
+        <script>
+                searchClick = function(e) {
+                    console.log("Pin button clicked");
+                    var value = $(this).attr("value");
+                    // Convert from string to int array
+                    let split = value.split(/[\[\], ]/);
+                    let coords = [parseFloat(split[1]), parseFloat(split[3])];
+                    var name = $(this).attr("name");
+                    //console.log(coords);
+
+                    if (!isNaN(coords[0]) && !isNaN(coords[1])) {
+                        // make a marker for each feature and add to the map
+                        var marker = new mapboxgl.Marker({color: "#ff0000"})
+                          .setLngLat(coords)
+                          .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+                              .setHTML('<p>' + name + '</p>'))
+
+                        var i;
+                        for (i = 0; i < allMarkers.length; i++) {
+                            if (allMarkers[i].getLngLat().toString() === marker.getLngLat().toString()) {
+                                // The marker is in the array
+                                console.log("Marker is already in the map");
+                                return; // exit the function
+                            }
+                        }
+
+                        marker.addTo(map);
+
+                        marker.getElement().addEventListener('contextmenu', function(e) {
+                            marker.remove();
+                            allMarkers.splice(allMarkers.indexOf(marker), 1);
+                            console.log("Removed marker");
+                        });
+
+                        allMarkers.push(marker);
+                        console.log("Marker added");
+                    }
+                }
+
+                function testClick(e) {
+                    console.log("Button clicked");
+                }
+        </script>
+        <form action="{% url 'map:addClass' %}" method="post">
+                {% csrf_token %}
+                <ul class="list-group overflow-auto">
+                {% for class in classR %}
+                   <li class="list-group-item d-flex">
+                           <div class="p-2 flex-grow-1">
+                                   <p>{{class.class_name }}</p>
+                                   {{class.class_room }}
+                           </div>
+                           <div class="p-2 bd-highlight">
+                                   <button type="submit" name='add-class' value='{{class.class_id}}' class="btn btn-success">Add Class</button>
+                                   <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-primary">Show On Map</button>
+                                   <script>
+                                        $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
+                                    </script>
+                           </div>
+                   </li>
+                {% endfor %}
+                </ul>
+        </form>
+{% else %}
+        <p>No results found</p>
+{% endif %}
