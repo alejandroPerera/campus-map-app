@@ -181,11 +181,11 @@ def add_class(request):
             # if a schedule already exists
             class_to_add = ClassModel.objects.get(pk=class_id)
             user.schedule.add(class_to_add)
-        print("Actual Schedule: \n")
-        #For testing, prints user associated classes in terminal
-        for c in user.schedule.all():
-            print(c)
-        schedule = user.schedule.all()
+            print("Actual Schedule: \n")
+            #For testing, prints user associated classes in terminal
+            for c in user.schedule.all():
+                print(c)
+            schedule = user.schedule.all()
     return render(request, 'map/map.html', {})
 
 
