@@ -48,19 +48,28 @@
     </script>
 {% endblock %}
 {% block schedule %}
+<div id="class-schedule-list">
 {% if user.is_authenticated %}
-        <p>Welcome, {{ user.username }} !</p>
+        <p>Welcome, {{ user.username }}!</p>
         <a href = "{% url 'account_logout'%}"> Click here to logout</a>
-        <ul>
-            {% for class in user.schedule.all %}
-                <li>{{class}}</li>
-            {% endfor %}
-        </ul>
+        {% if user.schedule.all|length > 0 %}
+        <p><b>My Classes:</b></p>
+            <ul>
+                {% for class in user.schedule.all %}
+                    <li>{{class}}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You haven't added any classes to your schedule yet
+            Search for the course number or name below.
+            </p>
+        {% endif %}
 {% endif %}
+</div>
     <div id="schedule-instructions">
         To display information about each location on the map, left click its marker.
         To remove a marker, right click on it.
-        Use the search box below to search for class or locations around UVA.
+        Use the search box below to search for classes or locations around UVA.
     </div>
     <!-- Builds from the ScheduleForm class -->
     <form action="{% url 'map:search' %}" id="location-search" method="post">

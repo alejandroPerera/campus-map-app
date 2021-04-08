@@ -27,3 +27,8 @@ background: rgb(225,225,225);
 height: 400px;
 overflow-y: scroll;
 }
+
+.delete-button {
+  background-color: red;
+  color : red;
+}

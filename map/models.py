@@ -20,6 +20,10 @@ class ClassModel(models.Model):
     class_enrollment = models.IntegerField()
     class_enrollment_limit = models.IntegerField()
     class_waitlist = models.IntegerField()
+
+    #Added to handle adding and deleting classes
+    class_id = 0
+
     # TODO: Make this refer to an instance of ClassModel
     # class_combined_with = models.ForeignKey("ClassModel", on_delete=models.PROTECT, blank=True, null=True)
     class_description = models.CharField(max_length=2000)
@@ -29,4 +33,16 @@ class ClassModel(models.Model):
     def __str__(self):
         return str(self.class_mnemonic) + " " + str(self.course_number) + "-" + str(self.class_section)
 
-
+    def __eq__(self, other):
+        if (isinstance(other, self.__class__)):
+            obj1 = str(self.class_mnemonic) + " " + str(self.course_number) + "-" + str(self.class_section)
+            obj2 = str(other.class_mnemonic) + " " + str(other.course_number) + "-" + str(other.class_section)
+            print(obj1 + " " + obj2)
+            print(obj1 == obj2)
+            return obj1 == obj2
+        else:
+            print("Not equal")
+            return False
+    
+    def __ne__(self, other):
+        return not self.__eq__(other)

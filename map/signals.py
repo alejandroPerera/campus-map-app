@@ -64,6 +64,7 @@ def add_classes(sender, **kwargs):
                     class_waitlist=row[14],
                     # class_combined_with=ClassModel(None),
                     class_description=row[16],
+                    class_id = 0,
                 )
                 # Add the row to the database
                 entry.save()

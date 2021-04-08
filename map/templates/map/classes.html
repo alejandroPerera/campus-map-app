@@ -1,3 +1,4 @@
+{% load search_list %}
 {% if classR|length > 0 %}
         <script>
                 searchClick = function(e) {
@@ -42,22 +43,25 @@
                     console.log("Button clicked");
                 }
         </script>
-        <form action="{% url 'map:addClass' %}" method="post">
+        <form action="{% url 'map:editClassList' %}" method="post">
                 {% csrf_token %}
                 <ul class="list-group overflow-auto">
                 {% for class in classR %}
                    <li class="list-group-item d-flex">
                            <div class="p-2 flex-grow-1">
-                                   <p>{{class.class_name }}</p>
-                                   {{class.class_room }}
+                                   <p>{{class.class_full_name }}</p>
                            </div>
                            <div class="p-2 bd-highlight">
+                                {% if not class|in_list:user.schedule.all %}
                                    <button type="submit" name='add-class' value='{{class.class_id}}' class="btn btn-success">Add Class</button>
-                                   <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-primary">Show On Map</button>
-                                   <script>
-                                        $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
-                                    </script>
-                           </div>
+                                {% elif class|in_list:user.schedule.all %}
+                                   <button type="submit" name='delete-class' value='{{class.class_id}}' class="btn btn-danger">Remove Class</button>
+                                {% endif %}
+                                <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-primary">Show On Map</button>
+                                <script>
+                                    $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
+                                </script>
+                            </div>
                    </li>
                 {% endfor %}
                 </ul>
