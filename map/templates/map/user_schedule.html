@@ -1,4 +1,5 @@
 {% if schedule|length > 0%}
+    <p>Class Schedule</p>
     <ul>
         {% for class in schedule %}
             <li id="user-schedule-item-{{forloop.counter0}}">{{class}}</li>

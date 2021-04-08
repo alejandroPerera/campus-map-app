@@ -53,13 +53,14 @@
         <a href = "{% url 'account_logout'%}"> Click here to logout</a>
 
 {% endif %}
+    <div id="schedule-list"></div>
     <div id="schedule-instructions">
         To display information about each location on the map, left click its marker.
         To remove a marker, right click on it.
         Use the search box below to search for class or locations around UVA.
     </div>
 
-    <div id="schedule-list"></div>
+
     <div id="search-div">
         <!-- Builds from the ScheduleForm class -->
         <form id="search-form" action="{% url 'map:search' %}" id="location-search" method="post">
