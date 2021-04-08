@@ -51,58 +51,58 @@
 {% if user.is_authenticated %}
         <p>Welcome, {{ user.username }} !</p>
         <a href = "{% url 'account_logout'%}"> Click here to logout</a>
-        <ul>
-            {% for class in user.schedule.all %}
-                <li>{{class}}</li>
-            {% endfor %}
-        </ul>
+
 {% endif %}
     <div id="schedule-instructions">
         To display information about each location on the map, left click its marker.
         To remove a marker, right click on it.
         Use the search box below to search for class or locations around UVA.
     </div>
-    <!-- Builds from the ScheduleForm class -->
-    <form action="{% url 'map:search' %}" id="location-search" method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-success">Search</button>
-        <button type="reset" class="btn btn-secondary" onclick="document.getElementById('id_search').value = ''">Clear</button>
 
-        <!-- From: https://stackoverflow.com/questions/17599035/django-how-can-i-call-a-view-function-from-template-->
-        <!-- Using AJAX to load the data without refreshing the page -->
-        <script>
-            // This will pass the form action and hopefully reload the results div with the results
-            $(function(){
-                 $('form').on('submit', function(e){
-                     e.preventDefault();
+    <div id="schedule-list"></div>
+    <div id="search-div">
+        <!-- Builds from the ScheduleForm class -->
+        <form id="search-form" action="{% url 'map:search' %}" id="location-search" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-success">Search</button>
+            <button type="reset" class="btn btn-secondary" onclick="document.getElementById('id_search').value = ''">Clear</button>
 
-                     $.ajax({
-                         url: $(this).attr('action'),
-                         method: $(this).attr('method'),
-                         data: $('form').serialize(), // serialize converts the form inputs into the url
-                         success: function(data){ $('#results').html(data) }
+            <!-- From: https://stackoverflow.com/questions/17599035/django-how-can-i-call-a-view-function-from-template-->
+            <!-- Using AJAX to load the data without refreshing the page -->
+            <script>
+                // This will pass the form action and hopefully reload the results div with the results
+                $(function(){
+                     $('#search-form').on('submit', function(e){
+                         e.preventDefault();
+
+                         $.ajax({
+                             url: $(this).attr('action'),
+                             method: $(this).attr('method'),
+                             data: $('form').serialize(), // serialize converts the form inputs into the url
+                             success: function(data){ $('#results').html(data) }
+                         });
+
+                         // Resize the results page?
+                         //$('#results .list-group').css({
+                         //   'height: ' $('#schedule-col').height() - $('#location-search').height() + 'px;'
+                         //});
                      });
+                     $('form').on('reset', function(e){
+                         e.preventDefault();
 
-                     // Resize the results page?
-                     //$('#results .list-group').css({
-                     //   'height: ' $('#schedule-col').height() - $('#location-search').height() + 'px;'
-                     //});
-                 });
-                 $('form').on('reset', function(e){
-                     e.preventDefault();
+                         $.ajax({
+                             success: function(data){
+                                $('#results').html('')
+                             }
+                         });
 
-                     $.ajax({
-                         success: function(data){
-                            $('#results').html('')
-                         }
                      });
+                });
+            </script>
 
-                 });
-            });
-        </script>
-
-    </form>
+        </form>
+    </div>
 
     <!-- To be overwritten by the search function-->
     <div id="results"></div>

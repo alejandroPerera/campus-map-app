@@ -1,0 +1,9 @@
+{% if schedule|length > 0%}
+    <ul>
+        {% for class in schedule %}
+            <li id="user-schedule-item-{{forloop.counter0}}">{{class}}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Login to add classes to your schedule.</p>
+{% endif %}

@@ -38,12 +38,22 @@
                     }
                 }
 
-                function testClick(e) {
-                    console.log("Button clicked");
+                addClass = function(e) {
+                    e.preventDefault();
+
+                    console.log("Adding class");
+                    console.log($(this).serialize());
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        method: $(this).attr('method'),
+                        data: $(this).serialize(),
+                        success: function(data){ $('#schedule-list').html(data) }
+                    });
                 }
+
         </script>
-        <form action="{% url 'map:addClass' %}" method="post">
-                {% csrf_token %}
+
+
                 <ul class="list-group overflow-auto">
                 {% for class in classR %}
                    <li class="list-group-item d-flex">
@@ -52,7 +62,14 @@
                                    {{class.class_room }}
                            </div>
                            <div class="p-2 bd-highlight">
-                                   <button type="submit" name='add-class' value='{{class.class_id}}' class="btn btn-success">Add Class</button>
+                                   <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
+                                           {% csrf_token %}
+                                           <input type="hidden" name="class-id" value="{{class.class_id}}">
+                                           <button type="submit" class="btn btn-success">Add Class</button>
+                                           <script>
+                                                   $('#add-class-form-{{ forloop.counter0 }}').on('submit', addClass);
+                                           </script>
+                                   </form>
                                    <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-primary">Show On Map</button>
                                    <script>
                                         $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
@@ -61,7 +78,7 @@
                    </li>
                 {% endfor %}
                 </ul>
-        </form>
+
 {% else %}
         <p>No results found</p>
 {% endif %}

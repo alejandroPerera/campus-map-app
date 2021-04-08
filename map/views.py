@@ -175,17 +175,18 @@ def get_class_search_results(request):
 
 def add_class(request):
     if request.method == 'POST':
-        class_id= request.POST.get('add-class')
+        class_id = request.POST.get('class-id')
         user = request.user
         if user.is_authenticated:
             # if a schedule already exists
             class_to_add = ClassModel.objects.get(pk=class_id)
             user.schedule.add(class_to_add)
-            print("Actual Schedule: \n")
-            #For testing, prints user associated classes in terminal
-            for c in user.schedule.all():
-                print(c)
             schedule = user.schedule.all()
-    return render(request, 'map/map.html', {})
+
+            return render(request, 'map/user_schedule.html', {'schedule': schedule})
+        else:
+            return render(request, 'map/user_schedule.html', {'schedule': []})
+    else:
+        return render(request, 'map/user_schedule.html', {'schedule': []})
 
 
