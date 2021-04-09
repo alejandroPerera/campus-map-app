@@ -128,8 +128,6 @@ def parse_classes(search_input):
 
 
 def get_class_search_results(request):
-    access_token = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg'
-    starting_coords = [-78.510067, 38.038124]
 
     if request.method == 'POST':
         form = ScheduleForm(request.POST)  # generate the form from the data supplied
@@ -144,7 +142,7 @@ def get_class_search_results(request):
             if query == [None, None, None, None]:
                 results = get_search_results(form.cleaned_data['search'])
 
-                return render(request, 'map/schedule.html', {'results': results})
+                return render(request, 'map/locations.html', {'results': results})
 
             # Creates a filter chain from the results of the parsing. Should strip out
             # anything not relevant
