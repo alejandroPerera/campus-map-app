@@ -55,9 +55,34 @@
             <div id="schedule-list">
                 {% if user.schedule.all|length > 0 %}
                 <p><b>My Classes:</b></p>
+                    <script>
+                        editSchedule = function(e) {
+                            e.preventDefault();
+
+                            console.log("Editing classes");
+                            $.ajax({
+                                url: $(this).attr('action'),
+                                method: $(this).attr('method'),
+                                data: $(this).serialize(),
+                                success: function(data){
+                                    $('#schedule-list').html(data)
+                                }
+                            });
+                        }
+                    </script>
                     <ul>
                         {% for class in user.schedule.all %}
-                            <li>{{class}}</li>
+                            <li>
+                                {{class}}
+                                <form id="remove-class-form-{{ forloop.counter0 }}" action="{% url 'map:removeClass' %}" method="post">
+                                   {% csrf_token %}
+                                   <input type="hidden" name="class-id" value="{{class.class_number}}">
+                                   <a href="#" onclick="$('#remove-class-form-{{ forloop.counter0 }}').submit();" type="submit">Remove</a>
+                                   <script>
+                                           $('#remove-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
+                                   </script>
+                               </form>
+                            </li>
                         {% endfor %}
                     </ul>
                 {% else %}
