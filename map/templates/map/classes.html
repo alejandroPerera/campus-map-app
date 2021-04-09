@@ -1,3 +1,4 @@
+{% load search_list %}
 {% if classR|length > 0 %}
         <script>
                 searchClick = function(e) {
@@ -51,6 +52,7 @@
                 }
 
         </script>
+
         <ul class="list-group overflow-auto">
         {% for class in classR %}
            <li class="list-group-item d-flex">
@@ -75,7 +77,6 @@
            </li>
         {% endfor %}
         </ul>
-
 {% else %}
         <p>No results found</p>
 {% endif %}

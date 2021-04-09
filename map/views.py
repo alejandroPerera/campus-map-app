@@ -5,6 +5,9 @@ import requests
 import json
 from .models import ClassModel
 import re
+from django import template
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 
 
 # Create your views here.
@@ -50,11 +53,16 @@ class GeoCode:
 
 class SearchResult:
 
-    def __init__(self, class_name, class_room, class_loc_coords, class_id):
+    def __init__(self, class_name, class_room, class_loc_coords, class_id, signed_in, in_schedule):
         self.class_name = class_name
         self.class_room = class_room
         self.class_loc_coords = class_loc_coords
         self.class_id = class_id
+        self.signed_in = signed_in
+        if not self.signed_in:
+            self.in_schedule = False
+        else:
+            self.in_schedule = in_schedule
 
     def __str__(self):
         return self.class_name
@@ -165,7 +173,14 @@ def get_class_search_results(request):
                 else:
                     coords = None
 
-                output.append(SearchResult(r.__str__(), r.class_room, coords, r.id))
+                # Check if it's in the user's schedule
+                user = request.user
+                if user.is_authenticated:
+                    in_schedule = r in user.schedule.all()
+                else:
+                    in_schedule = False
+
+                output.append(SearchResult(r.__str__(), r.class_room, coords, r.id, user.is_authenticated, in_schedule))
 
             return render(request, 'map/classes.html', {'classR': output})
 
@@ -178,15 +193,26 @@ def add_class(request):
         class_id = request.POST.get('class-id')
         user = request.user
         if user.is_authenticated:
-            # if a schedule already exists
             class_to_add = ClassModel.objects.get(pk=class_id)
             user.schedule.add(class_to_add)
             schedule = user.schedule.all()
-
             return render(request, 'map/user_schedule.html', {'schedule': schedule})
-        else:
-            return render(request, 'map/user_schedule.html', {'schedule': []})
-    else:
+
         return render(request, 'map/user_schedule.html', {'schedule': []})
 
+    return render(request, 'map/user_schedule.html', {'schedule': []})
 
+
+def remove_class(request):
+    if request.method == 'POST':
+        class_id= request.POST.get('remove-class')
+        user = request.user
+        if user.is_authenticated:
+            class_to_remove = ClassModel.objects.get(pk=class_id)
+            user.schedule.delete(class_to_remove)
+            schedule = user.schedule.all()
+            return render(request, 'map/user_schedule.html', {'schedule': schedule})
+
+        return render(request, 'map/user_schedule.html', {'schedule': []})
+
+    return render(request, 'map/user_schedule.html', {'schedule': []})

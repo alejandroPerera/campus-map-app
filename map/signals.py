@@ -1,7 +1,6 @@
 from map.models import ClassModel
 from django.dispatch import receiver
 from django.db.backends.signals import connection_created
-from django.db import models
 import csv
 from sys import argv
 
@@ -65,6 +64,7 @@ def add_classes(sender, **kwargs):
                     class_waitlist=row[14],
                     # class_combined_with=ClassModel(None),
                     class_description=row[16],
+                    class_id = 0,
                 )
                 # Add the row to the database
                 entry.save()
