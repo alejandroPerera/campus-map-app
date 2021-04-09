@@ -61,26 +61,26 @@
                            {{class.class_room }}
                    </div>
                    <div class="p-2 bd-highlight">
-                           {% if class.in_schedule %}
-                                <form id="remove-class-form-{{ forloop.counter0 }}" action="{% url 'map:removeClass' %}" method="post">
-                                           {% csrf_token %}
-                                           <input type="hidden" name="class-id" value="{{class.class_id}}">
-                                           <button type="submit" class="btn btn-danger">Remove Class</button>
-                                           <script>
-                                                   $('#remove-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
-                                           </script>
-                                   </form>
-                           {% else %}
-                                   <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
-                                           {% csrf_token %}
-                                           <input type="hidden" name="class-id" value="{{class.class_id}}">
-                                           <button type="submit" class="btn btn-success">Add Class</button>
-                                           <script>
-                                                   $('#add-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
-                                           </script>
-                                   </form>
-                           {% endif %}
-
+                           <div id="class-{{ class.class_id }}">
+                                   {% if class.in_schedule %}
+                                        <a tabindex="0" id="add-class-button-{{ forloop.counter0 }}" type="button" class="btn btn-success" data-toggle="popover" data-trigger="focus" data-content="This class is already in your schedule!">Add Class</a>
+                                        <script>
+                                                $('#add-class-button-{{ forloop.counter0 }}').popover()
+                                                $('.popover-dismiss').popover({
+                                                  trigger: 'focus'
+                                                })
+                                        </script>
+                                   {% else %}
+                                           <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
+                                                   {% csrf_token %}
+                                                   <input type="hidden" name="class-id" value="{{class.class_id}}">
+                                                   <button type="submit" class="btn btn-success">Add Class</button>
+                                                   <script>
+                                                           $('#add-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
+                                                   </script>
+                                           </form>
+                                   {% endif %}
+                           </div>
                            <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-primary">Show On Map</button>
                            <script>
                                 $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);

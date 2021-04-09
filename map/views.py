@@ -178,7 +178,7 @@ def get_class_search_results(request):
                 else:
                     in_schedule = False
 
-                output.append(SearchResult(r.__str__(), r.class_room, coords, r.id, user.is_authenticated, in_schedule))
+                output.append(SearchResult(r.__str__(), r.class_room, coords, r.class_number, user.is_authenticated, in_schedule))
 
             return render(request, 'map/classes.html', {'classR': output})
 
@@ -189,9 +189,10 @@ def get_class_search_results(request):
 def add_class(request):
     if request.method == 'POST':
         class_id = request.POST.get('class-id')
+        print(class_id)
         user = request.user
         if user.is_authenticated:
-            class_to_add = ClassModel.objects.get(pk=class_id)
+            class_to_add = ClassModel.objects.get(class_number=class_id)
             user.schedule.add(class_to_add)
             schedule = user.schedule.all()
             return render(request, 'map/user_schedule.html', {'schedule': schedule})
@@ -203,10 +204,10 @@ def add_class(request):
 
 def remove_class(request):
     if request.method == 'POST':
-        class_id= request.POST.get('class-id')
+        class_id = request.POST.get('class-id')
         user = request.user
         if user.is_authenticated:
-            class_to_remove = ClassModel.objects.get(pk=class_id)
+            class_to_remove = ClassModel.objects.get(class_number=class_id)
             user.schedule.remove(class_to_remove)
             schedule = user.schedule.all()
             return render(request, 'map/user_schedule.html', {'schedule': schedule})
