@@ -205,11 +205,11 @@ def add_class(request):
 
 def remove_class(request):
     if request.method == 'POST':
-        class_id= request.POST.get('remove-class')
+        class_id= request.POST.get('class-id')
         user = request.user
         if user.is_authenticated:
             class_to_remove = ClassModel.objects.get(pk=class_id)
-            user.schedule.delete(class_to_remove)
+            user.schedule.remove(class_to_remove)
             schedule = user.schedule.all()
             return render(request, 'map/user_schedule.html', {'schedule': schedule})
 

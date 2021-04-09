@@ -39,10 +39,10 @@
                     }
                 }
 
-                addClass = function(e) {
+                editSchedule = function(e) {
                     e.preventDefault();
 
-                    console.log("Adding class");
+                    console.log("Editing classes");
                     $.ajax({
                         url: $(this).attr('action'),
                         method: $(this).attr('method'),
@@ -61,14 +61,26 @@
                            {{class.class_room }}
                    </div>
                    <div class="p-2 bd-highlight">
-                           <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
-                                   {% csrf_token %}
-                                   <input type="hidden" name="class-id" value="{{class.class_id}}">
-                                   <button type="submit" class="btn btn-success">Add Class</button>
-                                   <script>
-                                           $('#add-class-form-{{ forloop.counter0 }}').on('submit', addClass);
-                                   </script>
-                           </form>
+                           {% if class.in_schedule %}
+                                <form id="remove-class-form-{{ forloop.counter0 }}" action="{% url 'map:removeClass' %}" method="post">
+                                           {% csrf_token %}
+                                           <input type="hidden" name="class-id" value="{{class.class_id}}">
+                                           <button type="submit" class="btn btn-danger">Remove Class</button>
+                                           <script>
+                                                   $('#remove-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
+                                           </script>
+                                   </form>
+                           {% else %}
+                                   <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
+                                           {% csrf_token %}
+                                           <input type="hidden" name="class-id" value="{{class.class_id}}">
+                                           <button type="submit" class="btn btn-success">Add Class</button>
+                                           <script>
+                                                   $('#add-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
+                                           </script>
+                                   </form>
+                           {% endif %}
+
                            <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-primary">Show On Map</button>
                            <script>
                                 $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
