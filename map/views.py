@@ -190,10 +190,10 @@ def get_class_search_results(request):
 
 def add_class(request):
     if request.method == 'POST':
-        add_class_id = request.POST.get('add-class')
+        class_id = request.POST.get('class-id')
         user = request.user
         if user.is_authenticated:
-            class_to_add = ClassModel.objects.get(pk=add_class_id)
+            class_to_add = ClassModel.objects.get(pk=class_id)
             user.schedule.add(class_to_add)
             schedule = user.schedule.all()
             return render(request, 'map/user_schedule.html', {'schedule': schedule})
@@ -216,6 +216,3 @@ def remove_class(request):
         return render(request, 'map/user_schedule.html', {'schedule': []})
 
     return render(request, 'map/user_schedule.html', {'schedule': []})
-
-
-
