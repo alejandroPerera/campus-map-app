@@ -53,11 +53,16 @@ class GeoCode:
 
 class SearchResult:
 
-    def __init__(self, class_name, class_room, class_loc_coords, class_id):
+    def __init__(self, class_name, class_room, class_loc_coords, class_id, signed_in, in_schedule):
         self.class_name = class_name
         self.class_room = class_room
         self.class_loc_coords = class_loc_coords
         self.class_id = class_id
+        self.signed_in = signed_in
+        if not self.signed_in:
+            self.in_schedule = False
+        else:
+            self.in_schedule = in_schedule
 
     def __str__(self):
         return self.class_name
@@ -168,69 +173,49 @@ def get_class_search_results(request):
                 else:
                     coords = None
 
-                output.append(SearchResult(r.__str__(), r.class_room, coords, r.id))
+                # Check if it's in the user's schedule
+                user = request.user
+                if user.is_authenticated:
+                    in_schedule = r in user.schedule.all()
+                else:
+                    in_schedule = False
 
-                #Convert into actual ClassModel classes for comparison in classes.html
-                actual_output = []
-                for result in output:
-                    name = result.class_name
-                    mnemonic = name[0:name.find(" ")]
-                    number = name[name.find(" ")+1:name.find("-")]
-                    section = name[name.find("-")+1:len(name)]
-                    id = result.class_id
+                output.append(SearchResult(r.__str__(), r.class_room, coords, r.id, user.is_authenticated, in_schedule))
 
-                    newClass = ClassModel(result)
-                    newClass.class_full_name = name
-                    newClass.class_mnemonic = mnemonic
-                    newClass.course_number = number
-                    newClass.class_section = section
-                    newClass.class_id = id
-                    actual_output.append(newClass)
-
-            return render(request, 'map/classes.html', {'classR': actual_output})
+            return render(request, 'map/classes.html', {'classR': output})
 
     else:
         return render(request, 'map/classes.html', {'classR': []})
 
 
-def edit_class_list(request):
+def add_class(request):
     if request.method == 'POST':
         add_class_id = request.POST.get('add-class')
-        delete_class_id = request.POST.get('delete-class')
-        print(add_class_id)
-        print(delete_class_id)
         user = request.user
         if user.is_authenticated:
-            if (add_class_id != None):
-            # if a schedule already exists
-                class_to_add = ClassModel.objects.get(pk=add_class_id)
-                user.schedule.add(class_to_add)
-            elif (delete_class_id != None):
-                class_to_delete = ClassModel.objects.get(pk=delete_class_id)
-                user.schedule.remove(class_to_delete)
-            print("Actual Schedule: \n")
-            #For testing, prints user associated classes in terminal
-            for c in user.schedule.all():
-                print(c)
+            class_to_add = ClassModel.objects.get(pk=add_class_id)
+            user.schedule.add(class_to_add)
             schedule = user.schedule.all()
-    #TODO:
-    #fix this linking
-    return HttpResponseRedirect("http://127.0.0.1:8000/")
-    #return render(request, 'map/map.html', {})
+            return render(request, 'map/user_schedule.html', {'schedule': schedule})
 
-# def remove_class(request):
-#     if request.method == 'POST':
-#         class_id = request.POST.get('delete-class')
-#         user = request.user
-#         if user.is_authenticated:
-#             # if a schedule already exists
-#             class_to_remove = ClassModel.objects.get(pk=class_id)
-#             user.schedule.delete(class_to_remove)
-#             print("Actual Schedule: \n")
-#             #For testing, prints user associated classes in terminal
-#             for c in user.schedule.all():
-#                 print(c)
-#             schedule = user.schedule.all()
-#     return render(request, 'map/map.html', {})
+        return render(request, 'map/user_schedule.html', {'schedule': []})
+
+    return render(request, 'map/user_schedule.html', {'schedule': []})
+
+
+def remove_class(request):
+    if request.method == 'POST':
+        class_id= request.POST.get('remove-class')
+        user = request.user
+        if user.is_authenticated:
+            class_to_remove = ClassModel.objects.get(pk=class_id)
+            user.schedule.delete(class_to_remove)
+            schedule = user.schedule.all()
+            return render(request, 'map/user_schedule.html', {'schedule': schedule})
+
+        return render(request, 'map/user_schedule.html', {'schedule': []})
+
+    return render(request, 'map/user_schedule.html', {'schedule': []})
+
 
 
