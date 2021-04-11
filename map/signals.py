@@ -13,6 +13,7 @@ def add_classes(sender, **kwargs):
     """
     # Only update the database if we are running the server
     if argv[1].__eq__("makemigrations") or argv[1].__eq__("migrate"):
+        print("Database not updated")
         return
 
     print("Updating SIS data")
@@ -64,7 +65,6 @@ def add_classes(sender, **kwargs):
                     class_waitlist=row[14],
                     # class_combined_with=ClassModel(None),
                     class_description=row[16],
-                    class_id = 0,
                 )
                 # Add the row to the database
                 entry.save()
