@@ -22,3 +22,13 @@ height: 100%;
 #schedule-col {
 background: rgb(225,225,225);
 }
+
+#results .list-group {
+height: 400px;
+overflow-y: scroll;
+}
+
+.delete-button {
+  background-color: red;
+  color : red;
+}

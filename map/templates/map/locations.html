@@ -1,0 +1,81 @@
+<!-- Display a list of the results -->
+{% if results|length > 0 %}
+    <script>
+        searchClick = function(e) {
+            console.log("Pin button clicked");
+            var value = $(this).attr("value");
+            // Convert from string to int array
+            let split = value.split(/[\[\], ]/);
+            let coords = [parseFloat(split[1]), parseFloat(split[3])];
+            var name = $(this).attr("name");
+            //console.log(coords);
+
+            if (!isNaN(coords[0]) && !isNaN(coords[1])) {
+                // make a marker for each feature and add to the map
+                var marker = new mapboxgl.Marker()
+                  .setLngLat(coords)
+                  .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+                      .setHTML('<p>' + name + '</p>'))
+
+                var i;
+                for (i = 0; i < allMarkers.length; i++) {
+                    if (allMarkers[i].getLngLat().toString() === marker.getLngLat().toString()) {
+                        // The marker is in the array
+                        console.log("Marker is already in the map");
+                        return; // exit the function
+                    }
+                }
+
+                marker.addTo(map);
+
+                marker.getElement().addEventListener('contextmenu', function(e) {
+                    marker.remove();
+                    allMarkers.splice(allMarkers.indexOf(marker), 1);
+                    console.log("Removed marker");
+                });
+
+                allMarkers.push(marker);
+                console.log("Marker added");
+            }
+        }
+
+        function testClick(e) {
+            console.log("Button clicked");
+        }
+    </script>
+    <ul class="list-group overflow-auto">
+        {% for r in results %}
+            <li class="list-group-item d-flex">
+                <div class="p-2 flex-grow-1 overflow-hidden">
+                       {{ r.location_name }}
+               </div>
+               <div class="p-2 bd-highlight">
+                       <button id="search-result-{{ forloop.counter0 }}" value="{{ r.coordinates }}" name="{{ r.name }}" class="btn btn-primary">Show Marker</button>
+               </div>
+            </li>
+            <script>
+                $('#search-result-{{ forloop.counter0 }}').on('click', searchClick);
+            </script>
+        {% endfor %}
+
+    </ul>
+
+    <div id="remove-markers" >
+        <button id="remove-button" class="btn btn-primary">Remove All Markers</button>
+
+        <!-- Listener for when the button is clicked. Will remove all the markers-->
+        <script>
+            $('#remove-button').on('click', function(e){
+                console.log("Remove button clicked");
+
+                // Remove all markers
+                while (allMarkers.length > 0) {
+                      allMarkers[0].remove();
+                      allMarkers.shift();
+                }
+            });
+        </script>
+    </div>
+{% else %}
+    <p>No results found</p>
+{% endif %}
