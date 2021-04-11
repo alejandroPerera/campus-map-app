@@ -12,7 +12,7 @@ def add_classes(sender, **kwargs):
     csv into the database if it isn't there already
     """
     # Only update the database if we are running the server
-    if argv[1].__eq__("makemigrations") or argv[1].__eq__("migrate"):
+    if argv[1].__eq__("makemigrations") or argv[1].__eq__("migrate") or argv[1].__eq__("test"):
         print("Database not updated")
         return
 
