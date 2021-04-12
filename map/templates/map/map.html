@@ -122,8 +122,9 @@
                         </ul>
                     </div>
                 {% else %}
-                    <p>You haven't added any classes to your schedule yet
+                    <p><b>You haven't added any classes to your schedule yet.
                     Search for the course number or name below.
+                    </b>
                     </p>
                 {% endif %}
             </div>
@@ -185,4 +186,30 @@
 
     <!-- To be overwritten by the search function-->
     <div id="results"></div>
+{% endblock %}
+
+{% block yourEvent%}
+    <h1>Your Events</h1>
+    {% if user.is_authenticated %}
+
+    {% else %}
+        <p>Need to be logged in to see events you're hosting</p>
+    {% endif %}
+{% endblock %}
+
+{% block makeEvent %}
+    <h1>Make Events</h1>
+    {% if user.is_authenticated %}
+        <form>
+            <input type = "text" id = "name" >
+            <input type = "submit" value="submit">
+        </form>
+
+    {% else %}
+        <p>Need to be logged in to make an event</p>
+    {% endif %}
+{% endblock %}
+
+{% block events %}
+
 {% endblock %}

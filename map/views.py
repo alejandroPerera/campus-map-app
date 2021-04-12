@@ -1,9 +1,9 @@
 from django.views import generic
 from django.shortcuts import render
-from .forms import ScheduleForm
+from .forms import ScheduleForm, EventForm
 import requests
 import json
-from .models import ClassModel
+from .models import ClassModel, EventModel
 import re
 from django import template
 from django.http import HttpResponse, HttpResponseRedirect
@@ -215,3 +215,12 @@ def remove_class(request):
         return render(request, 'map/user_schedule.html', {'schedule': []})
 
     return render(request, 'map/user_schedule.html', {'schedule': []})
+
+def user_created_event(request):
+    if request.method == 'POST':
+        user = request.user
+        eventForm = EventForm(request.POST)
+        if user.is_authenticated:
+            event = EventModel.objects.create(user,eventForm.capacity,eventForm.date)
+            event.save()
+            return render(request, 'map/event.html')

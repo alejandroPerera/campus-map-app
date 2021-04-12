@@ -14,10 +14,17 @@
     <link rel="stylesheet" type="text/css" href="{% static 'map/style.css' %}">
 
     <title>{% block title %}Campus Map{% endblock %}</title>
+    <style>
+        div.col-4{
+            height : 789px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body>
     <!-- Bootstrap JavaScript stuff -->
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
 
     {% block loads%}
@@ -31,10 +38,37 @@
                 {% endblock %}
             </div>
             <div id="schedule-col" class="col-4">
+<!--                <nav class = "navbar navbar-expand-md navbar-light bg-light sticky-top">-->
+<!--                    <div class = "container-fluid">-->
+<!--                        <h1>Navbar</h1>-->
+<!--                        <div class = "collapse navbar-collapse" id = "navbarResponsive">-->
+<!--                            <ul class = "navbar-nav ml-auto">-->
+<!--                                <li class = "navbar-nav ml-auto">-->
+<!--                                    <a class = "nav-link" href = "">Schedule</a>-->
+<!--                                </li>-->
+<!--                                <li class = "navbar-nav ml-auto">-->
+<!--                                    <a class = "nav-link" >Your Hosted Events</a>-->
+<!--                                </li>-->
+<!--                                <li class = "navbar-nav ml-auto">-->
+<!--                                    <a class = "nav-link" >Events You're Attending</a>-->
+<!--                                </li>-->
+<!--                                <li class = "navbar-nav ml-auto">-->
+<!--                                    <a class = "nav-link" href = "/admin/">Admin</a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </nav>-->
                 <h1>Schedule</h1>
                 {% block schedule %}
                 {% endblock%}
-
+                <br><br><br>
+                {% block yourEvent %}
+                {% endblock %}
+                {% block makeEvent %}
+                {% endblock %}
+                {% block events %}
+                {% endblock %}
             </div>
         </div>
     </div>

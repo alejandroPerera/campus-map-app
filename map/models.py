@@ -35,3 +35,10 @@ class ClassModel(models.Model):
     
     def __ne__(self, other):
         return not self.__eq__(other)
+
+class EventModel(models.Model):
+    event_title = models.CharField(max_length=200)
+    event_capacity = models.PositiveIntegerField()
+    host = models.ForeignKey(User,on_delete=models.CASCADE,related_name='host')
+    attendees = models.ManyToManyField(User, related_name='attendees')
+    date = models.DateTimeField()
