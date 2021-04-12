@@ -16,6 +16,8 @@
     <!-- Mapbox Geocoder API loads-->
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css" type="text/css">
     <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
     <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
@@ -38,6 +40,34 @@
             zoom: 14, // starting zoom
             trackResize: true // Resize if the browser window size changes
         });
+
+        // Add the directions controls
+        map.addControl(
+            new MapboxDirections({
+                accessToken: mapboxgl.accessToken,
+                interactive: false,
+                geocoder: {
+                    bbox: '-78.526434,38.028392,-78.475622,38.055975',
+                    proximity: [-78.510067, 38.038124]
+                },
+                controls: {
+                    input: true,
+                    instructions: false,
+                    profileSwitcher: true
+                }
+            }),
+            'top-left'
+        );
+
+        // Add device GPS location
+        map.addControl(
+            new mapboxgl.GeolocateControl({
+                positionOptions: {
+                enableHighAccuracy: true
+                },
+                trackUserLocation: true
+            })
+        );
 
         // Fired after first load
         map.on('load', function() {
