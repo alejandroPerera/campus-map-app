@@ -1,5 +1,9 @@
 {% if schedule|length > 0 %}
-    <p><b>My Classes:</b></p>
+        <p>
+            <button class='btn btn-dark'  type='button' data-target='#clist' data-toggle='collapse'>
+                <b>My Classes</b>
+            </button>
+        </p> 
         <script>
             editSchedule = function(e) {
                 e.preventDefault();
@@ -15,21 +19,23 @@
                 });
             }
         </script>
-        <ul class='list-group'>
-            {% for class in schedule %}
-                <li  class="list-group-item d-flex justify-content-between align-items-center">
-                    {{class}}
-                    <form id="remove-class-form-{{ forloop.counter0 }}" action="{% url 'map:removeClass' %}" method="post">
-                       {% csrf_token %}
-                       <input type="hidden" name="class-id" value="{{class.class_number}}">
-                       <a class='btn btn-danger' href="#" onclick="$('#remove-class-form-{{ forloop.counter0 }}').submit();" type="submit">Remove</a>
-                       <script>
-                               $('#remove-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
-                       </script>
-                   </form>
-                </li>
-            {% endfor %}
-        </ul>
+        <div class='collapse.show' id='clist'>
+            <ul class='list-group'>
+                {% for class in schedule %}
+                    <li  class="list-group-item d-flex justify-content-between align-items-center">
+                        {{class}}
+                        <form id="remove-class-form-{{ forloop.counter0 }}" action="{% url 'map:removeClass' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="class-id" value="{{class.class_number}}">
+                        <a class='btn btn-danger' href="#" onclick="$('#remove-class-form-{{ forloop.counter0 }}').submit();" type="submit">Remove</a>
+                        <script>
+                                $('#remove-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
+                        </script>
+                    </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
 {% else %}
     <p>You haven't added any classes to your schedule yet
     Search for the course number or name below.
