@@ -128,7 +128,6 @@ def parse_classes(search_input):
 
 
 def get_class_search_results(request):
-
     if request.method == 'POST':
         form = ScheduleForm(request.POST)  # generate the form from the data supplied
 
@@ -178,7 +177,8 @@ def get_class_search_results(request):
                 else:
                     in_schedule = False
 
-                output.append(SearchResult(r.__str__(), r.class_room, coords, r.class_number, user.is_authenticated, in_schedule))
+                output.append(
+                    SearchResult(r.__str__(), r.class_room, coords, r.class_number, user.is_authenticated, in_schedule))
 
             return render(request, 'map/classes.html', {'classR': output})
 
