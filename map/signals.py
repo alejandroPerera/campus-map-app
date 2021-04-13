@@ -13,7 +13,6 @@ def add_classes(sender, **kwargs):
     """
     # Only update the database if we are running the server
     if argv[1].__eq__("makemigrations") or argv[1].__eq__("migrate") or argv[1].__eq__("test"):
-        print("Database not updated")
         return
 
     print("Updating SIS data")

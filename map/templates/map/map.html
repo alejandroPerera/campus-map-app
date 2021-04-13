@@ -82,22 +82,7 @@
     {% if user.is_authenticated %}
             <p>Welcome, {{ user.username }}!</p>
             <a href = "{% url 'account_logout'%}"> Click here to logout</a>
-            <!-- Messing around to make buttons on the same line-->
-            <div class="container">
-                <div class="row">
-                    <div class="col">
-                        <button class='btn btn-dark'  type='button' >
-                            <b>My Classes</b>
-                        </button>
-                    </div>
-                    <div class="col">
-                        <button type="button" class="btn btn-primary" >
-                          Create Event
-                        </button>
-                    </div>
-                </div>
 
-            </div>
             <div id="schedule-list">
                 {% if user.schedule.all|length > 0 %}
                 <p>

@@ -42,8 +42,8 @@ class EventModel(models.Model):
     title = models.CharField(max_length=50)
     capacity = models.PositiveIntegerField()
     location = models.CharField(max_length=200)
-    date = models.DateTimeField()
-    description = models.CharField(max_length=200)
-    host = models.ForeignKey(User, on_delete=models.CASCADE, related_name='host')
-    attendees = models.ManyToManyField(User, related_name='attendees', default=None, null=True)
+    date = models.DateTimeField(help_text='In the form MM/DD/YY hh:mm')
+    description = models.CharField(max_length=200, blank=True)
+    host = models.ForeignKey(User, on_delete=models.PROTECT, related_name='host', null=True, default=None)
+    attendees = models.ManyToManyField(User, related_name='attendees', default=None)
 

@@ -1,4 +1,6 @@
-from django.test import TestCase
+import datetime
+
+from django.test import TestCase, Client
 from django.urls import reverse
 
 from .views import *
@@ -140,3 +142,18 @@ class SearchTests(TestCase):
         self.assertEqual(query[1], 'CS')
         self.assertEqual(query[2], None)
         self.assertEqual(query[3], None)
+
+
+class EventTests(TestCase):
+
+    def test_user_created_event_good_data(self):
+        client = Client()
+        result = client.post('/makeEvent/', {
+            'title': 'Test',
+            'location': 'Here',
+            'date': '10/21/2021 14:30',
+            'capacity': 5,
+            'description': 'Testing'
+        })
+        self.assertEqual(result.status_code, 200)
+
