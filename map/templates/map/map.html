@@ -111,13 +111,13 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     {{class}}
                                     <form id="remove-class-form-{{ forloop.counter0 }}" action="{% url 'map:removeClass' %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="class-id" value="{{class.class_number}}">
-                                            <a class="btn btn-danger " href="#" onclick="$('#remove-class-form-{{ forloop.counter0 }}').submit();" type="submit">Remove</a>
-                                    <script>
-                                            $('#remove-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
-                                    </script>
-                                </form>
+                                        {% csrf_token %}
+                                        <input type="hidden" name="class-id" value="{{class.class_number}}">
+                                                <a class="btn btn-danger " href="#" onclick="$('#remove-class-form-{{ forloop.counter0 }}').submit();" type="submit">Remove</a>
+                                        <script>
+                                                $('#remove-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
+                                        </script>
+                                    </form>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -280,12 +280,37 @@
             </p>
             <div class='collapse' id='elist'>
                 {% if eventsList %}
+                <script>
+                        addAttendee = function(a) {
+                            a.preventDefault();
+
+                            console.log("User would like to attend event");
+                            $.ajax({
+                                url: $(this).attr('action'),
+                                method: $(this).attr('method'),
+                                data: $(this).serialize(),
+                                success: function(data){
+                                    $('#events-list').html(data)
+                                }
+                            });
+                        }
+                    </script>
                     <ul class='list-group'>
                         {% for e in eventsList%}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <p>Title: {{e.title}} </p>
                             <p>Hosted by: {{e.host}} </p>
                             <p> Located at: {{e.location}}</p>
+                            <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
+                            <form id="attend-event" action="{% url 'map:attendEvent' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="class-id" value="{{class.class_number}}">
+                                        <a class="btn btn-success" href="#" onclick="$('#attend-event-form').submit();" type="submit">Attend</a>
+                                <script>
+                                        $('#attend-event-form').on('submit', addAttendee);
+
+                                </script>
+                            </form>
                         </li>
                         {% endfor %}
                     </ul>

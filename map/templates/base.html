@@ -15,10 +15,14 @@
 
     <title>{% block title %}Campus Map{% endblock %}</title>
     <style>
+        body{
+            overflow-y: hidden;
+        }
         div.col-4{
-            height : 789px;
+            height : 750px;
             overflow-y: auto;
         }
+
     </style>
 </head>
 <body>
@@ -43,11 +47,10 @@
                 {% block schedule %}
                 {% endblock%}
                 <br><br><br>
-                {% block makeEvent %}
-                {% endblock %}
                 {% block yourEvent %}
                 {% endblock %}
-
+                {% block makeEvent %}
+                {% endblock %}
                 {% block events %}
                 {% endblock %}
             </div>

@@ -80,7 +80,7 @@ class MapView(generic.FormView):
     def get_context_data(self, **kwargs):
         context = super(MapView, self).get_context_data(**kwargs)
         context.update({'starting_coords': self.starting_coords, 'access_token': self.access_token})
-        context['eventsList'] = EventModel.objects.all()
+        context['eventsList'] = EventModel.objects.all() #created a variable that map.html can see
         return context
 
 
@@ -231,13 +231,7 @@ def user_created_event(request):
 
     return render(request, 'map/event.html', {'success': False})
 
-def get_events(request):
-    if request.method == "POST":
+def attend_event(request):
+    if request.method == 'POST':
         user = request.user
-        if user.is_authenticated:
-            print("getting events")
-            events_list = MakeEventForm.objects.all()
-            context = {'hosted_events':events_list}
-            return render(request,'map/list_of_event.html',context)
-    context = {'hosted_events': []}
-    return render(request, 'map/list_of_events.html', context)
+

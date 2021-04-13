@@ -1,9 +1,0 @@
-{% if hosted_events %}
-    <ul>
-        {% for e in hosted_events%}
-            <li>Title: {{e.title}} Hosted by: {{e.host}} Located at: {{e.location}}</li>
-        {% endfor %}
-    </ul>
-{% else %}
-    No events yet...
-{% endblock %}
