@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render
-from .forms import ScheduleForm, EventForm
+from .forms import ScheduleForm, MakeEventForm
 import requests
 import json
 from .models import ClassModel, EventModel
@@ -71,6 +71,7 @@ class SearchResult:
 class MapView(generic.FormView):
     template_name = "map/map.html"
     form_class = ScheduleForm
+    # form_class = MakeEventForm  # Hack to automatically generate the form. Copy paste this result
 
     access_token = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg'
     starting_coords = [-78.510067, 38.038124]
@@ -216,11 +217,17 @@ def remove_class(request):
 
     return render(request, 'map/user_schedule.html', {'schedule': []})
 
+
 def user_created_event(request):
     if request.method == 'POST':
         user = request.user
-        eventForm = EventForm(request.POST)
-        if user.is_authenticated:
-            event = EventModel.objects.create(user,eventForm.capacity,eventForm.date)
-            event.save()
-            return render(request, 'map/event.html')
+        event_form = MakeEventForm(request.POST)
+        if user.is_authenticated and event_form.is_valid():
+            entry = event_form.save(commit=False)  # Don't save to the database just yet
+            entry.host = user  # Tie the host to this user
+            # Ignore the attendees they are set later
+            entry.save()  # Save to the database
+            event_form.save_m2m()  # Needs to be called if commit = False
+            return render(request, 'map/event.html', {'success': True})
+
+    return render(request, 'map/event.html', {'success': False})

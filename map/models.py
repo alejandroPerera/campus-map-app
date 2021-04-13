@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 
 
@@ -24,7 +25,7 @@ class ClassModel(models.Model):
     # TODO: Make this refer to an instance of ClassModel
     # class_combined_with = models.ForeignKey("ClassModel", on_delete=models.PROTECT, blank=True, null=True)
     class_description = models.CharField(max_length=2000)
-    #Has-many relationship
+    # Has-many relationship
     user = models.ManyToManyField(User, related_name='schedule')
 
     def __str__(self):
@@ -32,13 +33,17 @@ class ClassModel(models.Model):
 
     def __eq__(self, other):
         return self.class_number == other.class_number
-    
+
     def __ne__(self, other):
         return not self.__eq__(other)
 
+
 class EventModel(models.Model):
-    event_title = models.CharField(max_length=200)
-    event_capacity = models.PositiveIntegerField()
-    host = models.ForeignKey(User,on_delete=models.CASCADE,related_name='host')
-    attendees = models.ManyToManyField(User, related_name='attendees')
+    title = models.CharField(max_length=50)
+    capacity = models.PositiveIntegerField()
+    location = models.CharField(max_length=200)
     date = models.DateTimeField()
+    description = models.CharField(max_length=200)
+    host = models.ForeignKey(User, on_delete=models.CASCADE, related_name='host')
+    attendees = models.ManyToManyField(User, related_name='attendees', default=None, null=True)
+
