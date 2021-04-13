@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ClassModel
+from .models import ClassModel, EventModel
 
 
 class ClassAdmin(admin.ModelAdmin):
@@ -8,3 +8,4 @@ class ClassAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(ClassModel, ClassAdmin)
+admin.site.register(EventModel)

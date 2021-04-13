@@ -9,4 +9,5 @@ urlpatterns = [
     path('addClass/', views.add_class, name='addClass'),
     path('removeClass/', views.remove_class, name='removeClass'),
     path('makeEvent/', views.user_created_event, name='makeEvent'),
+    path('getEvents/',views.get_events, name = 'getEvents'),
 ]

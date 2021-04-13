@@ -71,7 +71,6 @@ class SearchResult:
 class MapView(generic.FormView):
     template_name = "map/map.html"
     form_class = ScheduleForm
-    # form_class = MakeEventForm  # Hack to automatically generate the form. Copy paste this result
 
     access_token = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg'
     starting_coords = [-78.510067, 38.038124]
@@ -81,6 +80,7 @@ class MapView(generic.FormView):
     def get_context_data(self, **kwargs):
         context = super(MapView, self).get_context_data(**kwargs)
         context.update({'starting_coords': self.starting_coords, 'access_token': self.access_token})
+        context['eventsList'] = EventModel.objects.all()
         return context
 
 
@@ -217,7 +217,6 @@ def remove_class(request):
 
     return render(request, 'map/user_schedule.html', {'schedule': []})
 
-
 def user_created_event(request):
     if request.method == 'POST':
         user = request.user
@@ -231,3 +230,14 @@ def user_created_event(request):
             return render(request, 'map/event.html', {'success': True})
 
     return render(request, 'map/event.html', {'success': False})
+
+def get_events(request):
+    if request.method == "POST":
+        user = request.user
+        if user.is_authenticated:
+            print("getting events")
+            events_list = MakeEventForm.objects.all()
+            context = {'hosted_events':events_list}
+            return render(request,'map/list_of_event.html',context)
+    context = {'hosted_events': []}
+    return render(request, 'map/list_of_events.html', context)
