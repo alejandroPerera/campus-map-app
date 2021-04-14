@@ -46,5 +46,6 @@ class EventModel(models.Model):
     description = models.CharField(max_length=200, blank=True)
     host = models.ForeignKey(User, on_delete=models.PROTECT, related_name='host', null=True, default=None)
     attendees = models.ManyToManyField(User, related_name='attendees', default=None)
-    numberOfAttendees = 0
+    numberOfAttendees = models.PositiveIntegerField(default=0)
+
 

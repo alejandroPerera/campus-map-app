@@ -190,7 +190,6 @@ def get_class_search_results(request):
 def add_class(request):
     if request.method == 'POST':
         class_id = request.POST.get('class-id')
-        print(class_id)
         user = request.user
         if user.is_authenticated:
             class_to_add = ClassModel.objects.get(class_number=class_id)
@@ -234,4 +233,25 @@ def user_created_event(request):
 def attend_event(request):
     if request.method == 'POST':
         user = request.user
+        event_id = request.POST.get('event')
+        event_to_attend = EventModel.objects.get(pk=event_id)
+        #checks if already attending event and if host tries to attend own event 
+        if event_to_attend.host != user and event_to_attend not in user.attendees.all():  
+            user.attendees.add(event_to_attend) #link user and event 
+            event_to_attend.numberOfAttendees += 1 #update attendance
+            event_to_attend.save()
+            
+    return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
+
+def cancel_event(request):
+    if request.method == 'POST':
+        user = request.user
+        event_id = request.POST.get('event')
+        event_to_attend = EventModel.objects.get(pk=event_id)
+        user.attendees.remove(event_to_attend) #unlink user and event 
+        event_to_attend.numberOfAttendees -= 1 #update attendance
+        event_to_attend.save()
+            
+    return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
+        
 
