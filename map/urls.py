@@ -11,4 +11,5 @@ urlpatterns = [
     path('makeEvent/', views.user_created_event, name='makeEvent'),
     path('attendEvent/',views.attend_event, name = "attendEvent"),
     path('cancelEvent/', views.cancel_event, name = 'cancelEvent'),
+    path('removeEvent/', views.remove_event_from_list, name = 'removeEvent'),
 ]

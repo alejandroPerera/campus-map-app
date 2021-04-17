@@ -60,6 +60,14 @@
                         $('#attend-event-{{ forloop.counter0 }}').on('submit', addAttendee);
                 </script>
             </form>
+            <form id="remove-event-{{ forloop.counter0 }}" action="{% url 'map:removeEvent' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="event" value="{{e.id}}">
+                        <a class="btn btn-success" href="#" onclick="$('#remove-event-{{ forloop.counter0 }}').submit();" type="submit">Delete</a>
+                <script>
+                        $('#remove-event-{{ forloop.counter0 }}').on('submit', cancelAttendee);
+                </script>
+            </form>
             {% endif %}
         {% endfor %}
     {% endif %}
