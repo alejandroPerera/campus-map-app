@@ -37,8 +37,12 @@
         {% for e in eventsList%}
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <p>Title: {{e.title}} </p>
+            {% if user == e.host %}
+            <p>Host: You</p>
+            {% else %}
             <p>Hosted by: {{e.host}} </p>
-            <p> Located at: {{e.location}}</p>
+            {% endif %}
+            <p> Location: {{e.location}}</p>
             <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
 
 
