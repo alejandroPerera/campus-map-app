@@ -307,21 +307,45 @@
                                 }
                             });
                         }
+                        cancelEvent = function(a) {
+                            a.preventDefault();
+
+                            console.log("User would like to cancel hosting event");
+                            $.ajax({
+                                url: $(this).attr('action'),
+                                method: $(this).attr('method'),
+                                data: $(this).serialize(),
+                                success: function(data){
+                                    $('#events-list').html(data)
+                                }
+                            });
+                        }
                     </script>
                     <ul class='list-group'>
                         {% for e in eventsList%}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <p>Title: {{e.title}} </p>
-                            <p>Hosted by: {{e.host}} </p>
-                            <p> Located at: {{e.location}}</p>
+                            <p>Title: {{e.title}}</p>
+                            {% if user == e.host %}
+                            <p>Host: You </p>
+                            {% else %}
+                            <p>Host: {{e.host}}</p>
+                            {% endif %}
+                            <p>Location: {{e.location}}</p>
                             <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
-
-
-                            {% if e in user.attendees.all%}
+                            {% if e.host == user %}
+                                <form id="remove-event-{{ forloop.counter0 }}" action="{% url 'map:removeEvent' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="event" value="{{e.id}}">
+                                            <a class="btn btn-danger" href="#" onclick="$('#remove-event-{{ forloop.counter0 }}').submit();" type="submit">Cancel</a>
+                                    <script>
+                                            $('#remove-event-{{ forloop.counter0 }}').on('submit', cancelEvent);
+                                    </script>
+                                </form>
+                            {% elif e in user.attendees.all%}
                                 <form id="cancel-event-{{ forloop.counter0 }}" action="{% url 'map:cancelEvent' %}" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="event" value="{{e.id}}">
-                                            <a class="btn btn-danger" href="#" onclick="$('#cancel-event-{{ forloop.counter0 }}').submit();" type="submit">Cancel</a>
+                                            <a class="btn btn-danger" href="#" onclick="$('#cancel-event-{{ forloop.counter0 }}').submit();" type="submit">Don't Attend</a>
                                     <script>
                                             $('#cancel-event-{{ forloop.counter0 }}').on('submit', cancelAttendee);
                                     </script>

@@ -256,12 +256,10 @@ def cancel_event(request):
         
 def remove_event_from_list(request):
     if request.method == 'POST':
-        event_id = request.POST.get('event-id')
+        event_id = request.POST.get('event')
         user = request.user
         if user.is_authenticated:
-            event_to_remove = EventModel.objects.get(pk=event_id)
-            if event_to_remove.host == user:
-                EventModel.objects.remove(pk=event_id)
+            EventModel.objects.get(pk=event_id).delete()
 
         return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
