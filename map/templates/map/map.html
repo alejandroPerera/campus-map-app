@@ -82,11 +82,12 @@
     {% if user.is_authenticated %}
             <p>Welcome, {{ user.username }}!</p>
             <a href = "{% url 'account_logout'%}"> Click here to logout</a>
+
             <div id="schedule-list">
                 {% if user.schedule.all|length > 0 %}
                 <p>
                     <button class='btn btn-dark'  type='button' data-target='#clist' data-toggle='collapse'>
-                        <b>My Classes</b>
+                        My Classes
                     </button>
                 </p> 
                     <script>
@@ -104,29 +105,31 @@
                             });
                         }
                     </script>
-                    <div class='collapse.show' id='clist'>
+                    <div class='collapse' id='clist'>
                         <ul class='list-group'>
                             {% for class in user.schedule.all %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     {{class}}
                                     <form id="remove-class-form-{{ forloop.counter0 }}" action="{% url 'map:removeClass' %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="class-id" value="{{class.class_number}}">
-                                            <a class="btn btn-danger " href="#" onclick="$('#remove-class-form-{{ forloop.counter0 }}').submit();" type="submit">Remove</a>
-                                    <script>
-                                            $('#remove-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
-                                    </script>
-                                </form>
+                                        {% csrf_token %}
+                                        <input type="hidden" name="class-id" value="{{class.class_number}}">
+                                                <a class="btn btn-danger " href="#" onclick="$('#remove-class-form-{{ forloop.counter0 }}').submit();" type="submit">Remove</a>
+                                        <script>
+                                                $('#remove-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
+                                        </script>
+                                    </form>
                                 </li>
                             {% endfor %}
                         </ul>
                     </div>
                 {% else %}
-                    <p>You haven't added any classes to your schedule yet
+                    <p><b>You haven't added any classes to your schedule yet.
                     Search for the course number or name below.
+                    </b>
                     </p>
                 {% endif %}
             </div>
+
     {% else %}
         <a href="{% provider_login_url 'google' %}">Login with Google</a>
     {% endif %}
@@ -183,6 +186,208 @@
         </form>
     </div>
 
+
+
     <!-- To be overwritten by the search function-->
     <div id="results"></div>
+{% endblock %}
+
+
+{% block makeEvent %}
+    <h3>Host your own event</h3>
+    {% if user.is_authenticated %}
+        <div id="make-event-modals">
+            <!-- From Bootstrap's docs -->
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#makeEventModal">
+              Create Event
+            </button>
+            <!-- Modal -->
+            <div class="modal fade" id="makeEventModal" tabindex="-1" role="dialog" aria-labelledby="makeEventModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Create New Event</h5>
+                  </div>
+                      <form action="{% url 'map:makeEvent' %}" id="make-event-form" method="post">
+                          {% csrf_token %}
+                          <div class="modal-body">
+                              <div id="div_id_title" class="form-group"> <label for="id_title" class=" requiredField">
+                                Title<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="title" maxlength="50" class="textinput textInput form-control" required="" id="id_title"> </div> </div> <div id="div_id_location" class="form-group"> <label for="id_location" class=" requiredField">
+                                Location<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="location" maxlength="200" class="textinput textInput form-control" required="" id="id_location"> </div> </div> <div id="div_id_date" class="form-group"> <label for="id_date" class=" requiredField">
+                                Date<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="date" class="datetimeinput form-control" required="" id="id_date"> </div> </div> <div id="div_id_capacity" class="form-group"> <label for="id_capacity" class=" requiredField">
+                                Capacity<span class="asteriskField">*</span> </label> <div class=""> <input type="number" name="capacity" min="0" class="numberinput form-control" required="" id="id_capacity"> </div> </div> <div id="div_id_description" class="form-group"> <label for="id_description" class=" requiredField">
+                                Description<span class="asteriskField">*</span> </label> <div class=""> <textarea name="description" cols="40" rows="10" style="height: 100px;" maxlength="200" class="textarea form-control" required="" id="id_description"></textarea> </div> </div>
+                          </div>
+                          <div class="modal-footer">
+                              <button type="submit" class="btn btn-success" >Create Event</button>
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                          </div>
+                          <script>
+                              $('#make-event-form').on('submit', function(e) {
+                                  e.preventDefault();
+
+                                  console.log("Make new event fired");
+                                  $.ajax({
+                                      url: $(this).attr('action'),
+                                      method: $(this).attr('method'),
+                                      data: $(this).serialize(),
+                                      success: function(data){
+                                        // Close the form modal
+                                        $('#makeEventModal').modal('toggle');
+                                        // Display the result modal
+                                        $('#result-modal-text').html(data);
+                                        $('#resultModal').modal('toggle');
+                                      }
+                                  });
+                              });
+                          </script>
+                      </form>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Second Modal to give the user the results of the form -->
+            <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <div class="modal-title" id="result-modal-text">
+                        <!-- Replaced by the results of the make event form -->
+                    </div>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <script>
+            // Updates the event list after creating the new event
+            $('#resultModal').on('hide.bs.modal', function(e){
+                $.ajax({
+                    url: {% url 'map:eventList' %},
+                    method: 'GET',
+                    success: function(data){
+                        console.log('Updated Event list');
+                        $('#events-list').html(data);
+                    }
+                });
+            });
+        </script>
+
+    {% else %}
+        <p>Need to be logged in to make an event</p>
+    {% endif %}
+{% endblock %}
+{% block yourEvent%}
+    <h1>Events</h1>
+    <p>Click to show public events hosted by you and others</p>
+    {% if user.is_authenticated %}
+        <div id="events-list">
+            <p>
+                <button class='btn btn-dark'  type='button' data-target='#elist' data-toggle='collapse'>
+                    Events
+                </button>
+            </p>
+            <div class='collapse' id='elist'>
+                {% if eventsList %}
+                <script>
+                        addAttendee = function(a) {
+                            a.preventDefault();
+
+                            console.log("User would like to attend event");
+                            $.ajax({
+                                url: $(this).attr('action'),
+                                method: $(this).attr('method'),
+                                data: $(this).serialize(),
+                                success: function(data){
+                                    $('#events-list').html(data)
+                                }
+                            });
+                        }
+                        cancelAttendee = function(a) {
+                            a.preventDefault();
+
+                            console.log("User would like to cancel attending event");
+                            $.ajax({
+                                url: $(this).attr('action'),
+                                method: $(this).attr('method'),
+                                data: $(this).serialize(),
+                                success: function(data){
+                                    $('#events-list').html(data)
+                                }
+                            });
+                        }
+                        cancelEvent = function(a) {
+                            a.preventDefault();
+
+                            console.log("User would like to cancel hosting event");
+                            $.ajax({
+                                url: $(this).attr('action'),
+                                method: $(this).attr('method'),
+                                data: $(this).serialize(),
+                                success: function(data){
+                                    $('#events-list').html(data)
+                                }
+                            });
+                        }
+                    </script>
+                    <ul class='list-group'>
+                        {% for e in eventsList%}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <p>Title: {{e.title}}</p>
+                            {% if user == e.host %}
+                            <p>Host: You </p>
+                            {% else %}
+                            <p>Host: {{e.host}}</p>
+                            {% endif %}
+                            <p>Location: {{e.location}}</p>
+                            <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
+                            {% if e.host == user %}
+                                <form id="remove-event-{{ forloop.counter0 }}" action="{% url 'map:removeEvent' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="event" value="{{e.id}}">
+                                            <a class="btn btn-danger" href="#" onclick="$('#remove-event-{{ forloop.counter0 }}').submit();" type="submit">Cancel</a>
+                                    <script>
+                                            $('#remove-event-{{ forloop.counter0 }}').on('submit', cancelEvent);
+                                    </script>
+                                </form>
+                            {% elif e in user.attendees.all%}
+                                <form id="cancel-event-{{ forloop.counter0 }}" action="{% url 'map:cancelEvent' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="event" value="{{e.id}}">
+                                            <a class="btn btn-danger" href="#" onclick="$('#cancel-event-{{ forloop.counter0 }}').submit();" type="submit">Don't Attend</a>
+                                    <script>
+                                            $('#cancel-event-{{ forloop.counter0 }}').on('submit', cancelAttendee);
+                                    </script>
+                                </form>
+                            {% else %}
+                            <form id="attend-event-{{ forloop.counter0 }}" action="{% url 'map:attendEvent' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="event" value="{{e.id}}">
+                                        <a class="btn btn-success" href="#" onclick="$('#attend-event-{{ forloop.counter0 }}').submit();" type="submit">Attend</a>
+                                <script>
+                                        $('#attend-event-{{ forloop.counter0 }}').on('submit', addAttendee);
+                                </script>
+                            </form>
+                            {% endif %}
+
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    No events yet...
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <p>Need to be logged in to see events</p>
+    {% endif %}
+{% endblock %}
+
+{% block events %}
+
 {% endblock %}

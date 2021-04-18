@@ -1,9 +1,9 @@
 from django.views import generic
 from django.shortcuts import render
-from .forms import ScheduleForm
+from .forms import ScheduleForm, MakeEventForm
 import requests
 import json
-from .models import ClassModel
+from .models import ClassModel, EventModel
 import re
 from django import template
 from django.http import HttpResponse, HttpResponseRedirect
@@ -80,6 +80,7 @@ class MapView(generic.FormView):
     def get_context_data(self, **kwargs):
         context = super(MapView, self).get_context_data(**kwargs)
         context.update({'starting_coords': self.starting_coords, 'access_token': self.access_token})
+        context['eventsList'] = EventModel.objects.all()  # created a variable that map.html can see
         return context
 
 
@@ -189,7 +190,6 @@ def get_class_search_results(request):
 def add_class(request):
     if request.method == 'POST':
         class_id = request.POST.get('class-id')
-        print(class_id)
         user = request.user
         if user.is_authenticated:
             class_to_add = ClassModel.objects.get(class_number=class_id)
@@ -215,3 +215,61 @@ def remove_class(request):
         return render(request, 'map/user_schedule.html', {'schedule': []})
 
     return render(request, 'map/user_schedule.html', {'schedule': []})
+
+
+def user_created_event(request):
+    if request.method == 'POST':
+        user = request.user
+        event_form = MakeEventForm(request.POST)
+        if user.is_authenticated and event_form.is_valid():
+            entry = event_form.save(commit=False)  # Don't save to the database just yet
+            entry.host = user  # Tie the host to this user
+            # Ignore the attendees they are set later
+            entry.save()  # Save to the database
+            event_form.save_m2m()  # Needs to be called if commit = False
+            return render(request, 'map/event.html', {'success': True})
+
+    return render(request, 'map/event.html', {'success': False})
+
+
+def attend_event(request):
+    if request.method == 'POST':
+        user = request.user
+        event_id = request.POST.get('event')
+        event_to_attend = EventModel.objects.get(pk=event_id)
+        # checks if already attending event and if host tries to attend own event
+        if event_to_attend.host != user and event_to_attend not in user.attendees.all():
+            user.attendees.add(event_to_attend)  # link user and event
+            event_to_attend.numberOfAttendees += 1  # update attendance
+            event_to_attend.save()
+
+    return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
+
+
+def cancel_event(request):
+    if request.method == 'POST':
+        user = request.user
+        event_id = request.POST.get('event')
+        event_to_attend = EventModel.objects.get(pk=event_id)
+        user.attendees.remove(event_to_attend)  # unlink user and event
+        event_to_attend.numberOfAttendees -= 1  # update attendance
+        event_to_attend.save()
+
+    return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
+
+
+def remove_event_from_list(request):
+    if request.method == 'POST':
+        event_id = request.POST.get('event')
+        user = request.user
+        if user.is_authenticated:
+            EventModel.objects.get(pk=event_id).delete()
+
+        return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
+
+    return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
+
+
+def get_event_list(request):
+    print(EventModel.objects.all())
+    return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
