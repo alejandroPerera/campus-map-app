@@ -80,7 +80,7 @@ class MapView(generic.FormView):
     def get_context_data(self, **kwargs):
         context = super(MapView, self).get_context_data(**kwargs)
         context.update({'starting_coords': self.starting_coords, 'access_token': self.access_token})
-        context['eventsList'] = EventModel.objects.all() #created a variable that map.html can see
+        context['eventsList'] = EventModel.objects.all()  # created a variable that map.html can see
         return context
 
 
@@ -216,6 +216,7 @@ def remove_class(request):
 
     return render(request, 'map/user_schedule.html', {'schedule': []})
 
+
 def user_created_event(request):
     if request.method == 'POST':
         user = request.user
@@ -230,30 +231,33 @@ def user_created_event(request):
 
     return render(request, 'map/event.html', {'success': False})
 
+
 def attend_event(request):
     if request.method == 'POST':
         user = request.user
         event_id = request.POST.get('event')
         event_to_attend = EventModel.objects.get(pk=event_id)
-        #checks if already attending event and if host tries to attend own event 
-        if event_to_attend.host != user and event_to_attend not in user.attendees.all():  
-            user.attendees.add(event_to_attend) #link user and event 
-            event_to_attend.numberOfAttendees += 1 #update attendance
+        # checks if already attending event and if host tries to attend own event
+        if event_to_attend.host != user and event_to_attend not in user.attendees.all():
+            user.attendees.add(event_to_attend)  # link user and event
+            event_to_attend.numberOfAttendees += 1  # update attendance
             event_to_attend.save()
-            
+
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
+
 
 def cancel_event(request):
     if request.method == 'POST':
         user = request.user
         event_id = request.POST.get('event')
         event_to_attend = EventModel.objects.get(pk=event_id)
-        user.attendees.remove(event_to_attend) #unlink user and event 
-        event_to_attend.numberOfAttendees -= 1 #update attendance
+        user.attendees.remove(event_to_attend)  # unlink user and event
+        event_to_attend.numberOfAttendees -= 1  # update attendance
         event_to_attend.save()
-            
+
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
-        
+
+
 def remove_event_from_list(request):
     if request.method == 'POST':
         event_id = request.POST.get('event')
@@ -263,4 +267,9 @@ def remove_event_from_list(request):
 
         return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
+    return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
+
+
+def get_event_list(request):
+    print(EventModel.objects.all())
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})

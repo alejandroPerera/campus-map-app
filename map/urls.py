@@ -9,7 +9,9 @@ urlpatterns = [
     path('addClass/', views.add_class, name='addClass'),
     path('removeClass/', views.remove_class, name='removeClass'),
     path('makeEvent/', views.user_created_event, name='makeEvent'),
-    path('attendEvent/',views.attend_event, name = "attendEvent"),
-    path('cancelEvent/', views.cancel_event, name = 'cancelEvent'),
-    path('removeEvent/', views.remove_event_from_list, name = 'removeEvent'),
+    path('attendEvent/', views.attend_event, name="attendEvent"),
+    path('cancelEvent/', views.cancel_event, name='cancelEvent'),
+    path('removeEvent/', views.remove_event_from_list, name='removeEvent'),
+    path('eventList/', views.get_event_list, name='eventList'),
+
 ]

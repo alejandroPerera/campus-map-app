@@ -264,6 +264,19 @@
               </div>
             </div>
         </div>
+        <script>
+            // Updates the event list after creating the new event
+            $('#resultModal').on('hide.bs.modal', function(e){
+                $.ajax({
+                    url: {% url 'map:eventList' %},
+                    method: 'GET',
+                    success: function(data){
+                        console.log('Updated Event list');
+                        $('#events-list').html(data);
+                    }
+                });
+            });
+        </script>
 
     {% else %}
         <p>Need to be logged in to make an event</p>
