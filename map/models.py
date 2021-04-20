@@ -9,6 +9,7 @@ class ClassModel(models.Model):
     class_number = models.IntegerField()  # This is the 5 digit unique class ID. Ex: 15927
     class_mnemonic = models.CharField(max_length=200)
     course_number = models.IntegerField()  # This is the 4 digit course number, but is not specific to section Ex: 3240
+    #somehow concatenate mnemonic and number
     class_section = models.IntegerField()
     class_type = models.CharField(max_length=200)
     class_units = models.FloatField()
@@ -43,6 +44,8 @@ class EventModel(models.Model):
     capacity = models.PositiveIntegerField()
     location = models.CharField(max_length=200)
     date = models.DateTimeField(help_text='In the form MM/DD/YY hh:mm')
+    # startTime = models.TimeField()
+    # endTime = models.TimeField(default=)
     description = models.CharField(max_length=200, blank=True)
     host = models.ForeignKey(User, on_delete=models.PROTECT, related_name='host', null=True, default=None)
     attendees = models.ManyToManyField(User, related_name='attendees', default=None)

@@ -273,3 +273,9 @@ def remove_event_from_list(request):
 def get_event_list(request):
     print(EventModel.objects.all())
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
+
+def show_schedule_page(request):
+    return render(request,'map/schedule_page.html')
+
+def show_events_page(request):
+    return render(request,'map/events_page.html')

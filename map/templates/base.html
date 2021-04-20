@@ -15,11 +15,11 @@
 
     <title>{% block title %}Campus Map{% endblock %}</title>
     <style>
-        /* body{ this was causing the make events button to not load
+        body{ this was causing the make events button to not load
             overflow-y: hidden;
-        } */
+        }
         div.col-4{
-            height : 785px;
+            height : auto;
             overflow-y: auto;
         }
 
@@ -42,8 +42,6 @@
                 {% endblock %}
             </div>
             <div id="schedule-col" class="col-4">
-
-                <h1>Schedule</h1>
                 {% block schedule %}
                 {% endblock%}
             </div>
