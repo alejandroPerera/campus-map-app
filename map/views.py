@@ -191,6 +191,7 @@ def add_class(request):
     if request.method == 'POST':
         class_id = request.POST.get('class-id')
         user = request.user
+        print(class_id)
         if user.is_authenticated:
             class_to_add = ClassModel.objects.get(class_number=class_id)
             user.schedule.add(class_to_add)

@@ -8,6 +8,7 @@
                     let split = value.split(/[\[\], ]/);
                     let coords = [parseFloat(split[1]), parseFloat(split[3])];
                     var name = $(this).attr("name");
+                    //var time = $(this).attr("time");
                     //console.log(coords);
 
                     if (!isNaN(coords[0]) && !isNaN(coords[1])) {
@@ -62,23 +63,33 @@
                    </div>
                    <div class="p-2 bd-highlight">
                            <div id="class-{{ class.class_id }}">
-                                   {% if class.in_schedule %}
-                                        <a tabindex="0" id="add-class-button-{{ forloop.counter0 }}" type="button" class="btn btn-success" data-toggle="popover" data-trigger="focus" data-content="This class is already in your schedule!">Add Class</a>
+                                   {% if user.is_authenticated%}
+                                           {% if class.in_schedule %}
+                                                <a tabindex="0" id="add-class-button-{{ forloop.counter0 }}" type="button" class="btn btn-success" data-toggle="popover" data-trigger="focus" data-content="This class is already in your schedule!">Add Class</a>
+                                                <script>
+                                                        $('#add-class-button-{{ forloop.counter0 }}').popover()
+                                                        $('.popover-dismiss').popover({
+                                                          trigger: 'focus'
+                                                        })
+                                                </script>
+                                           {% else %}
+                                                   <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
+                                                           {% csrf_token %}
+                                                           <input type="hidden" name="class-id" value="{{class.class_id}}">
+                                                           <button type="submit" class="btn btn-success">Add Class</button>
+                                                           <script>
+                                                                   $('#add-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
+                                                           </script>
+                                                   </form>
+                                           {% endif %}
+                                   {% else %}
+                                        <a tabindex="0" id="add-class-button-{{ forloop.counter0 }}1" type="button" class="btn btn-success" data-toggle="popover" data-trigger="focus" data-content="Login to add to schedule!">Add Class</a>
                                         <script>
-                                                $('#add-class-button-{{ forloop.counter0 }}').popover()
+                                                $('#add-class-button-{{ forloop.counter0 }}1').popover()
                                                 $('.popover-dismiss').popover({
                                                   trigger: 'focus'
                                                 })
                                         </script>
-                                   {% else %}
-                                           <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
-                                                   {% csrf_token %}
-                                                   <input type="hidden" name="class-id" value="{{class.class_id}}">
-                                                   <button type="submit" class="btn btn-success">Add Class</button>
-                                                   <script>
-                                                           $('#add-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
-                                                   </script>
-                                           </form>
                                    {% endif %}
                            </div>
                            <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-primary">Show On Map</button>
