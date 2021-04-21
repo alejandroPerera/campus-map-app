@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load socialaccount %}
 {% load crispy_forms_tags %}
+{% load check_date %}
 
 <!-- Redefine the title-->
 {% block title %}Map{% endblock %}
@@ -337,6 +338,7 @@
                     </script>
                     <ul class='list-group'>
                         {% for e in eventsList%}
+                        {% if e.date|check_date %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <p>Title: {{e.title}}</p>
                             {% if user == e.host %}
@@ -376,6 +378,7 @@
                             {% endif %}
 
                         </li>
+                        {% endif %}
                         {% endfor %}
                     </ul>
                 {% else %}
