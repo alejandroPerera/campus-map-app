@@ -279,4 +279,4 @@ def show_schedule_page(request):
     return render(request,'map/schedule_page.html')
 
 def show_events_page(request):
-    return render(request,'map/events_page.html')
+    return render(request,'map/events_page.html', {'eventsList': EventModel.objects.all()})
