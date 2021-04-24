@@ -6784,6 +6784,11 @@ a.close.disabled {
   }
 }
 
+.stop {
+ animation-name: none !important;
+ -webkit-animation-name: none !important;
+}
+
 .align-baseline {
   vertical-align: baseline !important;
 }
