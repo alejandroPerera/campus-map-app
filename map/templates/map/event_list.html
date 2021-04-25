@@ -1,7 +1,7 @@
 {% if user.is_authenticated %}
     <div id="events-list">
         <p>
-            <button class='btn btn-dark'  type='button' data-target='#elist' data-toggle='collapse'>
+            <button class='btn btn-info'  type='button' data-target='#elist' data-toggle='collapse'>
                 Events
             </button>
         </p>
@@ -72,7 +72,7 @@
                             <form id="cancel-event-{{ forloop.counter0 }}" action="{% url 'map:cancelEvent' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="event" value="{{e.id}}">
-                                        <a class="btn btn-danger" href="#" onclick="$('#cancel-event-{{ forloop.counter0 }}').submit();" type="submit">Don't Attend</a>
+                                        <a class="btn btn-warning" href="#" onclick="$('#cancel-event-{{ forloop.counter0 }}').submit();" type="submit">Don't Attend</a>
                                 <script>
                                         $('#cancel-event-{{ forloop.counter0 }}').on('submit', cancelAttendee);
                                 </script>

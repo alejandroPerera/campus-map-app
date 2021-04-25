@@ -5,7 +5,7 @@
                 <div id="schedule-list">
                     {% if user.schedule.all|length > 0 %}
                     <p>
-                        <button class='btn btn-dark'  type='button' data-target='#clist' data-toggle='collapse'>
+                        <button class='btn btn-info'  type='button' data-target='#clist' data-toggle='collapse'>
                             My Classes
                         </button>
                     </p>
@@ -73,13 +73,19 @@
                     <div class=""> <input type="text" name="search" maxlength="50" class="textinput textInput form-control" required="" id="id_search">
                     </div>
                 </div>
-            <button type="submit" class="btn btn-success">Search</button>
-            <button type="reset" class="btn btn-secondary" onclick="document.getElementById('id_search').value = ''">Clear</button>
+            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="reset" class="btn btn-warning" onclick="document.getElementById('id_search').value = ''">Clear</button>
+            <div class="text-center" id = "spinner">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </div>
 
             <!-- From: https://stackoverflow.com/questions/17599035/django-how-can-i-call-a-view-function-from-template-->
             <!-- Using AJAX to load the data without refreshing the page -->
             <script>
                 // This will pass the form action and hopefully reload the results div with the results
+                $("#spinner").hide(); //Hides spinner before anything happens
                 $(function(){
                      $('#search-form').on('submit', function(e){
                          e.preventDefault();
@@ -91,10 +97,18 @@
                              success: function(data){ $('#results').html(data) }
                          });
 
-                         // Resize the results page?
-                         //$('#results .list-group').css({
-                         //   'height: ' $('#schedule-col').height() - $('#location-search').height() + 'px;'
-                         //});
+                         //https://stackoverflow.com/questions/2275342/jquery-ajaxstart-doesnt-get-triggered
+                        $(document).ajaxStart(function(){
+                            console.log("loading");
+                            $("#spinner").remove("invisible");
+                            $("#spinner").show();
+
+                        });
+                        $(document).ajaxStop(function() {
+                          $("#spinner").hide();
+                          $("#st-tree-container").show();
+                        });
+
                      });
                      $('form').on('reset', function(e){
                          e.preventDefault();
