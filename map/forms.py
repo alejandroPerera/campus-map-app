@@ -14,3 +14,11 @@ class MakeEventForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'style': 'height: 100px;'})
         }
+
+class UpdateEventForm(forms.ModelForm):
+    class Meta:
+        model = EventModel
+        fields = ['title', 'location', 'date', 'capacity', 'description', 'id']
+        widgets = {
+            'description': forms.Textarea(attrs={'style': 'height: 100px;'})
+        }
