@@ -102,7 +102,7 @@
                 </li>
                 <li class = "nav-item">
                     {% if user.is_authenticated %}
-                        <a class = "nav-link" href = "{% url 'account_logout'%}">Logout</a>
+                        <a class = "nav-link" href = "{% url 'map:logout'%}">Logout</a>
                     {% else %}
                         <a class = "nav-link" href="{% provider_login_url 'google' %}">Login</a>
                     {% endif %}
@@ -113,6 +113,7 @@
     <div id = "showSchedule">
         <div id="class-schedule-list">
             {% if user.is_authenticated %}
+            <br>
                 <div id="schedule-list">
                     {% if user.schedule.all|length > 0 %}
                     <p>
@@ -120,6 +121,7 @@
                             My Classes
                         </button>
                     </p>
+
                         <script>
                             editSchedule = function(e) {
                                 e.preventDefault();
@@ -161,7 +163,7 @@
                 </div>
             {% endif %}
         </div>
-
+        <br>
         <div id="schedule-instructions">
             <b>
                 To display information about each location on the map, left click its marker.
@@ -226,7 +228,7 @@
         </div>
 
 
-
+        <br>
         <!-- To be overwritten by the search function-->
         <div id="results"></div>
     </div>

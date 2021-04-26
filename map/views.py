@@ -5,6 +5,7 @@ import requests
 import json
 from .models import ClassModel, EventModel
 import re
+from django.contrib.auth import logout
 from django import template
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -279,3 +280,7 @@ def show_schedule_page(request):
 
 def show_events_page(request):
     return render(request,'map/events_page.html', {'eventsList': EventModel.objects.all()})
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('map:map'))
