@@ -117,7 +117,7 @@
                 <div id="schedule-list">
                     {% if user.schedule.all|length > 0 %}
                     <p>
-                        <button class='btn btn-dark'  type='button' data-target='#clist' data-toggle='collapse'>
+                        <button class='btn btn-info'  type='button' data-target='#clist' data-toggle='collapse'>
                             My Classes
                         </button>
                     </p>
@@ -177,8 +177,8 @@
             <form id="search-form" action="{% url 'map:search' %}" id="location-search" method="post">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <button type="submit" class="btn btn-success">Search</button>
-                <button type="reset" class="btn btn-secondary" onclick="document.getElementById('id_search').value = ''">Clear</button>
+                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="reset" class="btn btn-warning" onclick="document.getElementById('id_search').value = ''">Clear</button>
                 <div class="text-center" id = "spinner">
                   <div class="spinner-border" role="status">
                     <span class="sr-only">Loading...</span>
