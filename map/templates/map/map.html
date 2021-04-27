@@ -78,7 +78,7 @@
     </script>
 {% endblock %}
 {% block schedule %}
-    <nav class = "navbar navbar-expand-md navbar-light bg-light sticky-top">
+    <nav id = "navbar" class = "navbar navbar-expand-md navbar-light bg-dark sticky-top">
         <div class = "container-fluid">
             <ul class = "navbar-nav ml-auto">
                 <script>
@@ -93,27 +93,33 @@
                             }
                         });
                     };
-                </script>
-                <li class= "nav-item" >
-                    <a class ="nav-link" href="#"onclick="updateSidebar({% url 'map:schedulePage'%})">Schedule</a>
+                </script><div style="float:left">
+                <li class = "nav-item" style = "float:left">
+                    {% if user.is_authenticated %}
+                        <p class = "nav-link" style = "color: white ;font-size: 20px;">Welcome! {{user}}</p>
+                    {% endif %}
+                </li>
+            </div>
+                <li class= "nav-item active" >
+                    <a class ="nav-link " style="color: gray;font-size: 20px;" href="#"onclick="updateSidebar({% url 'map:schedulePage'%})">Schedule</a>
                 </li>
                 <li class= "nav-item" >
-                    <a class ="nav-link" href="#" onclick="updateSidebar({% url 'map:eventsPage'%})">Events</a>
+                    <a class ="nav-link " style="color: gray;font-size: 20px;" href="#" onclick="updateSidebar({% url 'map:eventsPage'%})">Events</a>
                 </li>
                 <li class = "nav-item">
                     {% if user.is_authenticated %}
-                        <a class = "nav-link" href = "{% url 'map:logout'%}">Logout</a>
+                        <a class = "nav-link" style="color: gray;font-size: 20px;" href = "{% url 'map:logout'%}">Logout</a>
                     {% else %}
-                        <a class = "nav-link" href="{% provider_login_url 'google' %}">Login</a>
+                        <a class = "nav-link" style="color: gray;font-size: 20px;" href="{% provider_login_url 'google' %}">Login</a>
                     {% endif %}
                 </li>
             </ul>
         </div>
     </nav>
+<br>
     <div id = "showSchedule">
         <div id="class-schedule-list">
             {% if user.is_authenticated %}
-            <br>
                 <div id="schedule-list">
                     {% if user.schedule.all|length > 0 %}
                     <p>

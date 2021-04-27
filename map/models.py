@@ -40,9 +40,9 @@ class ClassModel(models.Model):
 
 
 class EventModel(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=30)
     capacity = models.PositiveIntegerField()
-    location = models.CharField(max_length=200)
+    location = models.CharField(max_length=50)
     date = models.DateTimeField(help_text='In the form MM/DD/YY hh:mm')
     # startTime = models.TimeField()
     # endTime = models.TimeField(default=)

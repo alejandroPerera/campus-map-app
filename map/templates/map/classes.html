@@ -53,7 +53,21 @@
                 }
 
         </script>
+        <style>
+                ::-webkit-scrollbar {
+                  width: 12px;               /* width of the entire scrollbar */
+                }
 
+                ::-webkit-scrollbar-track {
+                  background: gray;        /* color of the tracking area */
+                }
+
+                ::-webkit-scrollbar-thumb {
+                  background-color: #2b4764;    /* color of the scroll thumb */
+                  border-radius: 12px;       /* roundness of the scroll thumb */
+                  border: 3px solid #2b4764;  /* creates padding around scroll thumb */
+        </style>
+    <div id = "scrol">
         <ul class="list-group overflow-auto">
         {% for class in classR %}
            <li class="list-group-item d-flex">
@@ -100,6 +114,7 @@
            </li>
         {% endfor %}
         </ul>
+    </div>
 {% else %}
         <p>No results found</p>
 {% endif %}
