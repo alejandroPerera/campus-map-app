@@ -1,5 +1,6 @@
 <!-- Display a list of the results -->
 {% if results|length > 0 %}
+
     <script>
         searchClick = function(e) {
             console.log("Pin button clicked");
@@ -15,7 +16,7 @@
                 var marker = new mapboxgl.Marker()
                   .setLngLat(coords)
                   .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                      .setHTML('<p>' + name + '</p>'))
+                      .setHTML('<p style = "color:black">' + name + '</p>'))
 
                 var i;
                 for (i = 0; i < allMarkers.length; i++) {
@@ -43,7 +44,6 @@
             console.log("Button clicked");
         }
     </script>
-
     <ul class="list-group overflow-auto">
         {% for r in results %}
             <li class="list-group-item d-flex">
