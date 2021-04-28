@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render
-from .forms import ScheduleForm, MakeEventForm
+from .forms import ScheduleForm, MakeEventForm, UpdateEventForm
 import requests
 import json
 from .models import ClassModel, EventModel
@@ -228,6 +228,23 @@ def user_created_event(request):
             # Ignore the attendees they are set later
             entry.save()  # Save to the database
             event_form.save_m2m()  # Needs to be called if commit = False
+            return render(request, 'map/event.html', {'success': True})
+
+    return render(request, 'map/event.html', {'success': False})
+
+def user_updated_event(request):
+    if request.method == 'POST':
+        user = request.user
+        event_form = UpdateEventForm(request.POST)
+        print("User updating event")
+        if user.is_authenticated and event_form.is_valid():
+            entry = event_form.save(commit=False)  # Don't save to the database just yet
+            print("Testing for ID: ", entry.id)
+            print("Title: ", entry.title)
+            #entry.host = user  # Tie the host to this user
+            # Ignore the attendees they are set later
+            #entry.save()  # Save to the database
+            #event_form.save_m2m()  # Needs to be called if commit = False
             return render(request, 'map/event.html', {'success': True})
 
     return render(request, 'map/event.html', {'success': False})
