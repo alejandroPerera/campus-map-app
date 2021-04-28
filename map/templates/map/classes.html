@@ -107,10 +107,18 @@
                                         </script>
                                    {% endif %}
                            </div>
-                           <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-info">Show On Map</button>
-                           <script>
-                                $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
-                            </script>
+                            {% if class.class_loc_coords == None %}
+                                 <button type="button" id="add-marker-{{ forloop.counter0 }}-none" data-toggle="popover" data-content="This class has no location"class="btn btn-info">Show On Map</button>
+                                 <script>
+                                    $('#add-marker-{{ forloop.counter0 }}-none').popover()
+                                 </script>
+                            {% else %}
+                                 <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-info">Show On Map</button>
+                                 <script>
+                                    $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
+                                 </script>
+                            {% endif%}
+
                    </div>
            </li>
         {% endfor %}
