@@ -1,0 +1,114 @@
+{% load socialaccount %}
+{% load crispy_forms_tags %}
+<div id="class-schedule-list">
+        {% if user.is_authenticated %}
+                <div id="schedule-list">
+                    {% if user.schedule.all|length > 0 %}
+                    <p>
+                        <button class='btn btn-dark'  type='button' data-target='#clist' data-toggle='collapse'>
+                            My Classes
+                        </button>
+                    </p>
+                        <script>
+                            editSchedule = function(e) {
+                                e.preventDefault();
+
+                                console.log("Editing classes");
+                                $.ajax({
+                                    url: $(this).attr('action'),
+                                    method: $(this).attr('method'),
+                                    data: $(this).serialize(),
+                                    success: function(data){
+                                        $('#schedule-list').html(data)
+                                    }
+                                });
+                            }
+                        </script>
+                        <div class='collapse' id='clist'>
+                            <ul class='list-group'>
+                                {% for class in user.schedule.all %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {{class}}
+                                        <form id="remove-class-form-{{ forloop.counter0 }}" action="{% url 'map:removeClass' %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="class-id" value="{{class.class_number}}">
+                                                    <a class="btn btn-danger " href="#" onclick="$('#remove-class-form-{{ forloop.counter0 }}').submit();" type="submit">Remove</a>
+                                            <script>
+                                                    $('#remove-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
+                                            </script>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <p><b>You haven't added any classes to your schedule yet.
+                        Search for the course number or name below.
+                        </b>
+                        </p>
+                    {% endif %}
+                </div>
+
+        {% else %}
+            <p>Login to see your schedule</p>
+        {% endif %}
+    </div>
+
+    <div id="schedule-instructions"><b>
+        To display information about each location on the map, left click its marker.
+        To remove a marker, right click on it.
+        Use the search box below to search for classes or locations around UVA.</b>
+    </div>
+
+
+    <div id="search-div">
+        <!-- Builds from the ScheduleForm class -->
+        <form id="search-form" action="{% url 'map:search' %}" id="location-search" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div id="div_id_search" class="form-group">
+                    <label for="id_search" class=" requiredField">
+                        Search
+                        <span class="asteriskField">*</span> </label>
+                    <div class=""> <input type="text" name="search" maxlength="50" class="textinput textInput form-control" required="" id="id_search">
+                    </div>
+                </div>
+            <button type="submit" class="btn btn-success">Search</button>
+            <button type="reset" class="btn btn-secondary" onclick="document.getElementById('id_search').value = ''">Clear</button>
+
+            <!-- From: https://stackoverflow.com/questions/17599035/django-how-can-i-call-a-view-function-from-template-->
+            <!-- Using AJAX to load the data without refreshing the page -->
+            <script>
+                // This will pass the form action and hopefully reload the results div with the results
+                $(function(){
+                     $('#search-form').on('submit', function(e){
+                         e.preventDefault();
+
+                         $.ajax({
+                             url: $(this).attr('action'),
+                             method: $(this).attr('method'),
+                             data: $('form').serialize(), // serialize converts the form inputs into the url
+                             success: function(data){ $('#results').html(data) }
+                         });
+
+                         // Resize the results page?
+                         //$('#results .list-group').css({
+                         //   'height: ' $('#schedule-col').height() - $('#location-search').height() + 'px;'
+                         //});
+                     });
+                     $('form').on('reset', function(e){
+                         e.preventDefault();
+
+                         $.ajax({
+                             success: function(data){
+                                $('#results').html('')
+                             }
+                         });
+
+                     });
+                });
+            </script>
+
+        </form>
+    </div>
+<div id="results"></div>
