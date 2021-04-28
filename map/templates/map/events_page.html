@@ -89,15 +89,16 @@
     {% endif %}
 
     <h1>Events</h1>
-    <p>Click to show public events hosted by you and others</p>
     {% if user.is_authenticated %}
-        <div id="events-list">
+    <p>Click to show public events hosted by you and others</p>
+
+        <div id="events-list-section">
             <p>
-                <button class='btn btn-dark'  type='button' data-target='#elist' data-toggle='collapse'>
+                <button class='btn btn-dark'  type='button' data-target='#events-list' data-toggle='collapse'>
                     Events
                 </button>
             </p>
-            <div class='collapse' id='elist'>
+            <div class='collapse' id='events-list'>
                 {% if eventsList %}
                 <script>
                         addAttendee = function(a) {
