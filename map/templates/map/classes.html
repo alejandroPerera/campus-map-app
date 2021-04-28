@@ -28,6 +28,7 @@
                         }
 
                         marker.addTo(map);
+                        map.flyTo({center: coords, zoom: 17});
 
                         marker.getElement().addEventListener('contextmenu', function(e) {
                             marker.remove();
