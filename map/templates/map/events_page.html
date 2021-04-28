@@ -94,7 +94,7 @@
 
         <div id="events-list-section">
             <p>
-                <button class='btn btn-dark'  type='button' data-target='#events-list' data-toggle='collapse'>
+                <button class='btn btn-dark' type='button' data-target='#events-list' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="#events-list">
                     Events
                 </button>
             </p>
@@ -144,42 +144,61 @@
                     <ul class='list-group'>
                         {% for e in eventsList%}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <p>Title: {{e.title}}</p>
-                            {% if user == e.host %}
-                            <p>Host: You </p>
-                            {% else %}
-                            <p>Host: {{e.host}}</p>
-                            {% endif %}
-                            <p>Location: {{e.location}}</p>
-                            <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
-                            {% if e.host == user %}
-                                <form id="remove-event-{{ forloop.counter0 }}" action="{% url 'map:removeEvent' %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="event" value="{{e.id}}">
-                                            <a class="btn btn-danger" href="#" onclick="$('#remove-event-{{ forloop.counter0 }}').submit();" type="submit">Cancel</a>
-                                    <script>
-                                            $('#remove-event-{{ forloop.counter0 }}').on('submit', cancelEvent);
-                                    </script>
-                                </form>
-                            {% elif e in user.attendees.all%}
-                                <form id="cancel-event-{{ forloop.counter0 }}" action="{% url 'map:cancelEvent' %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="event" value="{{e.id}}">
-                                            <a class="btn btn-danger" href="#" onclick="$('#cancel-event-{{ forloop.counter0 }}').submit();" type="submit">Don't Attend</a>
-                                    <script>
-                                            $('#cancel-event-{{ forloop.counter0 }}').on('submit', cancelAttendee);
-                                    </script>
-                                </form>
-                            {% else %}
-                            <form id="attend-event-{{ forloop.counter0 }}" action="{% url 'map:attendEvent' %}" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="event" value="{{e.id}}">
-                                        <a class="btn btn-success" href="#" onclick="$('#attend-event-{{ forloop.counter0 }}').submit();" type="submit">Attend</a>
-                                <script>
-                                        $('#attend-event-{{ forloop.counter0 }}').on('submit', addAttendee);
-                                </script>
-                            </form>
-                            {% endif %}
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col col-sm-6 text-center vertical">
+                                        Title: {{e.title}}
+                                    </div>
+                                    <div class="col col-sm-3 text-center vertical">
+                                        <p>
+                                            <button class='btn btn-dark' type='button' data-target='#{{e.title}}-{{e.pk}}-details' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="{{e.title}}-{{e.pk}}-details">
+                                                Details
+                                            </button>
+                                        </p>
+                                    </div>
+                                    <div class="col col-sm-3 text-center vertical">
+                                        {% if e.host == user %}
+                                            <form id="remove-event-{{ forloop.counter0 }}" action="{% url 'map:removeEvent' %}" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="event" value="{{e.id}}">
+                                                        <a class="btn btn-danger" href="#" onclick="$('#remove-event-{{ forloop.counter0 }}').submit();" type="submit">Cancel</a>
+                                                <script>
+                                                        $('#remove-event-{{ forloop.counter0 }}').on('submit', cancelEvent);
+                                                </script>
+                                            </form>
+                                        {% elif e in user.attendees.all%}
+                                            <form id="cancel-event-{{ forloop.counter0 }}" action="{% url 'map:cancelEvent' %}" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="event" value="{{e.id}}">
+                                                        <a class="btn btn-danger" href="#" onclick="$('#cancel-event-{{ forloop.counter0 }}').submit();" type="submit">Don't Attend</a>
+                                                <script>
+                                                        $('#cancel-event-{{ forloop.counter0 }}').on('submit', cancelAttendee);
+                                                </script>
+                                            </form>
+                                        {% else %}
+                                        <form id="attend-event-{{ forloop.counter0 }}" action="{% url 'map:attendEvent' %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="event" value="{{e.id}}">
+                                                    <a class="btn btn-success" href="#" onclick="$('#attend-event-{{ forloop.counter0 }}').submit();" type="submit">Attend</a>
+                                            <script>
+                                                    $('#attend-event-{{ forloop.counter0 }}').on('submit', addAttendee);
+                                            </script>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+                                <div class='row collapse' id='{{e.title}}-{{e.pk}}-details'>
+                                    {% if user == e.host %}
+                                    <p>Host: You </p>
+                                    {% else %}
+                                    <p>Host: {{e.host}}</p>
+                                    {% endif %}
+                                    <p>Location: {{e.location}}</p>
+                                    <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
+                                </div>
+
+                            </div>
 
                         </li>
                         {% endfor %}

@@ -24,11 +24,17 @@ background: rgb(225,225,225);
 }
 
 #results .list-group {
-height: 400px;
-overflow-y: scroll;
+    height: 400px;
+    overflow-y: scroll;
 }
 
 .delete-button {
-  background-color: red;
-  color : red;
+    background-color: red;
+    color : red;
+}
+
+.vertical {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
