@@ -191,19 +191,16 @@
                                 </div>
 
                                 <div id='details-{{forloop.counter0}}' class="collapse">
-                                    <div class="row">
+                                    <ul>
                                         {% if user == e.host %}
-                                        <p>Host: You </p>
+                                        <li>Host: <b>You</b> </li>
                                         {% else %}
-                                        <p>Host: {{e.host}}</p>
+                                        <li>Host: <b>{{e.host}}</b></li>
                                         {% endif %}
-                                    </div>
-                                    <div class="row">
-                                        <p>Location: {{e.location}}</p>
-                                    </div>
-                                    <div class="row">
-                                        Attending <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
-                                    </div>
+                                        <li>Location: <b>{{e.location}}</b> </li>
+                                        <li>Date: <b>{{e.date}}</b></li>
+                                        <li>Attendees: <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span></li>
+                                    </ul>
                                     <div class="row justify-right">
                                         {% if e.host == user %}
                                             <!-- Button trigger modal -->
