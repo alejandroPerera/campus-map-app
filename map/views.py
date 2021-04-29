@@ -232,19 +232,29 @@ def user_created_event(request):
 
     return render(request, 'map/event.html', {'success': False})
 
+
 def user_updated_event(request):
     if request.method == 'POST':
         user = request.user
         event_form = UpdateEventForm(request.POST)
         print("User updating event")
         if user.is_authenticated and event_form.is_valid():
-            entry = event_form.save(commit=False)  # Don't save to the database just yet
-            print("Testing for ID: ", entry.id)
-            print("Title: ", entry.title)
-            #entry.host = user  # Tie the host to this user
+            print('Do I have a title?', event_form.cleaned_data)
+            database_entry = EventModel.objects.get(pk=event_form.cleaned_data['id'])
+
+            database_entry.title = event_form.cleaned_data['title']
+            database_entry.location = event_form.cleaned_data['location']
+            database_entry.date = event_form.cleaned_data['date']
+            database_entry.capacity = event_form.cleaned_data['capacity']
+            database_entry.description = event_form.cleaned_data['description']
+
+            database_entry.save()
+
+            print("Title: ", database_entry.title)
+            # entry.host = user  # Tie the host to this user
             # Ignore the attendees they are set later
-            #entry.save()  # Save to the database
-            #event_form.save_m2m()  # Needs to be called if commit = False
+            # entry.save()  # Save to the database
+            # event_form.save_m2m()  # Needs to be called if commit = False
             return render(request, 'map/event.html', {'success': True})
 
     return render(request, 'map/event.html', {'success': False})

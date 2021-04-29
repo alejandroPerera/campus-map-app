@@ -12,13 +12,14 @@ class MakeEventForm(forms.ModelForm):
         model = EventModel
         fields = ['title', 'location', 'date', 'capacity', 'description']
         widgets = {
-            'description': forms.Textarea(attrs={'style': 'height: 100px;'}), 
+            'description': forms.Textarea(attrs={'style': 'height: 100px;'}),
         }
 
-class UpdateEventForm(forms.ModelForm):
-    class Meta:
-        model = EventModel
-        fields = ['title', 'location', 'date', 'capacity', 'description', 'id']
-        widgets = {
-            'description': forms.Textarea(attrs={'style': 'height: 100px;'})
-        }
+
+class UpdateEventForm(forms.Form):
+    title = forms.CharField(max_length=50)
+    location = forms.CharField(max_length=200)
+    date = forms.DateTimeField()
+    capacity = forms.IntegerField()
+    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'style': 'height: 100px;'}))
+    id = forms.IntegerField(widget=forms.HiddenInput())
