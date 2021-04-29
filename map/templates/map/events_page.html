@@ -151,7 +151,7 @@
                                     </div>
                                     <div class="col col-sm-3 text-center vertical">
                                         <p>
-                                            <button class='btn btn-dark' type='button' data-target='#{{e.title}}-{{e.pk}}-details' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="{{e.title}}-{{e.pk}}-details">
+                                            <button class='btn btn-dark' type='button' data-target='#details-{{forloop.counter0}}' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="{{e.title}}-{{e.pk}}-details">
                                                 Details
                                             </button>
                                         </p>
@@ -189,43 +189,50 @@
                                     </div>
 
                                 </div>
-                                {% if e.host == user %}
-                                <div class="col col-sm-3">
-                                    <!-- Button trigger modal -->
-                                    <button id="update-event-button-{{e.pk}}" type="button" class="btn btn-primary"
-                                            data-toggle="modal"
-                                            data-target="#updateEventModal"
-                                            data-title="{{e.title}}"
-                                            data-location="{{e.location}}"
-                                            data-date="{{e.date}}"
-                                            data-capacity="{{e.capacity}}"
-                                            data-desc="{{e.description}}"
-                                            data-pk="{{e.pk}}"
-                                    >
-                                      Update Event
-                                    </button>
-                                    <script>
-                                        $('#update-event-button-{{e.pk}}').on('click', function() {
-                                            console.log("Update event {{e.title}} pressed");
-                                            $('#update-id_title').val($(this).data('title'));
-                                            $('#update-id_location').val($(this).data('location'));
-                                            $('#update-id_date').val($(this).data('date'));
-                                            $('#update-id_capacity').val($(this).data('capacity'));
-                                            $('#update-id_description').val($(this).data('desc'));
-                                            $('#update-id_pk').val($(this).data('pk'));
-                                        });
-                                    </script>
 
-                                </div>
-                                {% endif %}
-                                <div class='row collapse' id='{{e.title}}-{{e.pk}}-details'>
-                                    {% if user == e.host %}
-                                    <p>Host: You </p>
-                                    {% else %}
-                                    <p>Host: {{e.host}}</p>
-                                    {% endif %}
-                                    <p>Location: {{e.location}}</p>
-                                    <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
+                                <div id='details-{{forloop.counter0}}' class="collapse">
+                                    <div class="row">
+                                        {% if user == e.host %}
+                                        <p>Host: You </p>
+                                        {% else %}
+                                        <p>Host: {{e.host}}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="row">
+                                        <p>Location: {{e.location}}</p>
+                                    </div>
+                                    <div class="row">
+                                        Attending <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
+                                    </div>
+                                    <div class="row justify-right">
+                                        {% if e.host == user %}
+                                            <!-- Button trigger modal -->
+                                            <button id="update-event-button-{{e.pk}}" type="button" class="btn btn-primary"
+                                                    data-toggle="modal"
+                                                    data-target="#updateEventModal"
+                                                    data-title="{{e.title}}"
+                                                    data-location="{{e.location}}"
+                                                    data-date="{{e.date}}"
+                                                    data-capacity="{{e.capacity}}"
+                                                    data-desc="{{e.description}}"
+                                                    data-pk="{{e.pk}}"
+                                            >
+                                              Update Event
+                                            </button>
+                                            <script>
+                                                $('#update-event-button-{{e.pk}}').on('click', function() {
+                                                    console.log("Update event {{e.title}} pressed");
+                                                    $('#update-id_title').val($(this).data('title'));
+                                                    $('#update-id_location').val($(this).data('location'));
+                                                    $('#update-id_date').val($(this).data('date'));
+                                                    $('#update-id_capacity').val($(this).data('capacity'));
+                                                    $('#update-id_description').val($(this).data('desc'));
+                                                    $('#update-id_pk').val($(this).data('pk'));
+                                                });
+                                            </script>
+
+                                        {% endif %}
+                                    </div>
                                 </div>
 
                             </div>
