@@ -2,61 +2,60 @@
 {% load check_date %}
     
     {% if eventsList %}
-        <script>
-                addAttendee = function(a) {
-                    a.preventDefault();
+    <script>
+            addAttendee = function(a) {
+                a.preventDefault();
 
-                    console.log("User would like to attend event");
-                    $.ajax({
-                        url: $(this).attr('action'),
-                        method: $(this).attr('method'),
-                        data: $(this).serialize(),
-                        success: function(data){
-                            $('#events-list').html(data)
-                        }
-                    });
-                }
-                cancelAttendee = function(a) {
-                    a.preventDefault();
+                console.log("User would like to attend event");
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: $(this).attr('method'),
+                    data: $(this).serialize(),
+                    success: function(data){
+                        $('#events-list').html(data)
+                    }
+                });
+            }
+            cancelAttendee = function(a) {
+                a.preventDefault();
 
-                    console.log("User would like to cancel attending event");
-                    $.ajax({
-                        url: $(this).attr('action'),
-                        method: $(this).attr('method'),
-                        data: $(this).serialize(),
-                        success: function(data){
-                            $('#events-list').html(data)
-                        }
-                    });
-                }
-                cancelEvent = function(a) {
-                    a.preventDefault();
+                console.log("User would like to cancel attending event");
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: $(this).attr('method'),
+                    data: $(this).serialize(),
+                    success: function(data){
+                        $('#events-list').html(data)
+                    }
+                });
+            }
+            cancelEvent = function(a) {
+                a.preventDefault();
 
-                    console.log("User would like to cancel hosting event");
-                    $.ajax({
-                        url: $(this).attr('action'),
-                        method: $(this).attr('method'),
-                        data: $(this).serialize(),
-                        success: function(data){
-                            $('#events-list').html(data)
-                        }
-                    });
-                }
-            </script>
-            <ul class='list-group'>
-                {% for e in eventsList%}
+                console.log("User would like to cancel hosting event");
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: $(this).attr('method'),
+                    data: $(this).serialize(),
+                    success: function(data){
+                        $('#events-list').html(data)
+                    }
+                });
+            }
+        </script>
+        <ul class='list-group'>
+            {% for e in eventsList%}
+                {% if e.date|check_date %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="container">
                         <div class="row">
                             <div class="col col-sm-6 text-center vertical">
-                                Title: {{e.title}}
+                                <b>{{e.title}}</b>
                             </div>
                             <div class="col col-sm-3 text-center vertical">
-                                <p>
-                                    <button class='btn btn-dark' type='button' data-target='#details-{{forloop.counter0}}' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="{{e.title}}-{{e.pk}}-details">
-                                        Details
-                                    </button>
-                                </p>
+                                <button class='btn btn-dark' type='button' data-target='#details-{{forloop.counter0}}' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="{{e.title}}-{{e.pk}}-details">
+                                    Details
+                                </button>
                             </div>
 
                             <div class="col col-sm-3 text-center vertical">
@@ -93,20 +92,17 @@
                         </div>
 
                         <div id='details-{{forloop.counter0}}' class="collapse">
-                            <div class="row">
+                            <ul>
                                 {% if user == e.host %}
-                                <p>Host: You </p>
+                                <li>Host: <b>You</b> </li>
                                 {% else %}
-                                <p>Host: {{e.host}}</p>
+                                <li>Host: <b>{{e.host}}</b></li>
                                 {% endif %}
-                            </div>
-                            <div class="row">
-                                <p>Location: {{e.location}}</p>
-                            </div>
-                            <div class="row">
-                                Attending <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
-                            </div>
-                            <div class="row justify-right">
+                                <li>Location: <b>{{e.location}}</b> </li>
+                                <li>Date: <b>{{e.date}}</b></li>
+                                <li>Attendees: <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span></li>
+                            </ul>
+                            <div class="row justify-content-md-center">
                                 {% if e.host == user %}
                                     <!-- Button trigger modal -->
                                     <button id="update-event-button-{{e.pk}}" type="button" class="btn btn-primary"
@@ -119,7 +115,7 @@
                                             data-desc="{{e.description}}"
                                             data-pk="{{e.pk}}"
                                     >
-                                      Update Event
+                                    Update Event
                                     </button>
                                     <script>
                                         $('#update-event-button-{{e.pk}}').on('click', function() {
@@ -140,58 +136,59 @@
                     </div>
 
                 </li>
-                {% endfor %}
-            </ul>
-        <!-- Modal -->
-        <div class="modal fade" id="updateEventModal" tabindex="-1" role="dialog" aria-labelledby="updateEventModalTitle" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="updateEventModalTitle">Update Event</h5>
-              </div>
-                  <form action="{% url 'map:updateEvent' %}" id="update-event-form" method="post">
-                      {% csrf_token %}
-                      <div class="modal-body">
-                          <div id="update-div_id_title" class="form-group"> <label for="update-id_title" class=" requiredField">
-                            Title<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="title" maxlength="50" class="textinput textInput form-control" required="" id="update-id_title" value=""> </div> </div> <div id="update-div_id_location" class="form-group"> <label for="update-div_id_location" class=" requiredField">
-                            Location<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="location" maxlength="200" class="textinput textInput form-control" required="" id="update-id_location"> </div> </div> <div id="update-div_id_date" class="form-group"> <label for="update-div_id_date" class=" requiredField">
-                            Date<span class="asteriskField">*</span> </label> <div class=""> <input type="date" name="date" class="datetimeinput form-control" required="" id="update-id_date"> </div> </div> <div id="update-div_id_capacity" class="form-group"> <label for="update-div_id_capacity" class=" requiredField">
-                            Capacity<span class="asteriskField">*</span> </label> <div class=""> <input type="number" name="capacity" min="0" class="numberinput form-control" required="" id="update-id_capacity"> </div> </div> <div id="update-div_id_description" class="form-group"> <label for="update-div_id_description" class=" requiredField">
-                            Description<span class="asteriskField">*</span> </label> <div class=""> <textarea name="description" cols="40" rows="10" style="height: 100px;" maxlength="200" class="textarea form-control" required="" id="update-id_description"></textarea> </div> </div>
-                            <input type="hidden" name="id" id="update-id_pk">
-                      </div>
-                      <div class="modal-footer">
-                          <button type="submit" class="btn btn-success" >Update Event</button>
-                          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                      </div>
-                      <script>
-                          $('#update-event-form').on('submit', function(e) {
-                              e.preventDefault();
-
-                              console.log("Update event fired");
-                              $.ajax({
-                                  url: $(this).attr('action'),
-                                  method: $(this).attr('method'),
-                                  data: $(this).serialize(),
-                                  success: function(data){
-                                    // Close the form modal
-                                    $('#updateEventModal').modal('toggle');
-                                    // Display the result modal
-                                    $('#result-modal-text').html(data);
-                                    $('#resultModal').modal('toggle');
-                                  }
-                              });
-                          });
-                      </script>
-                  </form>
-
-            </div>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    <!-- Modal -->
+    <div class="modal fade" id="updateEventModal" tabindex="-1" role="dialog" aria-labelledby="updateEventModalTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateEventModalTitle">Update Event</h5>
           </div>
-        </div>
+              <form action="{% url 'map:updateEvent' %}" id="update-event-form" method="post">
+                  {% csrf_token %}
+                  <div class="modal-body">
+                      <div id="update-div_id_title" class="form-group"> <label for="update-id_title" class=" requiredField">
+                        Title<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="title" maxlength="50" class="textinput textInput form-control" required="" id="update-id_title" value=""> </div> </div> <div id="update-div_id_location" class="form-group"> <label for="update-div_id_location" class=" requiredField">
+                        Location<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="location" maxlength="200" class="textinput textInput form-control" required="" id="update-id_location"> </div> </div> <div id="update-div_id_date" class="form-group"> <label for="update-div_id_date" class=" requiredField">
+                        Date<span class="asteriskField">*</span> </label> <div class=""> <input type="date" name="date" class="datetimeinput form-control" required="" id="update-id_date"> </div> </div> <div id="update-div_id_capacity" class="form-group"> <label for="update-div_id_capacity" class=" requiredField">
+                        Capacity<span class="asteriskField">*</span> </label> <div class=""> <input type="number" name="capacity" min="0" class="numberinput form-control" required="" id="update-id_capacity"> </div> </div> <div id="update-div_id_description" class="form-group"> <label for="update-div_id_description" class=" requiredField">
+                        Description<span class="asteriskField">*</span> </label> <div class=""> <textarea name="description" cols="40" rows="10" style="height: 100px;" maxlength="200" class="textarea form-control" required="" id="update-id_description"></textarea> </div> </div>
+                        <input type="hidden" name="id" id="update-id_pk">
+                  </div>
+                  <div class="modal-footer">
+                      <button type="submit" class="btn btn-success" >Update Event</button>
+                      <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                  </div>
+                  <script>
+                      $('#update-event-form').on('submit', function(e) {
+                          e.preventDefault();
 
-        {% else %}
-            No events yet...
-        {% endif %}
+                          console.log("Update event fired");
+                          $.ajax({
+                              url: $(this).attr('action'),
+                              method: $(this).attr('method'),
+                              data: $(this).serialize(),
+                              success: function(data){
+                                // Close the form modal
+                                $('#updateEventModal').modal('toggle');
+                                // Display the result modal
+                                $('#result-modal-text').html(data);
+                                $('#resultModal').modal('toggle');
+                              }
+                          });
+                      });
+                  </script>
+              </form>
+
+        </div>
+      </div>
+    </div>
+
+    {% else %}
+        No events yet...
+    {% endif %}
 
 {% else %}
     <p>Need to be logged in to see events</p>
