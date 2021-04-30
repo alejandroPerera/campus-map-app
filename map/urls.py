@@ -15,6 +15,6 @@ urlpatterns = [
     path('eventList/', views.get_event_list, name='eventList'),
     path('schedulePage/', views.show_schedule_page, name = 'schedulePage'),
     path('eventsPage/', views.show_events_page, name = 'eventsPage'),
-    path('logout/', views.logout_view, name = 'logout')
+    path('logout/', views.logout_view, name = 'logout'),
     path('updateEvent/', views.user_updated_event, name='updateEvent'),
 ]

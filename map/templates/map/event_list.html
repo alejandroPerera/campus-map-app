@@ -1,12 +1,6 @@
 {% if user.is_authenticated %}
-<<<<<<< HEAD
 {% load check_date %}
-    
-    {% if eventsList %}
-    <script>
-            addAttendee = function(a) {
-                a.preventDefault();
-=======
+{% if eventsList %}
     <div id="events-list">
         <p>
             <button class='btn btn-info'  type='button' data-target='#elist' data-toggle='collapse'>
@@ -18,7 +12,6 @@
             <script>
                     addAttendee = function(a) {
                         a.preventDefault();
->>>>>>> beta-ui
 
                 console.log("User would like to attend event");
                 $.ajax({
@@ -203,7 +196,7 @@
     {% else %}
         No events yet...
     {% endif %}
-
+{% endif %}
 {% else %}
     <p>Need to be logged in to see events</p>
 {% endif %}
