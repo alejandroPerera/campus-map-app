@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load socialaccount %}
 {% load crispy_forms_tags %}
+{% load check_date %}
 
 <!-- Redefine the title-->
 {% block title %}Map{% endblock %}
@@ -231,6 +232,7 @@
                                     $('#results').html('')
                                  }
                              });
+
 
                          });
                     });

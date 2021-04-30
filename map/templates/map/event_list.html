@@ -11,91 +11,193 @@
                     addAttendee = function(a) {
                         a.preventDefault();
 
-                        console.log("User would like to attend event");
-                        $.ajax({
-                            url: $(this).attr('action'),
-                            method: $(this).attr('method'),
-                            data: $(this).serialize(),
-                            success: function(data){
-                                $('#events-list').html(data)
-                            }
-                        });
-                    }
-                    cancelAttendee = function(a) {
-                        a.preventDefault();
+                    console.log("User would like to attend event");
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        method: $(this).attr('method'),
+                        data: $(this).serialize(),
+                        success: function(data){
+                            $('#events-list').html(data)
+                        }
+                    });
+                }
+                cancelAttendee = function(a) {
+                    a.preventDefault();
 
-                        console.log("User would like to cancel attending event");
-                        $.ajax({
-                            url: $(this).attr('action'),
-                            method: $(this).attr('method'),
-                            data: $(this).serialize(),
-                            success: function(data){
-                                $('#events-list').html(data)
-                            }
-                        });
-                    }
-                    cancelEvent = function(a) {
-                        a.preventDefault();
+                    console.log("User would like to cancel attending event");
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        method: $(this).attr('method'),
+                        data: $(this).serialize(),
+                        success: function(data){
+                            $('#events-list').html(data)
+                        }
+                    });
+                }
+                cancelEvent = function(a) {
+                    a.preventDefault();
 
-                        console.log("User would like to cancel hosting event");
-                        $.ajax({
-                            url: $(this).attr('action'),
-                            method: $(this).attr('method'),
-                            data: $(this).serialize(),
-                            success: function(data){
-                                $('#events-list').html(data)
-                            }
-                        });
-                    }
-                </script>
-                <ul class='list-group'>
-                    {% for e in eventsList%}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <p>Title: {{e.title}}</p>
-                        {% if user == e.host %}
-                        <p>Host: You </p>
-                        {% else %}
-                        <p>Host: {{e.host}}</p>
-                        {% endif %}
-                        <p>Location: {{e.location}}</p>
-                        <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
-                        {% if e.host == user %}
-                            <form id="remove-event-{{ forloop.counter0 }}" action="{% url 'map:removeEvent' %}" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="event" value="{{e.id}}">
-                                        <a class="btn btn-danger" href="#" onclick="$('#remove-event-{{ forloop.counter0 }}').submit();" type="submit">Cancel</a>
-                                <script>
-                                        $('#remove-event-{{ forloop.counter0 }}').on('submit', cancelEvent);
-                                </script>
-                            </form>
-                        {% elif e in user.attendees.all%}
-                            <form id="cancel-event-{{ forloop.counter0 }}" action="{% url 'map:cancelEvent' %}" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="event" value="{{e.id}}">
-                                        <a class="btn btn-warning" href="#" onclick="$('#cancel-event-{{ forloop.counter0 }}').submit();" type="submit">Don't Attend</a>
-                                <script>
-                                        $('#cancel-event-{{ forloop.counter0 }}').on('submit', cancelAttendee);
-                                </script>
-                            </form>
-                        {% else %}
-                        <form id="attend-event-{{ forloop.counter0 }}" action="{% url 'map:attendEvent' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="event" value="{{e.id}}">
-                                    <a class="btn btn-success" href="#" onclick="$('#attend-event-{{ forloop.counter0 }}').submit();" type="submit">Attend</a>
-                            <script>
-                                    $('#attend-event-{{ forloop.counter0 }}').on('submit', addAttendee);
-                            </script>
-                        </form>
-                        {% endif %}
+                    console.log("User would like to cancel hosting event");
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        method: $(this).attr('method'),
+                        data: $(this).serialize(),
+                        success: function(data){
+                            $('#events-list').html(data)
+                        }
+                    });
+                }
+            </script>
+            <ul class='list-group'>
+                {% for e in eventsList%}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col col-sm-6 text-center vertical">
+                                Title: {{e.title}}
+                            </div>
+                            <div class="col col-sm-3 text-center vertical">
+                                <p>
+                                    <button class='btn btn-dark' type='button' data-target='#details-{{forloop.counter0}}' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="{{e.title}}-{{e.pk}}-details">
+                                        Details
+                                    </button>
+                                </p>
+                            </div>
 
-                    </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                No events yet...
-            {% endif %}
+                            <div class="col col-sm-3 text-center vertical">
+                                {% if e.host == user %}
+                                    <form id="remove-event-{{ forloop.counter0 }}" action="{% url 'map:removeEvent' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="event" value="{{e.id}}">
+                                                <a class="btn btn-danger" href="#" onclick="$('#remove-event-{{ forloop.counter0 }}').submit();" type="submit">Cancel</a>
+                                        <script>
+                                                $('#remove-event-{{ forloop.counter0 }}').on('submit', cancelEvent);
+                                        </script>
+                                    </form>
+                                {% elif e in user.attendees.all%}
+                                    <form id="cancel-event-{{ forloop.counter0 }}" action="{% url 'map:cancelEvent' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="event" value="{{e.id}}">
+                                                <a class="btn btn-danger" href="#" onclick="$('#cancel-event-{{ forloop.counter0 }}').submit();" type="submit">Don't Attend</a>
+                                        <script>
+                                                $('#cancel-event-{{ forloop.counter0 }}').on('submit', cancelAttendee);
+                                        </script>
+                                    </form>
+                                {% else %}
+                                <form id="attend-event-{{ forloop.counter0 }}" action="{% url 'map:attendEvent' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="event" value="{{e.id}}">
+                                            <a class="btn btn-success" href="#" onclick="$('#attend-event-{{ forloop.counter0 }}').submit();" type="submit">Attend</a>
+                                    <script>
+                                            $('#attend-event-{{ forloop.counter0 }}').on('submit', addAttendee);
+                                    </script>
+                                </form>
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+                        <div id='details-{{forloop.counter0}}' class="collapse">
+                            <div class="row">
+                                {% if user == e.host %}
+                                <p>Host: You </p>
+                                {% else %}
+                                <p>Host: {{e.host}}</p>
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                <p>Location: {{e.location}}</p>
+                            </div>
+                            <div class="row">
+                                Attending <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span>
+                            </div>
+                            <div class="row justify-right">
+                                {% if e.host == user %}
+                                    <!-- Button trigger modal -->
+                                    <button id="update-event-button-{{e.pk}}" type="button" class="btn btn-primary"
+                                            data-toggle="modal"
+                                            data-target="#updateEventModal"
+                                            data-title="{{e.title}}"
+                                            data-location="{{e.location}}"
+                                            data-date="{{e.date}}"
+                                            data-capacity="{{e.capacity}}"
+                                            data-desc="{{e.description}}"
+                                            data-pk="{{e.pk}}"
+                                    >
+                                      Update Event
+                                    </button>
+                                    <script>
+                                        $('#update-event-button-{{e.pk}}').on('click', function() {
+                                            console.log("Update event {{e.title}} pressed");
+                                            $('#update-id_title').val($(this).data('title'));
+                                            $('#update-id_location').val($(this).data('location'));
+                                            $('#update-id_date').val($(this).data('date'));
+                                            $('#update-id_capacity').val($(this).data('capacity'));
+                                            $('#update-id_description').val($(this).data('desc'));
+                                            $('#update-id_pk').val($(this).data('pk'));
+                                        });
+                                    </script>
+
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+
+                </li>
+                {% endfor %}
+            </ul>
+        <!-- Modal -->
+        <div class="modal fade" id="updateEventModal" tabindex="-1" role="dialog" aria-labelledby="updateEventModalTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="updateEventModalTitle">Update Event</h5>
+              </div>
+                  <form action="{% url 'map:updateEvent' %}" id="update-event-form" method="post">
+                      {% csrf_token %}
+                      <div class="modal-body">
+                          <div id="update-div_id_title" class="form-group"> <label for="update-id_title" class=" requiredField">
+                            Title<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="title" maxlength="50" class="textinput textInput form-control" required="" id="update-id_title" value=""> </div> </div> <div id="update-div_id_location" class="form-group"> <label for="update-div_id_location" class=" requiredField">
+                            Location<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="location" maxlength="200" class="textinput textInput form-control" required="" id="update-id_location"> </div> </div> <div id="update-div_id_date" class="form-group"> <label for="update-div_id_date" class=" requiredField">
+                            Date<span class="asteriskField">*</span> </label> <div class=""> <input type="date" name="date" class="datetimeinput form-control" required="" id="update-id_date"> </div> </div> <div id="update-div_id_capacity" class="form-group"> <label for="update-div_id_capacity" class=" requiredField">
+                            Capacity<span class="asteriskField">*</span> </label> <div class=""> <input type="number" name="capacity" min="0" class="numberinput form-control" required="" id="update-id_capacity"> </div> </div> <div id="update-div_id_description" class="form-group"> <label for="update-div_id_description" class=" requiredField">
+                            Description<span class="asteriskField">*</span> </label> <div class=""> <textarea name="description" cols="40" rows="10" style="height: 100px;" maxlength="200" class="textarea form-control" required="" id="update-id_description"></textarea> </div> </div>
+                            <input type="hidden" name="id" id="update-id_pk">
+                      </div>
+                      <div class="modal-footer">
+                          <button type="submit" class="btn btn-success" >Update Event</button>
+                          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                      </div>
+                      <script>
+                          $('#update-event-form').on('submit', function(e) {
+                              e.preventDefault();
+
+                              console.log("Update event fired");
+                              $.ajax({
+                                  url: $(this).attr('action'),
+                                  method: $(this).attr('method'),
+                                  data: $(this).serialize(),
+                                  success: function(data){
+                                    // Close the form modal
+                                    $('#updateEventModal').modal('toggle');
+                                    // Display the result modal
+                                    $('#result-modal-text').html(data);
+                                    $('#resultModal').modal('toggle');
+                                  }
+                              });
+                          });
+                      </script>
+                  </form>
+
+            </div>
+          </div>
         </div>
-    </div>
+
+        {% else %}
+            No events yet...
+        {% endif %}
+
 {% else %}
     <p>Need to be logged in to see events</p>
 {% endif %}

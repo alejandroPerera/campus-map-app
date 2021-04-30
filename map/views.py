@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render
-from .forms import ScheduleForm, MakeEventForm
+from .forms import ScheduleForm, MakeEventForm, UpdateEventForm
 import requests
 import json
 from .models import ClassModel, EventModel
@@ -234,6 +234,33 @@ def user_created_event(request):
     return render(request, 'map/event.html', {'success': False})
 
 
+def user_updated_event(request):
+    if request.method == 'POST':
+        user = request.user
+        event_form = UpdateEventForm(request.POST)
+        print("User updating event")
+        if user.is_authenticated and event_form.is_valid():
+            print('Do I have a title?', event_form.cleaned_data)
+            database_entry = EventModel.objects.get(pk=event_form.cleaned_data['id'])
+
+            database_entry.title = event_form.cleaned_data['title']
+            database_entry.location = event_form.cleaned_data['location']
+            database_entry.date = event_form.cleaned_data['date']
+            database_entry.capacity = event_form.cleaned_data['capacity']
+            database_entry.description = event_form.cleaned_data['description']
+
+            database_entry.save()
+
+            print("Title: ", database_entry.title)
+            # entry.host = user  # Tie the host to this user
+            # Ignore the attendees they are set later
+            # entry.save()  # Save to the database
+            # event_form.save_m2m()  # Needs to be called if commit = False
+            return render(request, 'map/event.html', {'success': True})
+
+    return render(request, 'map/event.html', {'success': False})
+
+
 def attend_event(request):
     if request.method == 'POST':
         user = request.user
@@ -275,8 +302,10 @@ def remove_event_from_list(request):
 def get_event_list(request):
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
+
 def show_schedule_page(request):
-    return render(request,'map/schedule_page.html')
+    return render(request, 'map/schedule_page.html')
+
 
 def show_events_page(request):
     return render(request,'map/events_page.html', {'eventsList': EventModel.objects.all()})
@@ -284,3 +313,4 @@ def show_events_page(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse('map:map'))
+
