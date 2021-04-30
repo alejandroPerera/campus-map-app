@@ -10,19 +10,32 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="{% static 'map/style.css' %}">
+    <!-- Custom CSS: to change themes, replace .css file below. 
+        To add new themes, download the .css file from bootswatch.com and add it to the /static/map/ folder -->
+    <link rel="stylesheet" type="text/css" href="{% static 'map/darkly.css' %}">
 
     <title>{% block title %}Campus Map{% endblock %}</title>
     <style>
-        body{ this was causing the make events button to not load
+        /* body{ 
             overflow-y: hidden;
-        }
+        } */
         div.col-4{
             height : auto;
             overflow-y: auto;
         }
+        body::-webkit-scrollbar {
+          width: 12px;               /* width of the entire scrollbar */
+        }
 
+        body::-webkit-scrollbar-track {
+          background: gray;        /* color of the tracking area */
+        }
+
+        body::-webkit-scrollbar-thumb {
+          background-color: white;    /* color of the scroll thumb */
+          border-radius: 20px;       /* roundness of the scroll thumb */
+          border: 3px solid white;  /* creates padding around scroll thumb */
+        }
     </style>
 </head>
 <body>

@@ -79,7 +79,7 @@
     </script>
 {% endblock %}
 {% block schedule %}
-    <nav class = "navbar navbar-expand-md navbar-light bg-light sticky-top">
+    <nav id = "navbar" class = "navbar navbar-expand-md navbar-light bg-dark sticky-top">
         <div class = "container-fluid">
             <ul class = "navbar-nav ml-auto">
                 <script>
@@ -94,33 +94,41 @@
                             }
                         });
                     };
-                </script>
-                <li class= "nav-item" >
-                    <a class ="nav-link" href="#"onclick="updateSidebar({% url 'map:schedulePage'%})">Schedule</a>
+                </script><div style="float:left">
+                <li class = "nav-item" style = "float:left">
+                    {% if user.is_authenticated %}
+                        <p class = "nav-link" style = "color: white ;font-size: 20px;">Welcome! {{user}}</p>
+                    {% endif %}
+                </li>
+            </div>
+                <li class= "nav-item active" >
+                    <a class ="nav-link " style="color: gray;font-size: 20px;" href="#"onclick="updateSidebar({% url 'map:schedulePage'%})">Schedule</a>
                 </li>
                 <li class= "nav-item" >
-                    <a class ="nav-link" href="#" onclick="updateSidebar({% url 'map:eventsPage'%})">Events</a>
+                    <a class ="nav-link " style="color: gray;font-size: 20px;" href="#" onclick="updateSidebar({% url 'map:eventsPage'%})">Events</a>
                 </li>
                 <li class = "nav-item">
                     {% if user.is_authenticated %}
-                        <a class = "nav-link" href = "{% url 'account_logout'%}"> Logout</a>
+                        <a class = "nav-link" style="color: gray;font-size: 20px;" href = "{% url 'map:logout'%}">Logout</a>
                     {% else %}
-                        <a class = "nav-link" href="{% provider_login_url 'google' %}">Login</a>
+                        <a class = "nav-link" style="color: gray;font-size: 20px;" href="{% provider_login_url 'google' %}">Login</a>
                     {% endif %}
                 </li>
             </ul>
         </div>
     </nav>
+<br>
     <div id = "showSchedule">
         <div id="class-schedule-list">
             {% if user.is_authenticated %}
                 <div id="schedule-list">
                     {% if user.schedule.all|length > 0 %}
                     <p>
-                        <button class='btn btn-dark'  type='button' data-target='#clist' data-toggle='collapse'>
+                        <button class='btn btn-info'  type='button' data-target='#clist' data-toggle='collapse'>
                             My Classes
                         </button>
                     </p>
+
                         <script>
                             editSchedule = function(e) {
                                 e.preventDefault();
@@ -162,25 +170,36 @@
                 </div>
             {% endif %}
         </div>
-
-        <div id="schedule-instructions"><b>
-            To display information about each location on the map, left click its marker.
-            To remove a marker, right click on it.
-            Use the search box below to search for classes or locations around UVA.</b>
-        </div>
-
+        <br>
 
         <div id="search-div">
             <!-- Builds from the ScheduleForm class -->
             <form id="search-form" action="{% url 'map:search' %}" id="location-search" method="post">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <button type="submit" class="btn btn-success">Search</button>
-                <button type="reset" class="btn btn-secondary" onclick="document.getElementById('id_search').value = ''">Clear</button>
-
+                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="reset" class="btn btn-warning" onclick="document.getElementById('id_search').value = ''">Clear</button>
+                <button class='btn btn-info'  type='button' data-target='#schedule-instructions' data-toggle='collapse'>
+                    Instructions
+                </button>
+                <div class="text-center" id = "spinner">
+                  <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+                <div id="schedule-instructions" class=collapse>
+                    <b>
+                        <ul>
+                            <li>Class search format: CS 3240 (with a space)</li>
+                            <li>Right click a marker on the map to remove it</li>
+                            <li>Find your location in the top right of the map</li>
+                        </ul>
+                    </b>
+                </div>
                 <!-- From: https://stackoverflow.com/questions/17599035/django-how-can-i-call-a-view-function-from-template-->
                 <!-- Using AJAX to load the data without refreshing the page -->
                 <script>
+                    $("#spinner").hide(); //Hides spinner before anything happens
                     // This will pass the form action and hopefully reload the results div with the results
                     $(function(){
                          $('#search-form').on('submit', function(e){
@@ -190,14 +209,21 @@
                                  url: $(this).attr('action'),
                                  method: $(this).attr('method'),
                                  data: $('form').serialize(), // serialize converts the form inputs into the url
-                                 success: function(data){ $('#results').html(data) }
+                                 success: function(data){$('#results').html(data) }
                              });
-
-                             // Resize the results page?
-                             //$('#results .list-group').css({
-                             //   'height: ' $('#schedule-col').height() - $('#location-search').height() + 'px;'
-                             //});
                          });
+
+                        //https://stackoverflow.com/questions/2275342/jquery-ajaxstart-doesnt-get-triggered
+                        $(document).ajaxStart(function(){
+                            console.log("loading");
+                            $("#spinner").remove("invisible");
+                            $("#spinner").show();
+
+                        });
+                        $(document).ajaxStop(function() {
+                          $("#spinner").hide();
+                          $("#st-tree-container").show();
+                        });
                          $('form').on('reset', function(e){
                              e.preventDefault();
 
@@ -211,11 +237,11 @@
                          });
                     });
                 </script>
-
             </form>
         </div>
 
 
+        <br>
         <!-- To be overwritten by the search function-->
         <div id="results"></div>
     </div>

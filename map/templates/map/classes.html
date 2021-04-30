@@ -28,6 +28,7 @@
                         }
 
                         marker.addTo(map);
+                        map.flyTo({center: coords, zoom: 17});
 
                         marker.getElement().addEventListener('contextmenu', function(e) {
                             marker.remove();
@@ -53,7 +54,21 @@
                 }
 
         </script>
+        <style>
+                ::-webkit-scrollbar {
+                  width: 12px;               /* width of the entire scrollbar */
+                }
 
+                ::-webkit-scrollbar-track {
+                  background: gray;        /* color of the tracking area */
+                }
+
+                ::-webkit-scrollbar-thumb {
+                  background-color: #2b4764;    /* color of the scroll thumb */
+                  border-radius: 12px;       /* roundness of the scroll thumb */
+                  border: 3px solid #2b4764;  /* creates padding around scroll thumb */
+        </style>
+    <div id = "scrol">
         <ul class="list-group overflow-auto">
         {% for class in classR %}
            <li class="list-group-item d-flex">
@@ -92,14 +107,23 @@
                                         </script>
                                    {% endif %}
                            </div>
-                           <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-primary">Show On Map</button>
-                           <script>
-                                $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
-                            </script>
+                            {% if class.class_loc_coords == None %}
+                                 <button type="button" id="add-marker-{{ forloop.counter0 }}-none" data-toggle="popover" data-content="This class has no location"class="btn btn-info">Show On Map</button>
+                                 <script>
+                                    $('#add-marker-{{ forloop.counter0 }}-none').popover()
+                                 </script>
+                            {% else %}
+                                 <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-info">Show On Map</button>
+                                 <script>
+                                    $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
+                                 </script>
+                            {% endif%}
+
                    </div>
            </li>
         {% endfor %}
         </ul>
+    </div>
 {% else %}
         <p>No results found</p>
 {% endif %}
