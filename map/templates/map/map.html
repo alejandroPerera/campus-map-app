@@ -94,24 +94,41 @@
                             }
                         });
                     };
-                </script><div style="float:left">
+                    highlightPage = function(id){
+                        console.log("highlighting");
+                        if(id === "schedule-highlight"){
+                            document.getElementById('event-highlight').style.color = '#C0C0C0';
+                            document.getElementById('event-highlight').style.fontWeight = "20";
+                            document.getElementById(id).style.color = 'white';
+                            document.getElementById(id).style.fontWeight = "bold";
+                        }
+                        else{
+                            document.getElementById('schedule-highlight').style.color = '#C0C0C0';
+                            document.getElementById('schedule-highlight').style.fontWeight = "20";
+                            document.getElementById(id).style.color = 'white';
+                            document.getElementById(id).style.fontWeight = "bold";
+                        }
+                    };
+
+                </script>
+                <div style="float:left">
                 <li class = "nav-item" style = "float:left">
                     {% if user.is_authenticated %}
                         <p class = "nav-link" style = "color: white ;font-size: 20px;">Welcome! {{user}}</p>
                     {% endif %}
                 </li>
             </div>
-                <li class= "nav-item active" >
-                    <a class ="nav-link " style="color: gray;font-size: 20px;" href="#"onclick="updateSidebar({% url 'map:schedulePage'%})">Schedule</a>
+                <li class= "nav-item" >
+                    <a id = "schedule-highlight"class ="nav-link active" style="color: white;font-size: 20px;font-weight: bold" href="#"onclick="updateSidebar({% url 'map:schedulePage'%});highlightPage('schedule-highlight');">Schedule</a>
                 </li>
                 <li class= "nav-item" >
-                    <a class ="nav-link " style="color: gray;font-size: 20px;" href="#" onclick="updateSidebar({% url 'map:eventsPage'%})">Events</a>
+                    <a id = "event-highlight" class ="nav-link" style="color: #C0C0C0;font-size: 20px;" href="#" onclick="updateSidebar({% url 'map:eventsPage'%});highlightPage('event-highlight');">Events</a>
                 </li>
                 <li class = "nav-item">
                     {% if user.is_authenticated %}
-                        <a class = "nav-link" style="color: gray;font-size: 20px;" href = "{% url 'map:logout'%}">Logout</a>
+                        <a class = "nav-link" style="color:	#C0C0C0;font-size: 20px;" href = "{% url 'map:logout'%}">Logout</a>
                     {% else %}
-                        <a class = "nav-link" style="color: gray;font-size: 20px;" href="{% provider_login_url 'google' %}">Login</a>
+                        <a class = "nav-link" style="color: #C0C0C0;font-size: 20px;" href="{% provider_login_url 'google' %}">Login</a>
                     {% endif %}
                 </li>
             </ul>
