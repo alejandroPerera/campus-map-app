@@ -52,7 +52,7 @@ class SearchTests(TestCase):
             class_instructor='test',
             class_days='test',
             class_room='test',
-            class_title='test',
+            class_title='Advanced Software Development Techniques',
             class_topic='test',
             class_status='test',
             class_enrollment=0,
@@ -143,6 +143,26 @@ class SearchTests(TestCase):
         self.assertEqual(query[2], None)
         self.assertEqual(query[3], None)
 
+    def test_parse_classes_title(self):
+        search_term = 'Advanced Software Development Techniques'
+        query = parse_classes(search_term)
+
+        self.assertEqual(query[0], None)
+        self.assertEqual(query[1], None)
+        self.assertEqual(query[2], None)
+        self.assertEqual(query[3], None)
+        self.assertEqual(query[4], 'Advanced Software Development Techniques')
+
+    def test_parse_classes_partial_title(self):
+        search_term = 'Advanced Software'
+        query = parse_classes(search_term)
+
+        self.assertEqual(query[0], None)
+        self.assertEqual(query[1], None)
+        self.assertEqual(query[2], None)
+        self.assertEqual(query[3], None)
+        self.assertEqual(query[4], 'Advanced Software')
+
 
 class EventTests(TestCase):
 
@@ -156,4 +176,3 @@ class EventTests(TestCase):
             'description': 'Testing'
         })
         self.assertEqual(result.status_code, 200)
-

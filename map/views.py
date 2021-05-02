@@ -54,9 +54,10 @@ class GeoCode:
 
 class SearchResult:
 
-    def __init__(self, class_name, class_room, class_loc_coords, class_id, signed_in, in_schedule):
+    def __init__(self, class_name, class_room, class_title, class_loc_coords, class_id, signed_in, in_schedule):
         self.class_name = class_name
         self.class_room = class_room
+        self.class_title = class_title
         self.class_loc_coords = class_loc_coords
         self.class_id = class_id
         self.signed_in = signed_in
@@ -108,7 +109,7 @@ def parse_classes(search_input):
     # Looks for a series of letters, followed by a series of numbers followed by another series of numbers
     result = re.search('[0-9]*\s*[a-zA-Z]*\s*[0-9]*\s*[0-9]*', search_input)
     if result:
-        output = [None, None, None, None]
+        output = [None, None, None, None, None]
         array = result.group().split()
         for element in array:
             if element.isalpha() and 2 <= len(element) <= 4:  # This must be the mnemonic
@@ -116,6 +117,10 @@ def parse_classes(search_input):
                 mnemonic = ClassModel.objects.filter(class_mnemonic=element)
                 if mnemonic.exists():
                     output[1] = element
+            elif element.isalpha():  # Could be the class title
+                title = ClassModel.objects.filter(class_title__icontains=element)
+                if title.exists():
+                    output[4] = search_input  # Possibly dangerous. The regex only gets the first word
             else:  # Must be a number
                 if len(element) == 5:  # Must be the class number
                     output[0] = element
@@ -126,7 +131,7 @@ def parse_classes(search_input):
 
         return output
     else:
-        return [None, None, None, None]
+        return [None, None, None, None, None]
 
 
 def get_class_search_results(request):
@@ -139,8 +144,9 @@ def get_class_search_results(request):
             class_mnemonic = query[1]
             course_number = query[2]
             class_section = query[3]
+            class_title = query[4]
 
-            if query == [None, None, None, None]:
+            if query == [None, None, None, None, None]:
                 results = get_search_results(form.cleaned_data['search'])
 
                 return render(request, 'map/locations.html', {'results': results})
@@ -156,6 +162,8 @@ def get_class_search_results(request):
                 results = results.filter(course_number=course_number)
             if class_section is not None:
                 results = results.filter(class_section=class_section)
+            if class_title is not None:
+                results = results.filter(class_title__icontains=class_title)
 
             output = []
             for r in results:
@@ -180,7 +188,7 @@ def get_class_search_results(request):
                     in_schedule = False
 
                 output.append(
-                    SearchResult(r.__str__(), r.class_room, coords, r.class_number, user.is_authenticated, in_schedule))
+                    SearchResult(r.__str__(), r.class_room, r.class_title, coords, r.class_number, user.is_authenticated, in_schedule))
 
             return render(request, 'map/classes.html', {'classR': output})
 
@@ -229,9 +237,11 @@ def user_created_event(request):
             # Ignore the attendees they are set later
             entry.save()  # Save to the database
             event_form.save_m2m()  # Needs to be called if commit = False
-            return render(request, 'map/event.html', {'success': True})
+            return render(request, 'map/event.html', {'success': True, 'error': None})
+        else:
+            return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 
-    return render(request, 'map/event.html', {'success': False})
+    return render(request, 'map/event.html', {'success': False, 'error': ''})
 
 
 def user_updated_event(request):
@@ -256,9 +266,11 @@ def user_updated_event(request):
             # Ignore the attendees they are set later
             # entry.save()  # Save to the database
             # event_form.save_m2m()  # Needs to be called if commit = False
-            return render(request, 'map/event.html', {'success': True})
+            return render(request, 'map/event.html', {'success': True, 'error': None})
+        else:
+            return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 
-    return render(request, 'map/event.html', {'success': False})
+    return render(request, 'map/event.html', {'success': False, 'error': ''})
 
 
 def attend_event(request):
