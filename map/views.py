@@ -54,9 +54,10 @@ class GeoCode:
 
 class SearchResult:
 
-    def __init__(self, class_name, class_room, class_loc_coords, class_id, signed_in, in_schedule):
+    def __init__(self, class_name, class_room, class_title, class_loc_coords, class_id, signed_in, in_schedule):
         self.class_name = class_name
         self.class_room = class_room
+        self.class_title = class_title
         self.class_loc_coords = class_loc_coords
         self.class_id = class_id
         self.signed_in = signed_in
@@ -187,7 +188,7 @@ def get_class_search_results(request):
                     in_schedule = False
 
                 output.append(
-                    SearchResult(r.__str__(), r.class_room, coords, r.class_number, user.is_authenticated, in_schedule))
+                    SearchResult(r.__str__(), r.class_room, r.class_title, coords, r.class_number, user.is_authenticated, in_schedule))
 
             return render(request, 'map/classes.html', {'classR': output})
 
