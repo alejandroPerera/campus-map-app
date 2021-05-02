@@ -239,7 +239,6 @@ def user_created_event(request):
             event_form.save_m2m()  # Needs to be called if commit = False
             return render(request, 'map/event.html', {'success': True, 'error': None})
         else:
-            print("Event errors", event_form.errors)
             return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 
     return render(request, 'map/event.html', {'success': False, 'error': ''})
@@ -267,9 +266,11 @@ def user_updated_event(request):
             # Ignore the attendees they are set later
             # entry.save()  # Save to the database
             # event_form.save_m2m()  # Needs to be called if commit = False
-            return render(request, 'map/event.html', {'success': True})
+            return render(request, 'map/event.html', {'success': True, 'error': None})
+        else:
+            return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 
-    return render(request, 'map/event.html', {'success': False})
+    return render(request, 'map/event.html', {'success': False, 'error': ''})
 
 
 def attend_event(request):
