@@ -204,6 +204,7 @@
                                             {% endif %}
                                             <li>Location: <b>{{e.location}}</b> </li>
                                             <li>Date: <b>{{e.date}}</b></li>
+                                            <li>Time: <b>{{e.time}}</b></li>
                                             <li>Attendees: <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span></li>
                                         </ul>
                                         <div class="row justify-content-md-center">
@@ -227,6 +228,7 @@
                                                         $('#update-id_title').val($(this).data('title'));
                                                         $('#update-id_location').val($(this).data('location'));
                                                         $('#update-id_date').val($(this).data('date'));
+                                                        $('#update-id_time').val($(this).data('time'));
                                                         $('#update-id_capacity').val($(this).data('capacity'));
                                                         $('#update-id_description').val($(this).data('desc'));
                                                         $('#update-id_pk').val($(this).data('pk'));
