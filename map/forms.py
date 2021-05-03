@@ -4,7 +4,7 @@ from .models import *
 
 class ScheduleForm(forms.Form):
     """ Used to create the search bar and other scheduling functionality"""
-    search = forms.CharField(widget=forms.TextInput, max_length=50)
+    search = forms.CharField(widget=forms.TextInput, max_length=50, label="Search for classes and locations around UVA", required=False)
 
 
 class MakeEventForm(forms.ModelForm):
