@@ -110,6 +110,7 @@
                                         data-title="{{e.title}}"
                                         data-location="{{e.location}}"
                                         data-date="{{e.date}}"
+<!--                                        data-time="{{e.time}}"-->
                                         data-capacity="{{e.capacity}}"
                                         data-desc="{{e.description}}"
                                         data-pk="{{e.pk}}"
@@ -122,6 +123,7 @@
                                         $('#update-id_title').val($(this).data('title'));
                                         $('#update-id_location').val($(this).data('location'));
                                         $('#update-id_date').val($(this).data('date'));
+                                        // $('#update-id_time').val($(this).data('time'));
                                         $('#update-id_capacity').val($(this).data('capacity'));
                                         $('#update-id_description').val($(this).data('desc'));
                                         $('#update-id_pk').val($(this).data('pk'));
@@ -152,6 +154,8 @@
                     Title<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="title" maxlength="50" class="textinput textInput form-control" required="" id="update-id_title" value=""> </div> </div> <div id="update-div_id_location" class="form-group"> <label for="update-div_id_location" class=" requiredField">
                     Location<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="location" maxlength="200" class="textinput textInput form-control" required="" id="update-id_location"> </div> </div> <div id="update-div_id_date" class="form-group"> <label for="update-div_id_date" class=" requiredField">
                     Date<span class="asteriskField">*</span> </label> <div class=""> <input type="datetime-local" name="date" class="datetimeinput form-control" required="" id="update-id_date"> </div> </div> <div id="update-div_id_capacity" class="form-group"> <label for="update-div_id_capacity" class=" requiredField">
+<!--                    Date<span class="asteriskField">*</span> </label> <div class=""> <input type="date" name="date" class="datetimeinput form-control" required="" id="update-id_date"> </div> </div> <div id="update-div_id_capacity" class="form-group"> <label for="update-div_id_capacity" class=" requiredField">-->
+<!--                    Time<span class="asteriskField">*</span> </label> <div class=""> <input type="time" name="time" class="datetimeinput form-control" required="" id="update-id_time"> </div> </div> <div id="update-div_id_capacity" class="form-group"> <label for="update-div_id_capacity" class=" requiredField">-->
                     Capacity<span class="asteriskField">*</span> </label> <div class=""> <input type="number" name="capacity" min="0" class="numberinput form-control" required="" id="update-id_capacity"> </div> </div> <div id="update-div_id_description" class="form-group"> <label for="update-div_id_description" class=" requiredField">
                     Description<span class="asteriskField">*</span> </label> <div class=""> <textarea name="description" cols="40" rows="10" style="height: 100px;" maxlength="200" class="textarea form-control" required="" id="update-id_description"></textarea> </div> </div>
                     <input type="hidden" name="id" id="update-id_pk">
