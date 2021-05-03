@@ -191,7 +191,7 @@
 
         <div id="search-div">
             <!-- Builds from the ScheduleForm class -->
-            <form id="search-form" action="{% url 'map:search' %}" id="location-search" method="post">
+            <form id="search-form" action="{% url 'map:search' %}" id="location-search" method="post" label="Test">
                 {% csrf_token %}
                 {{ form|crispy }}
                 <button type="submit" class="btn btn-primary">Search</button>
