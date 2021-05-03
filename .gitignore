@@ -3,6 +3,6 @@
 # PyCharm stuff
 .idea/
 
-# Pychache
-__pychache__/
-/__pychache__/
+# Pycache
+__pycache__/
+/__pycache__/
