@@ -44,100 +44,101 @@
     <ul class='list-group'>
         {% for e in eventsList%}
             {% if e.date|check_date %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="container">
-                    <div class="row">
-                        <div class="col col-sm-6 text-center vertical">
-                            <b>{{e.title}}</b>
-                        </div>
-                        <div class="col col-sm-3 text-center vertical">
-                            <button class='btn btn-info' type='button' data-target='#details-{{forloop.counter0}}' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="{{e.title}}-{{e.pk}}-details">
-                                Details
-                            </button>
-                        </div>
-
-                        <div class="col col-sm-3 text-center vertical">
-                            {% if e.host == user %}
-                                <form id="remove-event-{{ forloop.counter0 }}" action="{% url 'map:removeEvent' %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="event" value="{{e.id}}">
-                                            <a class="btn btn-danger" href="#" onclick="$('#remove-event-{{ forloop.counter0 }}').submit();" type="submit">Cancel</a>
-                                    <script>
-                                            $('#remove-event-{{ forloop.counter0 }}').on('submit', cancelEvent);
-                                    </script>
-                                </form>
-                            {% elif e in user.attendees.all%}
-                                <form id="cancel-event-{{ forloop.counter0 }}" action="{% url 'map:cancelEvent' %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="event" value="{{e.id}}">
-                                            <a class="btn btn-danger" href="#" onclick="$('#cancel-event-{{ forloop.counter0 }}').submit();" type="submit">Don't Attend</a>
-                                    <script>
-                                            $('#cancel-event-{{ forloop.counter0 }}').on('submit', cancelAttendee);
-                                    </script>
-                                </form>
-                            {% else %}
-                            <form id="attend-event-{{ forloop.counter0 }}" action="{% url 'map:attendEvent' %}" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="event" value="{{e.id}}">
-                                        <a class="btn btn-success" href="#" onclick="$('#attend-event-{{ forloop.counter0 }}').submit();" type="submit">Attend</a>
-                                <script>
-                                        $('#attend-event-{{ forloop.counter0 }}').on('submit', addAttendee);
-                                </script>
-                            </form>
-                            {% endif %}
-                        </div>
-
-                    </div>
-
-                    <div id='details-{{forloop.counter0}}' class="collapse">
-                        <ul>
-                            {% if user == e.host %}
-                            <li>Host: <b>You</b> </li>
-                            {% else %}
-                            <li>Host: <b>{{e.host}}</b></li>
-                            {% endif %}
-                            <li>Location: <b>{{e.location}}</b> </li>
-                            <li>Date: <b>{{e.date}}</b></li>
-                            <li>Time: <b>{{e.time}}</b></li>
-                            <li>Attendees: <b>{{e.numberOfAttendees}}</b></li>
-                            <li>Description: <b>{{e.description}}</b></li>
-                        </ul>
-                        <div class="row justify-content-md-center">
-                            {% if e.host == user %}
-                                <!-- Button trigger modal -->
-                                <button id="update-event-button-{{e.pk}}" type="button" class="btn btn-primary"
-                                        data-toggle="modal"
-                                        data-target="#updateEventModal"
-                                        data-title="{{e.title}}"
-                                        data-location="{{e.location}}"
-                                        data-date="{{e.date}}"
-                                        data-capacity="{{e.capacity}}"
-                                        data-desc="{{e.description}}"
-                                        data-pk="{{e.pk}}"
-                                        <!-- data-time="{{e.time}}"-->
-                                >
-                                Update Event
+                {% if e.time|check_time %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col col-sm-6 text-center vertical">
+                                <b>{{e.title}}</b>
+                            </div>
+                            <div class="col col-sm-3 text-center vertical">
+                                <button class='btn btn-info' type='button' data-target='#details-{{forloop.counter0}}' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="{{e.title}}-{{e.pk}}-details">
+                                    Details
                                 </button>
-                                <script>
-                                    $('#update-event-button-{{e.pk}}').on('click', function() {
-                                        console.log("Update event {{e.title}} pressed");
-                                        $('#update-id_title').val($(this).data('title'));
-                                        $('#update-id_location').val($(this).data('location'));
-                                        $('#update-id_date').val($(this).data('date'));
-                                        // $('#update-id_time').val($(this).data('time'));
-                                        $('#update-id_capacity').val($(this).data('capacity'));
-                                        $('#update-id_description').val($(this).data('desc'));
-                                        $('#update-id_pk').val($(this).data('pk'));
-                                    });
-                                </script>
+                            </div>
 
-                            {% endif %}
+                            <div class="col col-sm-3 text-center vertical">
+                                {% if e.host == user %}
+                                    <form id="remove-event-{{ forloop.counter0 }}" action="{% url 'map:removeEvent' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="event" value="{{e.id}}">
+                                                <a class="btn btn-danger" href="#" onclick="$('#remove-event-{{ forloop.counter0 }}').submit();" type="submit">Cancel</a>
+                                        <script>
+                                                $('#remove-event-{{ forloop.counter0 }}').on('submit', cancelEvent);
+                                        </script>
+                                    </form>
+                                {% elif e in user.attendees.all%}
+                                    <form id="cancel-event-{{ forloop.counter0 }}" action="{% url 'map:cancelEvent' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="event" value="{{e.id}}">
+                                                <a class="btn btn-danger" href="#" onclick="$('#cancel-event-{{ forloop.counter0 }}').submit();" type="submit">Don't Attend</a>
+                                        <script>
+                                                $('#cancel-event-{{ forloop.counter0 }}').on('submit', cancelAttendee);
+                                        </script>
+                                    </form>
+                                {% else %}
+                                <form id="attend-event-{{ forloop.counter0 }}" action="{% url 'map:attendEvent' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="event" value="{{e.id}}">
+                                            <a class="btn btn-success" href="#" onclick="$('#attend-event-{{ forloop.counter0 }}').submit();" type="submit">Attend</a>
+                                    <script>
+                                            $('#attend-event-{{ forloop.counter0 }}').on('submit', addAttendee);
+                                    </script>
+                                </form>
+                                {% endif %}
+                            </div>
+
                         </div>
+
+                        <div id='details-{{forloop.counter0}}' class="collapse">
+                            <ul>
+                                {% if user == e.host %}
+                                <li>Host: <b>You</b> </li>
+                                {% else %}
+                                <li>Host: <b>{{e.host}}</b></li>
+                                {% endif %}
+                                <li>Location: <b>{{e.location}}</b> </li>
+                                <li>Date: <b>{{e.date}}</b></li>
+                                <li>Time: <b>{{e.time}}</b></li>
+                                <li>Attendees: <b>{{e.numberOfAttendees}}</b></li>
+                                <li>Description: <b>{{e.description}}</b></li>
+                            </ul>
+                            <div class="row justify-content-md-center">
+                                {% if e.host == user %}
+                                    <!-- Button trigger modal -->
+                                    <button id="update-event-button-{{e.pk}}" type="button" class="btn btn-primary"
+                                            data-toggle="modal"
+                                            data-target="#updateEventModal"
+                                            data-title="{{e.title}}"
+                                            data-location="{{e.location}}"
+                                            data-date="{{e.date}}"
+                                            data-capacity="{{e.capacity}}"
+                                            data-desc="{{e.description}}"
+                                            data-pk="{{e.pk}}"
+                                            data-time="{{e.time}}"
+                                    >
+                                    Update Event
+                                    </button>
+                                    <script>
+                                        $('#update-event-button-{{e.pk}}').on('click', function() {
+                                            console.log("Update event {{e.title}} pressed");
+                                            $('#update-id_title').val($(this).data('title'));
+                                            $('#update-id_location').val($(this).data('location'));
+                                            $('#update-id_date').val($(this).data('date'));
+                                            $('#update-id_time').val($(this).data('time'));
+                                            $('#update-id_capacity').val($(this).data('capacity'));
+                                            $('#update-id_description').val($(this).data('desc'));
+                                            $('#update-id_pk').val($(this).data('pk'));
+                                        });
+                                    </script>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+
                     </div>
 
-                </div>
-
-            </li>
+                </li>
             {% endif %}
         {% endfor %}
     </ul>
