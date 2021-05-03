@@ -59,14 +59,9 @@
         <!-- Builds from the ScheduleForm class -->
         <form id="search-form" action="{% url 'map:search' %}" id="location-search" method="post">
             {% csrf_token %}
-            {{ form|crispy }}
-            <div id="div_id_search" class="form-group">
-                    <label for="id_search" class=" requiredField">
-                        Search
-                        <span class="asteriskField">*</span> </label>
-                    <div class=""> <input type="text" name="search" maxlength="50" class="textinput textInput form-control" required="" id="id_search">
-                    </div>
-                </div>
+             <label for="id_search" class="">
+                Search for classes and locations around UVA
+            </label> <div class=""> <input type="text" name="search" maxlength="50" class="textinput textInput form-control" id="id_search"> </div>
             <button type="submit" class="btn btn-primary">Search</button>
             <button type="reset" class="btn btn-warning" onclick="document.getElementById('id_search').value = ''">Clear</button>
             <button class='btn btn-info'  type='button' data-target='#schedule-instructions' data-toggle='collapse'>
