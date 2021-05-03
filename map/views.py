@@ -235,6 +235,10 @@ def user_created_event(request):
         event_form = MakeEventForm(request.POST)
         if user.is_authenticated and event_form.is_valid():
             entry = event_form.save(commit=False)  # Don't save to the database just yet
+            print(entry)
+            print(event_form.cleaned_data)
+            print(event_form.data)
+            print(event_form.errors)
             entry.host = user  # Tie the host to this user
             # Ignore the attendees they are set later
             entry.save()  # Save to the database
@@ -258,6 +262,7 @@ def user_updated_event(request):
             database_entry.title = event_form.cleaned_data['title']
             database_entry.location = event_form.cleaned_data['location']
             database_entry.date = event_form.cleaned_data['date']
+            database_entry.time = event_form.cleaned_data['time']
             database_entry.capacity = event_form.cleaned_data['capacity']
             database_entry.description = event_form.cleaned_data['description']
 
