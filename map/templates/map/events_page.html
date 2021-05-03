@@ -3,6 +3,7 @@
 
     <h3>Host your own event</h3>
     {% if user.is_authenticated %}
+    <p>Click to create a public event</p>
         <div id="make-event-modals">
             <!-- From Bootstrap's docs -->
             <!-- Button trigger modal -->
@@ -92,13 +93,13 @@
         <p>Need to be logged in to make an event</p>
     {% endif %}
 
-    <h1>Events</h1>
+    <h3>Events</h3>
     {% if user.is_authenticated %}
     <p>Click to show public events hosted by you and others</p>
 
         <div id="events-list-section">
             <p>
-                <button class='btn btn-secondary' type='button' data-target='#events-list' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="#events-list">
+                <button class='btn btn-success' type='button' data-target='#events-list' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="#events-list">
                     Events
                 </button>
             </p>
@@ -202,7 +203,8 @@
                                             {% endif %}
                                             <li>Location: <b>{{e.location}}</b> </li>
                                             <li>Date: <b>{{e.date}}</b></li>
-                                            <li>Attendees: <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span></li>
+                                            <li>Attendees: <b>{{e.numberOfAttendees}}</b></li>
+                                            <li>Description: <b>{{e.description}}</b></li>
                                         </ul>
                                         <div class="row justify-content-md-center">
                                             {% if e.host == user %}
