@@ -20,6 +20,8 @@ class UpdateEventForm(forms.Form):
     title = forms.CharField(max_length=50)
     location = forms.CharField(max_length=200)
     date = forms.DateTimeField()
+    #date = forms.DateField()
+    #time = forms.TimeField()
     capacity = forms.IntegerField()
     description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'style': 'height: 100px;'}))
     id = forms.IntegerField(widget=forms.HiddenInput())
