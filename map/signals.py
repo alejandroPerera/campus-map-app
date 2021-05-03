@@ -23,7 +23,7 @@ def add_classes(sender, **kwargs):
         # So there is more to log
         num_updated = 0
         # Read in the csv.
-        with open(file='map/static/map/searchData.csv', newline='') as sis_data:
+        with open(file='map/static/map/fall2021.csv', newline='') as sis_data:
             reader = csv.reader(sis_data, delimiter=',')
             reader.__next__()  # Move past the header line
             rows = list(reader)
@@ -36,6 +36,11 @@ def add_classes(sender, **kwargs):
                 units = row[5]
                 if str(units).__contains__('/') or str(units).__contains__('-'):
                     units = 0
+                
+                #handles cases where the course number contains a T to indicate transfer. Ex: MED 8000T 
+                course_num = row[2]
+                course_num = course_num.replace("T", "")
+
 
                 # Similarly, some sections are labeled "ROS" or "CHO"
                 # No idea what it means, but messes up our table >:(
@@ -49,7 +54,7 @@ def add_classes(sender, **kwargs):
                 entry = ClassModel(
                     class_number=row[0],  # This is the 5 digit unique class ID. Ex: 15927
                     class_mnemonic=row[1],
-                    course_number=row[2],  # This is the 4 digit course number, but is not specific to section Ex: 3240
+                    course_number=int(course_num),  # This is the 4 digit course number, but is not specific to section Ex: 3240
                     class_section=section,
                     class_type=row[4],
                     class_units=units,
