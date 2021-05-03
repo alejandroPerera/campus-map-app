@@ -188,7 +188,8 @@ def get_class_search_results(request):
                     in_schedule = False
 
                 output.append(
-                    SearchResult(r.__str__(), r.class_room, r.class_title, coords, r.class_number, user.is_authenticated, in_schedule))
+                    SearchResult(r.__str__(), r.class_room, r.class_title, coords, r.class_number,
+                                 user.is_authenticated, in_schedule))
 
             return render(request, 'map/classes.html', {'classR': output})
 
@@ -320,9 +321,9 @@ def show_schedule_page(request):
 
 
 def show_events_page(request):
-    return render(request,'map/events_page.html', {'eventsList': EventModel.objects.all()})
+    return render(request, 'map/events_page.html', {'eventsList': EventModel.objects.all()})
+
 
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse('map:map'))
-

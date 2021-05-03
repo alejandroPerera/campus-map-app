@@ -3,9 +3,8 @@
 <div id="class-schedule-list">
         {% if user.is_authenticated %}
                 <div id="schedule-list">
-                    {% if user.schedule.all|length > 0 %}
                     <p>
-                        <button class='btn btn-success'  type='button' data-target='#clist' data-toggle='collapse'>
+                        <button class='btn btn-success'  type='button' data-target='#schedule-clist' data-toggle='collapse'>
                             My Classes
                         </button>
                     </p>
@@ -19,12 +18,13 @@
                                     method: $(this).attr('method'),
                                     data: $(this).serialize(),
                                     success: function(data){
-                                        $('#schedule-list').html(data)
+                                        $('#schedule-clist').html(data)
                                     }
                                 });
                             }
                         </script>
-                        <div class='collapse' id='clist'>
+                        <div class='collapse' id='schedule-clist'>
+                            {% if user.schedule.all|length > 0 %}
                             <ul class='list-group'>
                                 {% for class in user.schedule.all %}
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -40,13 +40,14 @@
                                     </li>
                                 {% endfor %}
                             </ul>
+                            {% else %}
+                                <p><b>You haven't added any classes to your schedule yet.
+                                Search for the course number or name below.
+                                </b>
+                                </p>
+                            {% endif %}
                         </div>
-                    {% else %}
-                        <p><b>You haven't added any classes to your schedule yet.
-                        Search for the course number or name below.
-                        </b>
-                        </p>
-                    {% endif %}
+
                 </div>
 
         {% else %}
