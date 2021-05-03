@@ -51,7 +51,7 @@
                             <b>{{e.title}}</b>
                         </div>
                         <div class="col col-sm-3 text-center vertical">
-                            <button class='btn btn-dark' type='button' data-target='#details-{{forloop.counter0}}' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="{{e.title}}-{{e.pk}}-details">
+                            <button class='btn btn-info' type='button' data-target='#details-{{forloop.counter0}}' data-toggle='collapse' role="button" aria-expanded="false" aria-controls="{{e.title}}-{{e.pk}}-details">
                                 Details
                             </button>
                         </div>
@@ -98,7 +98,8 @@
                             {% endif %}
                             <li>Location: <b>{{e.location}}</b> </li>
                             <li>Date: <b>{{e.date}}</b></li>
-                            <li>Attendees: <span class="badge badge-primary badge-pill" id = "number-of-attendees">{{e.numberOfAttendees}}</span></li>
+                            <li>Attendees: <b>{{e.numberOfAttendees}}</b></li>
+                            <li>Description: <b>{{e.description}}</b></li>
                         </ul>
                         <div class="row justify-content-md-center">
                             {% if e.host == user %}
