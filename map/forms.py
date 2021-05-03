@@ -10,7 +10,8 @@ class ScheduleForm(forms.Form):
 class MakeEventForm(forms.ModelForm):
     class Meta:
         model = EventModel
-        fields = ['title', 'location', 'date','time', 'capacity', 'description']
+        fields = ['title', 'location', 'date', 'capacity', 'description']
+        #fields = ['title', 'location', 'date', 'time', 'capacity', 'description']
         widgets = {
             'description': forms.Textarea(attrs={'style': 'height: 100px;'}),
         }
