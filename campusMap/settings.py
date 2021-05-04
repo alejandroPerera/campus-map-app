@@ -22,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'xnt^3(!pcpr-i%b_ys4@6)^q!+tko*b=zj#^4ad*seyaf4=$vl'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG")
 
 ALLOWED_HOSTS = []
 
@@ -59,6 +59,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')# <-- Added in GP-I
+#SECURE_SSL_REDIRECT = True  # <-- Added in GP-I
+CSRF_COOKIE_SECURE = True  # <-- Added in GP-I
+SESSION_COOKIE_SECURE = True  # <-- Added in GP-I
+SECURE_HSTS_SECONDS = 15768000  # <-- Added in GP-I
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # <-- Added in GP-I
+SECURE_HSTS_PRELOAD = True  # <-- Added in GP-I
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
 
 ROOT_URLCONF = 'campusMap.urls'
 

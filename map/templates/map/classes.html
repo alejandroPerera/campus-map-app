@@ -16,7 +16,7 @@
                         var marker = new mapboxgl.Marker({color: "#ff0000"})
                           .setLngLat(coords)
                           .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                              .setHTML('<p>' + name + '</p>'))
+                              .setHTML('<p style = "color:black">' + name + '</p>'))
 
                         var i;
                         for (i = 0; i < allMarkers.length; i++) {
@@ -83,10 +83,12 @@
                                            {% if class.in_schedule %}
                                                 <a tabindex="0" id="add-class-button-{{ forloop.counter0 }}" type="button" class="btn btn-success" data-toggle="popover" data-trigger="focus" data-content="This class is already in your schedule!">Add Class</a>
                                                 <script>
-                                                        $('#add-class-button-{{ forloop.counter0 }}').popover()
-                                                        $('.popover-dismiss').popover({
-                                                          trigger: 'focus'
-                                                        })
+                                                        $('#add-class-button-{{ forloop.counter0 }}').popover().click(function () {
+                                                            setTimeout(function () {
+                                                                $('#add-class-button-{{ forloop.counter0 }}').popover('hide');
+                                                            }, 1250);
+                                                        });
+
                                                 </script>
                                            {% else %}
                                                    <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
@@ -111,7 +113,11 @@
                             {% if class.class_loc_coords == None %}
                                  <button type="button" id="add-marker-{{ forloop.counter0 }}-none" data-toggle="popover" data-content="This class has no location"class="btn btn-info">Show On Map</button>
                                  <script>
-                                    $('#add-marker-{{ forloop.counter0 }}-none').popover()
+                                    $('#add-marker-{{ forloop.counter0 }}-none').popover().click(function () {
+                                        setTimeout(function () {
+                                            $('#add-marker-{{ forloop.counter0 }}-none').popover('hide');
+                                        }, 1500);
+                                    });
                                  </script>
                             {% else %}
                                  <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-info">Show On Map</button>
