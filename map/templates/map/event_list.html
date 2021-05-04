@@ -43,8 +43,7 @@
     </script>
     <ul class='list-group'>
         {% for e in eventsList%}
-            {% if e.date|check_date %}
-                {% if e.time|check_time %}
+            {% if e|check_date %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="container">
                         <div class="row">
@@ -131,7 +130,6 @@
                                             $('#update-id_pk').val($(this).data('pk'));
                                         });
                                     </script>
-                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>
