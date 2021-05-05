@@ -1,5 +1,5 @@
 {% load check_date %}
-{% if eventsList %}
+{% if eventsList|check_all_events %}
         <script>
                 addAttendee = function(a) {
                     a.preventDefault();
@@ -43,7 +43,7 @@
     </script>
     <ul class='list-group'>
         {% for e in eventsList%}
-            {% if e|check_date %}
+<!--            {% if e|check_date %}-->
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="container">
                         <div class="row">
@@ -137,7 +137,8 @@
                     </div>
 
                 </li>
-            {% endif %}
+
+<!--            {% endif %}-->
         {% endfor %}
     </ul>
 <!-- Modal -->

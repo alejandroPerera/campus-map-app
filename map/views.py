@@ -10,7 +10,10 @@ from django import template
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from datetime import *
-
+from django import template
+from datetime import datetime
+from datetime import date
+from pytz import timezone
 
 # Create your views here.
 
@@ -228,6 +231,20 @@ def remove_class(request):
 
     return render(request, 'map/user_schedule.html', {'schedule': []})
 
+def check_date(event):
+    #value = value.replace(tzinfo=utc)
+    currentDay = date.today()
+    print("Value: " + str(event.date) + "Now: " + str(currentDay))
+    print(event.date >= currentDay)
+    currentTime = datetime.now().time()
+    print("Value: " + str(event.time) + "Now: " + str(currentTime))
+    print(event.time >= currentTime)
+    if(event.date>currentDay):
+        return event.date > currentDay
+    elif(event.date == currentDay):
+        return event.time >= currentTime
+    else:
+        return False
 
 def user_created_event(request):
     if request.method == 'POST':
@@ -239,11 +256,14 @@ def user_created_event(request):
             print(event_form.cleaned_data)
             print(event_form.data)
             print(event_form.errors)
-            entry.host = user  # Tie the host to this user
-            # Ignore the attendees they are set later
-            entry.save()  # Save to the database
-            event_form.save_m2m()  # Needs to be called if commit = False
-            return render(request, 'map/event.html', {'success': True, 'error': None})
+            if(check_date(entry)):
+                entry.host = user  # Tie the host to this user
+                # Ignore the attendees they are set later
+                entry.save()  # Save to the database
+                event_form.save_m2m()  # Needs to be called if commit = False
+                return render(request, 'map/event.html', {'success': True, 'error': None})
+            else:
+                return render(request, 'map/event.html', {'success': False, 'error': ''})
         else:
             return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 
@@ -265,15 +285,17 @@ def user_updated_event(request):
             database_entry.time = event_form.cleaned_data['time']
             database_entry.capacity = event_form.cleaned_data['capacity']
             database_entry.description = event_form.cleaned_data['description']
-
-            database_entry.save()
+            if(check_date(database_entry)):
+                database_entry.save()
+                return render(request, 'map/event.html', {'success': True, 'error': None})
+            else:
+                return render(request, 'map/event.html', {'success': False, 'error': ''})
 
             print("Title: ", database_entry.title)
             # entry.host = user  # Tie the host to this user
             # Ignore the attendees they are set later
             # entry.save()  # Save to the database
             # event_form.save_m2m()  # Needs to be called if commit = False
-            return render(request, 'map/event.html', {'success': True, 'error': None})
         else:
             return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 

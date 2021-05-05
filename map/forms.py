@@ -7,6 +7,7 @@ class ScheduleForm(forms.Form):
     search = forms.CharField(widget=forms.TextInput, max_length=50, label="Search for classes and locations around UVA", required=False)
 
 
+
 class MakeEventForm(forms.ModelForm):
     class Meta:
         model = EventModel
