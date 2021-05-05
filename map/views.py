@@ -6,16 +6,11 @@ import json
 from .models import ClassModel, EventModel
 import re
 from django.contrib.auth import logout
-from django import template
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse
-from datetime import *
-from django import template
 from datetime import datetime
 from datetime import date
-from pytz import timezone
 
-# Create your views here.
 
 class GeoCode:
     """
@@ -81,7 +76,12 @@ class MapView(generic.FormView):
     access_token = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg'
     starting_coords = [-78.510067, 38.038124]
 
-    # From : https://stackoverflow.com/questions/18232851/django-passing-variables-to-templates-from-class-based-views
+    #########################
+    # Reference
+    # Title: Django passing variables to templates from class based views
+    # Author: therealak12
+    # URL:  https://stackoverflow.com/questions/18232851/django-passing-variables-to-templates-from-class-based-views
+    ########################
     # Makes this classes global variables accessible from the templates
     def get_context_data(self, **kwargs):
         context = super(MapView, self).get_context_data(**kwargs)
@@ -104,7 +104,7 @@ def get_search_results(query):
     # Get the data from MapBox's API
     r = requests.get(base_url + query + '.json', params=params)
     # Parse that data into a more useful form
-    print(GeoCode.get_geo_codes(r.json()))
+    # print(GeoCode.get_geo_codes(r.json()))
     return GeoCode.get_geo_codes(r.json())
 
 
@@ -126,7 +126,7 @@ def parse_classes(search_input):
                 title = ClassModel.objects.filter(class_title__icontains=element)
                 if title.exists():
                     output[4] = search_input  # Possibly dangerous. The regex only gets the first word
-            else:  # Must be a number
+            elif element.isnumeric():  # Must be a number
                 if len(element) == 5:  # Must be the class number
                     output[0] = element
                 if len(element) == 4:  # Must be the course number
@@ -195,7 +195,6 @@ def get_class_search_results(request):
                 output.append(
                     SearchResult(r.__str__(), r.class_room, r.class_title, coords, r.class_number,
                                  user.is_authenticated, in_schedule))
-
             return render(request, 'map/classes.html', {'classR': output})
 
     else:
@@ -206,7 +205,6 @@ def add_class(request):
     if request.method == 'POST':
         class_id = request.POST.get('class-id')
         user = request.user
-        print(class_id)
         if user.is_authenticated:
             class_to_add = ClassModel.objects.get(class_number=class_id)
             user.schedule.add(class_to_add)
@@ -232,20 +230,18 @@ def remove_class(request):
 
     return render(request, 'map/user_schedule.html', {'schedule': []})
 
+
 def check_date(event):
-    #value = value.replace(tzinfo=utc)
     currentDay = date.today()
-    print("Value: " + str(event.date) + "Now: " + str(currentDay))
-    print(event.date >= currentDay)
     currentTime = datetime.now().time()
-    print("Value: " + str(event.time) + "Now: " + str(currentTime))
-    print(event.time >= currentTime)
-    if(event.date>currentDay):
+
+    if event.date > currentDay:
         return event.date > currentDay
-    elif(event.date == currentDay):
+    elif event.date == currentDay:
         return event.time >= currentTime
     else:
         return False
+
 
 def user_created_event(request):
     if request.method == 'POST':
@@ -253,11 +249,15 @@ def user_created_event(request):
         event_form = MakeEventForm(request.POST)
         if user.is_authenticated and event_form.is_valid():
             entry = event_form.save(commit=False)  # Don't save to the database just yet
+<<<<<<< HEAD
             print(entry)
             print(event_form.cleaned_data)
             print(event_form.data)
             print(event_form.errors)
             if(check_date(entry)  and entry.capacity <=99999):
+=======
+            if check_date(entry) and get_search_results(entry.location) != [] and entry.capacity <= 9999:
+>>>>>>> 5f6231185400325fc1de1abed237631886ab9f94
                 entry.host = user  # Tie the host to this user
                 # Ignore the attendees they are set later
                 entry.save()  # Save to the database
@@ -278,7 +278,6 @@ def user_updated_event(request):
         event_form = UpdateEventForm(request.POST)
         print("User updating event")
         if user.is_authenticated and event_form.is_valid():
-            print('Do I have a title?', event_form.cleaned_data)
             database_entry = EventModel.objects.get(pk=event_form.cleaned_data['id'])
 
             database_entry.title = event_form.cleaned_data['title']
@@ -287,17 +286,18 @@ def user_updated_event(request):
             database_entry.time = event_form.cleaned_data['time']
             database_entry.capacity = event_form.cleaned_data['capacity']
             database_entry.description = event_form.cleaned_data['description']
+<<<<<<< HEAD
             if(check_date(database_entry)  and database_entry.capacity <=9999):
+=======
+
+            if (check_date(database_entry) and get_search_results(
+                    database_entry.location) != [] and database_entry.capacity <= 9999):
+>>>>>>> 5f6231185400325fc1de1abed237631886ab9f94
                 database_entry.save()
                 return render(request, 'map/event.html', {'success': True, 'error': None})
             else:
                 return render(request, 'map/event.html', {'success': False, 'error': ''})
 
-            print("Title: ", database_entry.title)
-            # entry.host = user  # Tie the host to this user
-            # Ignore the attendees they are set later
-            # entry.save()  # Save to the database
-            # event_form.save_m2m()  # Needs to be called if commit = False
         else:
             return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 
@@ -310,7 +310,7 @@ def attend_event(request):
         event_id = request.POST.get('event')
         event_to_attend = EventModel.objects.get(pk=event_id)
         # checks if already attending event and if host tries to attend own event
-        eventAddOne = event_to_attend.numberOfAttendees +1
+        eventAddOne = event_to_attend.numberOfAttendees + 1
         if event_to_attend.host != user and event_to_attend not in user.attendees.all() and eventAddOne <= event_to_attend.capacity:
             user.attendees.add(event_to_attend)  # link user and event
             event_to_attend.numberOfAttendees += 1  # update attendance
@@ -325,7 +325,7 @@ def cancel_event(request):
         event_id = request.POST.get('event')
         event_to_attend = EventModel.objects.get(pk=event_id)
         user.attendees.remove(event_to_attend)  # unlink user and event
-        if(event_to_attend.numberOfAttendees>0 and event_to_attend.host !=user):
+        if event_to_attend.numberOfAttendees > 0 and event_to_attend.host != user:
             event_to_attend.numberOfAttendees -= 1  # update attendance
         event_to_attend.save()
 
@@ -343,21 +343,25 @@ def remove_event_from_list(request):
 
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
+
 def update_event_list():
     eventsList = EventModel.objects.all()
-    newEventsList=[]
+    newEventsList = []
     for e in eventsList:
+<<<<<<< HEAD
         if (check_date(e)  and e.capacity <= 99999):
+=======
+        if check_date(e) and get_search_results(e.location) != [] and e.capacity <= 9999:
+>>>>>>> 5f6231185400325fc1de1abed237631886ab9f94
             newEventsList.append(e)
         else:
             EventModel.objects.filter(id=e.id).delete()
     return newEventsList
 
 
-
 def get_event_list(request):
     update_event_list()
-    print(EventModel.objects.all())
+    # print(EventModel.objects.all())
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
 
@@ -367,10 +371,17 @@ def show_schedule_page(request):
 
 def show_events_page(request):
     update_event_list()
-    print(EventModel.objects.all())
+    # print(EventModel.objects.all())
     return render(request, 'map/events_page.html', {'eventsList': EventModel.objects.all()})
 
 
 def logout_view(request):
+    #########################
+    # Reference
+    # Title: Using the Django authentication system
+    # Author: Django
+    # URL:  https://docs.djangoproject.com/en/3.2/topics/auth/default/
+    ########################
+    # Used to get rid of ugly logout page and redirect to home page with login
     logout(request)
     return HttpResponseRedirect(reverse('map:map'))

@@ -4,7 +4,12 @@ from django.db.backends.signals import connection_created
 import csv
 from sys import argv
 
-
+#########################
+# Reference
+# Title: Signals
+# Author: Django
+# URL:  https://docs.djangoproject.com/en/3.2/topics/signals/
+########################
 @receiver(connection_created)
 def add_classes(sender, **kwargs):
     """
