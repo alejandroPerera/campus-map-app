@@ -349,12 +349,15 @@ def update_event_list():
     for e in eventsList:
         if (check_date(e) and get_search_results(e.location) != [] and e.capacity <= 9999):
             newEventsList.append(e)
+        else:
+            EventModel.objects.filter(id=e.id).delete()
     return newEventsList
 
 
 
 def get_event_list(request):
     update_event_list()
+    print(EventModel.objects.all())
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
 
@@ -364,6 +367,7 @@ def show_schedule_page(request):
 
 def show_events_page(request):
     update_event_list()
+    print(EventModel.objects.all())
     return render(request, 'map/events_page.html', {'eventsList': EventModel.objects.all()})
 
 
