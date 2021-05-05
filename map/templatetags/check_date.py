@@ -28,6 +28,7 @@ def check_all_events(eventList):
         if(check_date(e)):
             return True
     return False
+
 # @register.filter
 # def check_time(value):
 #     now = datetime.now().time()

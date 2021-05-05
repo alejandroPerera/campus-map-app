@@ -104,6 +104,7 @@ def get_search_results(query):
     # Get the data from MapBox's API
     r = requests.get(base_url + query + '.json', params=params)
     # Parse that data into a more useful form
+    print(GeoCode.get_geo_codes(r.json()))
     return GeoCode.get_geo_codes(r.json())
 
 
@@ -256,7 +257,7 @@ def user_created_event(request):
             print(event_form.cleaned_data)
             print(event_form.data)
             print(event_form.errors)
-            if(check_date(entry)):
+            if(check_date(entry) and get_search_results(entry.location)!=[]):
                 entry.host = user  # Tie the host to this user
                 # Ignore the attendees they are set later
                 entry.save()  # Save to the database
@@ -285,7 +286,7 @@ def user_updated_event(request):
             database_entry.time = event_form.cleaned_data['time']
             database_entry.capacity = event_form.cleaned_data['capacity']
             database_entry.description = event_form.cleaned_data['description']
-            if(check_date(database_entry)):
+            if(check_date(database_entry) and get_search_results(database_entry.location)!=[]):
                 database_entry.save()
                 return render(request, 'map/event.html', {'success': True, 'error': None})
             else:
