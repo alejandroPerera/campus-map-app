@@ -6,14 +6,10 @@ import json
 from .models import ClassModel, EventModel
 import re
 from django.contrib.auth import logout
-from django import template
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from datetime import *
-from django import template
 from datetime import datetime
 from datetime import date
-from pytz import timezone
 
 
 # Create your views here.
