@@ -14,6 +14,12 @@ from datetime import date
 max_capacity = 999
 
 
+#########################
+# Reference
+# Title: Django passing variables to templates from class based views
+# Author: therealak12
+# URL:  https://docs.mapbox.com/api/search/geocoding/
+########################
 class GeoCode:
     """
     Data format:
@@ -93,6 +99,12 @@ class MapView(generic.FormView):
 
 
 # Returns search results
+#########################
+# Reference
+# Title: Local Search with the GeoCoding API
+# Author:
+# URL:  https://docs.mapbox.com/help/tutorials/local-search-geocoding-api/
+########################
 def get_search_results(query):
     # Make this not stored here...
     access_token = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg'
@@ -244,7 +256,13 @@ def check_date(event):
     else:
         return False
 
-
+# Returns search results
+#########################
+# References
+# Title: Working with forms
+# Author:
+# URL: https://docs.djangoproject.com/en/3.2/topics/forms/
+########################
 def user_created_event(request):
     if request.method == 'POST':
         user = request.user
@@ -265,7 +283,7 @@ def user_created_event(request):
 
     return render(request, 'map/event.html', {'success': False, 'error': ''})
 
-
+#Host can update event
 def user_updated_event(request):
     if request.method == 'POST':
         user = request.user
@@ -291,7 +309,7 @@ def user_updated_event(request):
 
     return render(request, 'map/event.html', {'success': False, 'error': ''})
 
-
+#User can attend event
 def attend_event(request):
     if request.method == 'POST':
         user = request.user
@@ -306,7 +324,7 @@ def attend_event(request):
 
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
-
+#Host can cancel event
 def cancel_event(request):
     if request.method == 'POST':
         user = request.user
@@ -319,7 +337,6 @@ def cancel_event(request):
 
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
-
 def remove_event_from_list(request):
     if request.method == 'POST':
         event_id = request.POST.get('event')
@@ -331,7 +348,14 @@ def remove_event_from_list(request):
 
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
-
+#updates Event Models that are valid in eventsList
+# Returns search results
+#########################
+# Reference
+# Title: Working with Queries
+# Author:
+# URL: https://docs.djangoproject.com/en/3.2/topics/db/queries/
+########################
 def update_event_list():
     eventsList = EventModel.objects.all()
     newEventsList = []
