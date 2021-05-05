@@ -15,6 +15,7 @@ from datetime import datetime
 from datetime import date
 from pytz import timezone
 
+
 # Create your views here.
 
 class GeoCode:
@@ -231,20 +232,23 @@ def remove_class(request):
 
     return render(request, 'map/user_schedule.html', {'schedule': []})
 
+
 def check_date(event):
-    #value = value.replace(tzinfo=utc)
+    # value = value.replace(tzinfo=utc)
     currentDay = date.today()
     print("Value: " + str(event.date) + "Now: " + str(currentDay))
     print(event.date >= currentDay)
     currentTime = datetime.now().time()
     print("Value: " + str(event.time) + "Now: " + str(currentTime))
     print(event.time >= currentTime)
-    if(event.date>currentDay):
+
+    if event.date > currentDay:
         return event.date > currentDay
-    elif(event.date == currentDay):
+    elif event.date == currentDay:
         return event.time >= currentTime
     else:
         return False
+
 
 def user_created_event(request):
     if request.method == 'POST':
@@ -256,7 +260,7 @@ def user_created_event(request):
             print(event_form.cleaned_data)
             print(event_form.data)
             print(event_form.errors)
-            if(check_date(entry) and get_search_results(entry.location)!=[] and entry.capacity <=9999):
+            if check_date(entry) and get_search_results(entry.location) != [] and entry.capacity <= 9999:
                 entry.host = user  # Tie the host to this user
                 # Ignore the attendees they are set later
                 entry.save()  # Save to the database
@@ -286,13 +290,15 @@ def user_updated_event(request):
             database_entry.time = event_form.cleaned_data['time']
             database_entry.capacity = event_form.cleaned_data['capacity']
             database_entry.description = event_form.cleaned_data['description']
-            if(check_date(database_entry) and get_search_results(database_entry.location)!=[] and database_entry.capacity <=9999):
+
+            if (check_date(database_entry) and get_search_results(
+                    database_entry.location) != [] and database_entry.capacity <= 9999):
                 database_entry.save()
                 return render(request, 'map/event.html', {'success': True, 'error': None})
             else:
                 return render(request, 'map/event.html', {'success': False, 'error': ''})
 
-            print("Title: ", database_entry.title)
+            # print("Title: ", database_entry.title)
             # entry.host = user  # Tie the host to this user
             # Ignore the attendees they are set later
             # entry.save()  # Save to the database
@@ -309,7 +315,7 @@ def attend_event(request):
         event_id = request.POST.get('event')
         event_to_attend = EventModel.objects.get(pk=event_id)
         # checks if already attending event and if host tries to attend own event
-        eventAddOne = event_to_attend.numberOfAttendees +1
+        eventAddOne = event_to_attend.numberOfAttendees + 1
         if event_to_attend.host != user and event_to_attend not in user.attendees.all() and eventAddOne <= event_to_attend.capacity:
             user.attendees.add(event_to_attend)  # link user and event
             event_to_attend.numberOfAttendees += 1  # update attendance
@@ -324,7 +330,7 @@ def cancel_event(request):
         event_id = request.POST.get('event')
         event_to_attend = EventModel.objects.get(pk=event_id)
         user.attendees.remove(event_to_attend)  # unlink user and event
-        if(event_to_attend.numberOfAttendees>0 and event_to_attend.host !=user):
+        if event_to_attend.numberOfAttendees > 0 and event_to_attend.host != user:
             event_to_attend.numberOfAttendees -= 1  # update attendance
         event_to_attend.save()
 
@@ -342,16 +348,16 @@ def remove_event_from_list(request):
 
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
+
 def update_event_list():
     eventsList = EventModel.objects.all()
-    newEventsList=[]
+    newEventsList = []
     for e in eventsList:
-        if (check_date(e) and get_search_results(e.location) != [] and e.capacity <= 9999):
+        if check_date(e) and get_search_results(e.location) != [] and e.capacity <= 9999:
             newEventsList.append(e)
         else:
             EventModel.objects.filter(id=e.id).delete()
     return newEventsList
-
 
 
 def get_event_list(request):
