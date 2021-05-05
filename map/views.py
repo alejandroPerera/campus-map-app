@@ -257,7 +257,7 @@ def user_created_event(request):
             print(event_form.cleaned_data)
             print(event_form.data)
             print(event_form.errors)
-            if(check_date(entry) and get_search_results(entry.location)!=[] and entry.capacity <=9999):
+            if(check_date(entry)  and entry.capacity <=99999):
                 entry.host = user  # Tie the host to this user
                 # Ignore the attendees they are set later
                 entry.save()  # Save to the database
@@ -287,7 +287,7 @@ def user_updated_event(request):
             database_entry.time = event_form.cleaned_data['time']
             database_entry.capacity = event_form.cleaned_data['capacity']
             database_entry.description = event_form.cleaned_data['description']
-            if(check_date(database_entry) and get_search_results(database_entry.location)!=[] and database_entry.capacity <=9999):
+            if(check_date(database_entry)  and database_entry.capacity <=9999):
                 database_entry.save()
                 return render(request, 'map/event.html', {'success': True, 'error': None})
             else:
@@ -347,7 +347,7 @@ def update_event_list():
     eventsList = EventModel.objects.all()
     newEventsList=[]
     for e in eventsList:
-        if (check_date(e) and get_search_results(e.location) != [] and e.capacity <= 9999):
+        if (check_date(e)  and e.capacity <= 99999):
             newEventsList.append(e)
         else:
             EventModel.objects.filter(id=e.id).delete()
