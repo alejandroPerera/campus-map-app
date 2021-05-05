@@ -195,7 +195,6 @@ def get_class_search_results(request):
                 output.append(
                     SearchResult(r.__str__(), r.class_room, r.class_title, coords, r.class_number,
                                  user.is_authenticated, in_schedule))
-
             return render(request, 'map/classes.html', {'classR': output})
 
     else:
@@ -372,5 +371,7 @@ def show_events_page(request):
 
 
 def logout_view(request):
+    # From: https://docs.djangoproject.com/en/3.2/topics/auth/default/
+    # Used to get rid of ugly logout page and redirect to home page with login
     logout(request)
     return HttpResponseRedirect(reverse('map:map'))

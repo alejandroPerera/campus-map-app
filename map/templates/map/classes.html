@@ -54,6 +54,8 @@
                 }
 
         </script>
+<!--From: https://www.w3schools.com/howto/howto_css_custom_scrollbar.asp-->
+<!--Used to customize scrollbar-->
         <style>
                 ::-webkit-scrollbar {
                   width: 12px;               /* width of the entire scrollbar */
@@ -82,6 +84,8 @@
                                    {% if user.is_authenticated%}
                                            {% if class.in_schedule %}
                                                 <a tabindex="0" id="add-class-button-{{ forloop.counter0 }}" type="button" class="btn btn-success" data-toggle="popover" data-trigger="focus" data-content="This class is already in your schedule!">Add Class</a>
+<!--                                                URL: https://stackoverflow.com/questions/31453279/how-to-fade-out-a-bootstrap-popover-after-5-seconds/31454700-->
+<!--                                                Used to fade popover for thing already in map/schedule-->
                                                 <script>
                                                         $('#add-class-button-{{ forloop.counter0 }}').popover().click(function () {
                                                             setTimeout(function () {
@@ -102,7 +106,10 @@
                                            {% endif %}
                                    {% else %}
                                         <a tabindex="0" id="add-class-button-{{ forloop.counter0 }}1" type="button" class="btn btn-success" data-toggle="popover" data-trigger="focus" data-content="Login to add to schedule!">Add Class</a>
+<!--                                        URL: https://getbootstrap.com/docs/4.0/components/popovers/-->
+<!--                                        Used to tell user to login-->
                                         <script>
+
                                                 $('#add-class-button-{{ forloop.counter0 }}1').popover()
                                                 $('.popover-dismiss').popover({
                                                   trigger: 'focus'

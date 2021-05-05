@@ -40,6 +40,8 @@ class ClassModel(models.Model):
 
 
 class EventModel(models.Model):
+    # URL: https://docs.djangoproject.com/en/3.2/topics/db/examples/many_to_one/
+    # For Foreignkey
     title = models.CharField(max_length=30)
     capacity = models.PositiveIntegerField()
     location = models.CharField(max_length=50)
