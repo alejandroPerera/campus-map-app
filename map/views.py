@@ -6,13 +6,11 @@ import json
 from .models import ClassModel, EventModel
 import re
 from django.contrib.auth import logout
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from datetime import datetime
 from datetime import date
 
-
-# Create your views here.
 
 class GeoCode:
     """
@@ -78,7 +76,12 @@ class MapView(generic.FormView):
     access_token = 'pk.eyJ1IjoiYS0wMiIsImEiOiJja21iMzl4dHgxeHFtMnBxc285NGMwZG5kIn0.Rl2qXrod77iHqUJ-eMbkcg'
     starting_coords = [-78.510067, 38.038124]
 
-    # From : https://stackoverflow.com/questions/18232851/django-passing-variables-to-templates-from-class-based-views
+    #########################
+    # Reference
+    # Title: Django passing variables to templates from class based views
+    # Author: therealak12
+    # URL:  https://stackoverflow.com/questions/18232851/django-passing-variables-to-templates-from-class-based-views
+    ########################
     # Makes this classes global variables accessible from the templates
     def get_context_data(self, **kwargs):
         context = super(MapView, self).get_context_data(**kwargs)
@@ -202,7 +205,6 @@ def add_class(request):
     if request.method == 'POST':
         class_id = request.POST.get('class-id')
         user = request.user
-        # print(class_id)
         if user.is_authenticated:
             class_to_add = ClassModel.objects.get(class_number=class_id)
             user.schedule.add(class_to_add)
@@ -230,13 +232,8 @@ def remove_class(request):
 
 
 def check_date(event):
-    # value = value.replace(tzinfo=utc)
     currentDay = date.today()
-    # print("Value: " + str(event.date) + "Now: " + str(currentDay))
-    # print(event.date >= currentDay)
     currentTime = datetime.now().time()
-    # print("Value: " + str(event.time) + "Now: " + str(currentTime))
-    # print(event.time >= currentTime)
 
     if event.date > currentDay:
         return event.date > currentDay
@@ -289,11 +286,6 @@ def user_updated_event(request):
             else:
                 return render(request, 'map/event.html', {'success': False, 'error': ''})
 
-            # print("Title: ", database_entry.title)
-            # entry.host = user  # Tie the host to this user
-            # Ignore the attendees they are set later
-            # entry.save()  # Save to the database
-            # event_form.save_m2m()  # Needs to be called if commit = False
         else:
             return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 
@@ -368,7 +360,12 @@ def show_events_page(request):
 
 
 def logout_view(request):
-    # From: https://docs.djangoproject.com/en/3.2/topics/auth/default/
+    #########################
+    # Reference
+    # Title: Using the Django authentication system
+    # Author: Django
+    # URL:  https://docs.djangoproject.com/en/3.2/topics/auth/default/
+    ########################
     # Used to get rid of ugly logout page and redirect to home page with login
     logout(request)
     return HttpResponseRedirect(reverse('map:map'))
