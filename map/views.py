@@ -101,7 +101,7 @@ def get_search_results(query):
     # Get the data from MapBox's API
     r = requests.get(base_url + query + '.json', params=params)
     # Parse that data into a more useful form
-    print(GeoCode.get_geo_codes(r.json()))
+    # print(GeoCode.get_geo_codes(r.json()))
     return GeoCode.get_geo_codes(r.json())
 
 
@@ -123,7 +123,7 @@ def parse_classes(search_input):
                 title = ClassModel.objects.filter(class_title__icontains=element)
                 if title.exists():
                     output[4] = search_input  # Possibly dangerous. The regex only gets the first word
-            else:  # Must be a number
+            elif element.isnumeric():  # Must be a number
                 if len(element) == 5:  # Must be the class number
                     output[0] = element
                 if len(element) == 4:  # Must be the course number
@@ -202,7 +202,7 @@ def add_class(request):
     if request.method == 'POST':
         class_id = request.POST.get('class-id')
         user = request.user
-        print(class_id)
+        # print(class_id)
         if user.is_authenticated:
             class_to_add = ClassModel.objects.get(class_number=class_id)
             user.schedule.add(class_to_add)
@@ -232,11 +232,11 @@ def remove_class(request):
 def check_date(event):
     # value = value.replace(tzinfo=utc)
     currentDay = date.today()
-    print("Value: " + str(event.date) + "Now: " + str(currentDay))
-    print(event.date >= currentDay)
+    # print("Value: " + str(event.date) + "Now: " + str(currentDay))
+    # print(event.date >= currentDay)
     currentTime = datetime.now().time()
-    print("Value: " + str(event.time) + "Now: " + str(currentTime))
-    print(event.time >= currentTime)
+    # print("Value: " + str(event.time) + "Now: " + str(currentTime))
+    # print(event.time >= currentTime)
 
     if event.date > currentDay:
         return event.date > currentDay
@@ -252,10 +252,6 @@ def user_created_event(request):
         event_form = MakeEventForm(request.POST)
         if user.is_authenticated and event_form.is_valid():
             entry = event_form.save(commit=False)  # Don't save to the database just yet
-            print(entry)
-            print(event_form.cleaned_data)
-            print(event_form.data)
-            print(event_form.errors)
             if check_date(entry) and get_search_results(entry.location) != [] and entry.capacity <= 9999:
                 entry.host = user  # Tie the host to this user
                 # Ignore the attendees they are set later
@@ -277,7 +273,6 @@ def user_updated_event(request):
         event_form = UpdateEventForm(request.POST)
         print("User updating event")
         if user.is_authenticated and event_form.is_valid():
-            print('Do I have a title?', event_form.cleaned_data)
             database_entry = EventModel.objects.get(pk=event_form.cleaned_data['id'])
 
             database_entry.title = event_form.cleaned_data['title']
@@ -358,7 +353,7 @@ def update_event_list():
 
 def get_event_list(request):
     update_event_list()
-    print(EventModel.objects.all())
+    # print(EventModel.objects.all())
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
 
@@ -368,7 +363,7 @@ def show_schedule_page(request):
 
 def show_events_page(request):
     update_event_list()
-    print(EventModel.objects.all())
+    # print(EventModel.objects.all())
     return render(request, 'map/events_page.html', {'eventsList': EventModel.objects.all()})
 
 

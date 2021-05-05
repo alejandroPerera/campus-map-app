@@ -59,7 +59,6 @@
         <!-- Builds from the ScheduleForm class -->
         <form id="search-form" action="{% url 'map:search' %}" id="location-search" method="post">
             {% csrf_token %}
-            {{ form|crispy }}
              <label for="id_search" class="">
                 Search for classes and locations around UVA
             </label> <div class=""> <input type="text" name="search" maxlength="50" class="textinput textInput form-control" id="id_search"> </div>
@@ -96,7 +95,7 @@
                          $.ajax({
                              url: $(this).attr('action'),
                              method: $(this).attr('method'),
-                             data: $('form').serialize(), // serialize converts the form inputs into the url
+                             data: $('#search-form').serialize(), // serialize converts the form inputs into the url
                              success: function(data){ $('#results').html(data) }
                          });
 
@@ -114,7 +113,7 @@
                         });
 
                      });
-                     $('form').on('reset', function(e){
+                     $('#search-form').on('reset', function(e){
                          e.preventDefault();
 
                          $.ajax({

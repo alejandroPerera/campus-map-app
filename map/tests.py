@@ -163,6 +163,16 @@ class SearchTests(TestCase):
         self.assertEqual(query[3], None)
         self.assertEqual(query[4], 'Advanced Software')
 
+    def test_parse_classes_jibberish(self):
+        search_term = 'q3r23gt'
+        query = parse_classes(search_term)
+
+        self.assertEqual(query[0], None)
+        self.assertEqual(query[1], None)
+        self.assertEqual(query[2], None)
+        self.assertEqual(query[3], None)
+        self.assertEqual(query[4], None)
+
 
 class EventTests(TestCase):
 
