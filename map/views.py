@@ -6,7 +6,7 @@ import json
 from .models import ClassModel, EventModel
 import re
 from django.contrib.auth import logout
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from datetime import datetime
 from datetime import date
@@ -373,6 +373,17 @@ def show_events_page(request):
     update_event_list()
     # print(EventModel.objects.all())
     return render(request, 'map/events_page.html', {'eventsList': EventModel.objects.all()})
+
+
+def is_class_in_schedule(request):
+    if request.method == 'GET':
+        class_id = request.GET.get('class-id')
+        class_to_check = ClassModel.objects.get(class_number=class_id)
+        user = request.user
+        if user.is_authenticated and class_to_check in user.schedule.all():
+            return JsonResponse({'has_class': True})
+
+    return JsonResponse({'has_class': False})
 
 
 def logout_view(request):
