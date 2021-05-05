@@ -41,15 +41,19 @@
                     }
                 }
 
-                editSchedule = function(e) {
+                addClass = function(e, form) {
                     e.preventDefault();
 
                     console.log("Editing classes");
+                    console.log(form.serialize());
                     $.ajax({
-                        url: $(this).attr('action'),
-                        method: $(this).attr('method'),
-                        data: $(this).serialize(),
-                        success: function(data){ $('#schedule-clist').html(data) }
+                        url: form.attr('action'),
+                        method: form.attr('method'),
+                        data: form.serialize(),
+                        success: function(data){
+                            console.log("Updating user schedule");
+                            $('#schedule-clist').html(data)
+                        }
                     });
                 }
 
@@ -82,28 +86,37 @@
                    <div class="p-2 bd-highlight">
                            <div id="class-{{ class.class_id }}">
                                    {% if user.is_authenticated%}
-                                           {% if class.in_schedule %}
-                                                <a tabindex="0" id="add-class-button-{{ forloop.counter0 }}" type="button" class="btn btn-success" data-toggle="popover" data-trigger="focus" data-content="This class is already in your schedule!">Add Class</a>
-<!--                                                URL: https://stackoverflow.com/questions/31453279/how-to-fade-out-a-bootstrap-popover-after-5-seconds/31454700-->
-<!--                                                Used to fade popover for thing already in map/schedule-->
-                                                <script>
-                                                        $('#add-class-button-{{ forloop.counter0 }}').popover().click(function () {
-                                                            setTimeout(function () {
-                                                                $('#add-class-button-{{ forloop.counter0 }}').popover('hide');
-                                                            }, 1250);
-                                                        });
+                                           <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
+                                                   {% csrf_token %}
+                                                   <input type="hidden" name="class-id" value="{{class.class_id}}">
+                                                   <button id="add-class-form-{{ forloop.counter0 }}-submit" type="submit" class="btn btn-success" data-container="body" data-trigger="manual" data-toggle="popover" data-placement="top" data-content="This class is already in your schedule!">Add Class</button>
+                                                   <script>
+                                                           $('#add-class-form-{{ forloop.counter0 }}-submit').popover().click(function () {
+                                                                setTimeout(function () {
+                                                                    $('#add-class-form-{{ forloop.counter0 }}-submit').popover('hide');
+                                                                }, 1500);
+                                                            });;
 
-                                                </script>
-                                           {% else %}
-                                                   <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
-                                                           {% csrf_token %}
-                                                           <input type="hidden" name="class-id" value="{{class.class_id}}">
-                                                           <button type="submit" class="btn btn-success">Add Class</button>
-                                                           <script>
-                                                                   $('#add-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
-                                                           </script>
-                                                   </form>
-                                           {% endif %}
+                                                           $('#add-class-form-{{ forloop.counter0 }}').on('submit', function(e){
+                                                                e.preventDefault();
+                                                                // Check if it's in the schedule
+                                                                $.ajax({
+                                                                    url: '{% url 'map:classInSchedule' %}',
+                                                                    method: 'get',
+                                                                    data: $(this).serialize(),
+                                                                    success: function(data){
+                                                                        if (!data.has_class) {
+                                                                            addClass(e, $('#add-class-form-{{ forloop.counter0 }}'));
+                                                                        } else {
+                                                                            console.log("show popover");
+                                                                            $('#add-class-form-{{ forloop.counter0 }}-submit').popover('show');
+                                                                        }
+                                                                    }
+                                                                });
+                                                           });
+                                                   </script>
+                                           </form>
+
                                    {% else %}
                                         <a tabindex="0" id="add-class-button-{{ forloop.counter0 }}1" type="button" class="btn btn-success" data-toggle="popover" data-trigger="focus" data-content="Login to add to schedule!">Add Class</a>
 <!--                                        URL: https://getbootstrap.com/docs/4.0/components/popovers/-->
