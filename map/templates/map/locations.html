@@ -1,5 +1,6 @@
 <!-- Display a list of the results -->
 {% if results|length > 0 %}
+
     <script>
         searchClick = function(e) {
             console.log("Pin button clicked");
@@ -15,7 +16,7 @@
                 var marker = new mapboxgl.Marker()
                   .setLngLat(coords)
                   .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                      .setHTML('<p>' + name + '</p>'))
+                      .setHTML('<p style = "color:black">' + name + '</p>'))
 
                 var i;
                 for (i = 0; i < allMarkers.length; i++) {
@@ -27,6 +28,7 @@
                 }
 
                 marker.addTo(map);
+                map.flyTo({center: coords, zoom: 17});
 
                 marker.getElement().addEventListener('contextmenu', function(e) {
                     marker.remove();

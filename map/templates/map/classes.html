@@ -8,6 +8,7 @@
                     let split = value.split(/[\[\], ]/);
                     let coords = [parseFloat(split[1]), parseFloat(split[3])];
                     var name = $(this).attr("name");
+                    //var time = $(this).attr("time");
                     //console.log(coords);
 
                     if (!isNaN(coords[0]) && !isNaN(coords[1])) {
@@ -15,7 +16,7 @@
                         var marker = new mapboxgl.Marker({color: "#ff0000"})
                           .setLngLat(coords)
                           .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-                              .setHTML('<p>' + name + '</p>'))
+                              .setHTML('<p style = "color:black">' + name + '</p>'))
 
                         var i;
                         for (i = 0; i < allMarkers.length; i++) {
@@ -27,6 +28,7 @@
                         }
 
                         marker.addTo(map);
+                        map.flyTo({center: coords, zoom: 17});
 
                         marker.getElement().addEventListener('contextmenu', function(e) {
                             marker.remove();
@@ -39,56 +41,116 @@
                     }
                 }
 
-                editSchedule = function(e) {
+                addClass = function(e, form) {
                     e.preventDefault();
 
                     console.log("Editing classes");
+                    console.log(form.serialize());
                     $.ajax({
-                        url: $(this).attr('action'),
-                        method: $(this).attr('method'),
-                        data: $(this).serialize(),
-                        success: function(data){ $('#schedule-list').html(data) }
+                        url: form.attr('action'),
+                        method: form.attr('method'),
+                        data: form.serialize(),
+                        success: function(data){
+                            console.log("Updating user schedule");
+                            $('#schedule-clist').html(data)
+                        }
                     });
                 }
 
         </script>
+<!--From: https://www.w3schools.com/howto/howto_css_custom_scrollbar.asp-->
+<!--Used to customize scrollbar-->
+        <style>
+                ::-webkit-scrollbar {
+                  width: 12px;               /* width of the entire scrollbar */
+                }
 
+                ::-webkit-scrollbar-track {
+                  background: gray;        /* color of the tracking area */
+                }
+
+                ::-webkit-scrollbar-thumb {
+                  background-color: #2b4764;    /* color of the scroll thumb */
+                  border-radius: 12px;       /* roundness of the scroll thumb */
+                  border: 3px solid #2b4764;  /* creates padding around scroll thumb */
+        </style>
+    <div id = "scrol">
         <ul class="list-group overflow-auto">
         {% for class in classR %}
            <li class="list-group-item d-flex">
                    <div class="p-2 flex-grow-1">
+                           <p><b>{{class.class_title}}</b></p>
                            <p>{{class.class_name }}</p>
                            {{class.class_room }}
                    </div>
                    <div class="p-2 bd-highlight">
                            <div id="class-{{ class.class_id }}">
-                                   {% if class.in_schedule %}
-                                        <a tabindex="0" id="add-class-button-{{ forloop.counter0 }}" type="button" class="btn btn-success" data-toggle="popover" data-trigger="focus" data-content="This class is already in your schedule!">Add Class</a>
+                                   {% if user.is_authenticated%}
+                                           <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
+                                                   {% csrf_token %}
+                                                   <input type="hidden" name="class-id" value="{{class.class_id}}">
+                                                   <button id="add-class-form-{{ forloop.counter0 }}-submit" type="submit" class="btn btn-success" data-container="body" data-trigger="manual" data-toggle="popover" data-placement="top" data-content="This class is already in your schedule!">Add Class</button>
+                                                   <script>
+                                                           $('#add-class-form-{{ forloop.counter0 }}-submit').popover().click(function () {
+                                                                setTimeout(function () {
+                                                                    $('#add-class-form-{{ forloop.counter0 }}-submit').popover('hide');
+                                                                }, 1500);
+                                                            });;
+
+                                                           $('#add-class-form-{{ forloop.counter0 }}').on('submit', function(e){
+                                                                e.preventDefault();
+                                                                // Check if it's in the schedule
+                                                                $.ajax({
+                                                                    url: '{% url 'map:classInSchedule' %}',
+                                                                    method: 'get',
+                                                                    data: $(this).serialize(),
+                                                                    success: function(data){
+                                                                        if (!data.has_class) {
+                                                                            addClass(e, $('#add-class-form-{{ forloop.counter0 }}'));
+                                                                        } else {
+                                                                            console.log("show popover");
+                                                                            $('#add-class-form-{{ forloop.counter0 }}-submit').popover('show');
+                                                                        }
+                                                                    }
+                                                                });
+                                                           });
+                                                   </script>
+                                           </form>
+
+                                   {% else %}
+                                        <a tabindex="0" id="add-class-button-{{ forloop.counter0 }}1" type="button" class="btn btn-success" data-toggle="popover" data-trigger="focus" data-content="Login to add to schedule!">Add Class</a>
+<!--                                        URL: https://getbootstrap.com/docs/4.0/components/popovers/-->
+<!--                                        Used to tell user to login-->
                                         <script>
-                                                $('#add-class-button-{{ forloop.counter0 }}').popover()
+
+                                                $('#add-class-button-{{ forloop.counter0 }}1').popover()
                                                 $('.popover-dismiss').popover({
                                                   trigger: 'focus'
                                                 })
                                         </script>
-                                   {% else %}
-                                           <form id="add-class-form-{{ forloop.counter0 }}" action="{% url 'map:addClass' %}" method="post">
-                                                   {% csrf_token %}
-                                                   <input type="hidden" name="class-id" value="{{class.class_id}}">
-                                                   <button type="submit" class="btn btn-success">Add Class</button>
-                                                   <script>
-                                                           $('#add-class-form-{{ forloop.counter0 }}').on('submit', editSchedule);
-                                                   </script>
-                                           </form>
                                    {% endif %}
                            </div>
-                           <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-primary">Show On Map</button>
-                           <script>
-                                $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
-                            </script>
+                            {% if class.class_loc_coords == None %}
+                                 <button type="button" id="add-marker-{{ forloop.counter0 }}-none" data-toggle="popover" data-content="This class has no location"class="btn btn-info">Show On Map</button>
+                                 <script>
+                                    $('#add-marker-{{ forloop.counter0 }}-none').popover().click(function () {
+                                        setTimeout(function () {
+                                            $('#add-marker-{{ forloop.counter0 }}-none').popover('hide');
+                                        }, 1500);
+                                    });
+                                 </script>
+                            {% else %}
+                                 <button type="button" id="add-marker-{{ forloop.counter0 }}" value="{{class.class_loc_coords}}" name='{{ class.class_name }}' class="btn btn-info">Show On Map</button>
+                                 <script>
+                                    $('#add-marker-{{ forloop.counter0 }}').on('click', searchClick);
+                                 </script>
+                            {% endif%}
+
                    </div>
            </li>
         {% endfor %}
         </ul>
+    </div>
 {% else %}
         <p>No results found</p>
 {% endif %}
