@@ -277,9 +277,12 @@ def user_created_event(request):
                 event_form.save_m2m()  # Needs to be called if commit = False
                 return render(request, 'map/event.html', {'success': True, 'error': None})
             else:
-                return render(request, 'map/event.html', {'success': False, 'error': ''})
+                if not check_date(entry):
+                    return render(request, 'map/event.html',
+                                  {'success': False, 'error': 'The time must be in the future.'})
+                else:
+                    return render(request, 'map/event.html', {'success': False, 'error': 'Maximum capacity is 999'})
         else:
-
             return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 
     return render(request, 'map/event.html', {'success': False, 'error': ''})
@@ -304,8 +307,11 @@ def user_updated_event(request):
                 database_entry.save()
                 return render(request, 'map/event.html', {'success': True, 'error': None})
             else:
-                return render(request, 'map/event.html', {'success': False, 'error': ''})
-
+                if not check_date(database_entry):
+                    return render(request, 'map/event.html',
+                                  {'success': False, 'error': 'The time must be in the future.'})
+                else:
+                    return render(request, 'map/event.html', {'success': False, 'error': 'Maximum capacity is 999'})
         else:
             return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 

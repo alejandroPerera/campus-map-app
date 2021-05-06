@@ -89,42 +89,41 @@
             <script>
                 // This will pass the form action and hopefully reload the results div with the results
                 $("#spinner").hide(); //Hides spinner before anything happens
-                $(function(){
-                     $('#search-form').on('submit', function(e){
-                         e.preventDefault();
+                    //URL: https://stackoverflow.com/questions/2275342/jquery-ajaxstart-doesnt-get-triggered
+                     // Author: Jay Kumar
+                    $(document).ajaxStart(function(){
+                        console.log("loading");
+                        $("#spinner").remove("invisible");
+                        $("#spinner").show();
 
-                         $.ajax({
-                             url: $(this).attr('action'),
-                             method: $(this).attr('method'),
-                             data: $('#search-form').serialize(), // serialize converts the form inputs into the url
-                             success: function(data){ $('#results').html(data) }
-                         });
+                    });
+                    $(document).ajaxStop(function() {
+                      $("#spinner").hide();
+                      $("#st-tree-container").show();
+                    });
 
-                         //URL: https://stackoverflow.com/questions/2275342/jquery-ajaxstart-doesnt-get-triggered
-                         // Author: Jay Kumar
-                        $(document).ajaxStart(function(){
-                            console.log("loading");
-                            $("#spinner").remove("invisible");
-                            $("#spinner").show();
+                 $('#search-form').on('submit', function(e){
+                     e.preventDefault();
 
-                        });
-                        $(document).ajaxStop(function() {
-                          $("#spinner").hide();
-                          $("#st-tree-container").show();
-                        });
-
+                     $.ajax({
+                         url: $(this).attr('action'),
+                         method: $(this).attr('method'),
+                         data: $('#search-form').serialize(), // serialize converts the form inputs into the url
+                         success: function(data){ $('#results').html(data) }
                      });
-                     $('#search-form').on('reset', function(e){
-                         e.preventDefault();
 
-                         $.ajax({
-                             success: function(data){
-                                $('#results').html('')
-                             }
-                         });
+                 });
+                 $('#search-form').on('reset', function(e){
+                     e.preventDefault();
 
+                     $.ajax({
+                         success: function(data){
+                            $('#results').html('')
+                         }
                      });
-                });
+
+                 });
+
             </script>
 
         </form>
