@@ -9,11 +9,11 @@ find buildings and classes on an interactive map, navigate from one building to 
 schedules for classes. 
 
 The schedule and finding building functionality is on the tab schedule. The page that the user is currently on
-is bolded in the navigation bar. The classes can be searched by the title of the course or the class mnemonic with
-a space between the course number in the search bar. Buildings can be searched by name in the search bar. Classes can
+is bolded in the navigation bar. The classes can be searched by the title of the course, the class mnemonic with
+a space between the course number, or the class name in the search bar. Buildings can be searched by name in the search bar. Classes can
 be added by clicking the add class and shown on the map by clicking the show on map button. The classes can be seen after 
 clicking the button labeled my classes at the top. Markers on the map can be right clicked which removes it, and left clicking
-on it will reveal some details on it. Classes under the my classes button can be removed using the remove button. The features
+on it will reveal some details on it. In the bottom of the right div, there is a button that will remove all markers if the map seems clogged. Classes under the my classes button can be removed using the remove button. The features
 involving classes need the user to be logged in to work/show.
 
 Events can be created by clicking the create events button on the event page. An event has a title, host, time, date, and 
