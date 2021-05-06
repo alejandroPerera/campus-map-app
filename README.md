@@ -25,7 +25,7 @@ a host or an attendee. All of these features require the user to be logged in.
 
 NOTICE: Mapbox API for some building will place a marker in the wrong place or not be able to find the given building.
 
-Copyright <2021> <Justin Liu, Eli Jelesko, Alejandro Perera, Zack Yahn, David Chen>
+Copyright <2021> <Justin Liu, Eli Jelesko, Alejandro Perera, Zach Yahn, David Chen>
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
