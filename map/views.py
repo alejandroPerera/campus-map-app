@@ -256,6 +256,7 @@ def check_date(event):
     else:
         return False
 
+
 # Returns search results
 #########################
 # References
@@ -276,14 +277,18 @@ def user_created_event(request):
                 event_form.save_m2m()  # Needs to be called if commit = False
                 return render(request, 'map/event.html', {'success': True, 'error': None})
             else:
-                return render(request, 'map/event.html', {'success': False, 'error': ''})
+                if not check_date(entry):
+                    return render(request, 'map/event.html',
+                                  {'success': False, 'error': 'The time must be in the future.'})
+                else:
+                    return render(request, 'map/event.html', {'success': False, 'error': 'Maximum capacity is 999'})
         else:
-
             return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 
     return render(request, 'map/event.html', {'success': False, 'error': ''})
 
-#Host can update event
+
+# Host can update event
 def user_updated_event(request):
     if request.method == 'POST':
         user = request.user
@@ -302,14 +307,18 @@ def user_updated_event(request):
                 database_entry.save()
                 return render(request, 'map/event.html', {'success': True, 'error': None})
             else:
-                return render(request, 'map/event.html', {'success': False, 'error': ''})
-
+                if not check_date(database_entry):
+                    return render(request, 'map/event.html',
+                                  {'success': False, 'error': 'The time must be in the future.'})
+                else:
+                    return render(request, 'map/event.html', {'success': False, 'error': 'Maximum capacity is 999'})
         else:
             return render(request, 'map/event.html', {'success': False, 'error': event_form.errors})
 
     return render(request, 'map/event.html', {'success': False, 'error': ''})
 
-#User can attend event
+
+# User can attend event
 def attend_event(request):
     if request.method == 'POST':
         user = request.user
@@ -324,7 +333,8 @@ def attend_event(request):
 
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
-#Host can cancel event
+
+# Host can cancel event
 def cancel_event(request):
     if request.method == 'POST':
         user = request.user
@@ -337,6 +347,7 @@ def cancel_event(request):
 
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
+
 def remove_event_from_list(request):
     if request.method == 'POST':
         event_id = request.POST.get('event')
@@ -348,7 +359,8 @@ def remove_event_from_list(request):
 
     return render(request, 'map/event_list.html', {'eventsList': EventModel.objects.all()})
 
-#updates Event Models that are valid in eventsList
+
+# updates Event Models that are valid in eventsList
 # Returns search results
 #########################
 # Reference
